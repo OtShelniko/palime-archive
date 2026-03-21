@@ -1,0 +1,119 @@
+/* Palime Archive — nav-fix.css
+   Патч: меню хедера + маркеры футера
+   Подключается последним в enqueue.php */
+
+/* =========================================================
+   ДЕСКТОПНОЕ МЕНЮ
+   ========================================================= */
+
+.nav__links--desktop {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-lg);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* Скрываем на мобайле */
+@media (max-width: 768px) {
+    .nav__links--desktop {
+        display: none;
+    }
+}
+
+/* =========================================================
+   МОБИЛЬНОЕ МЕНЮ
+   ========================================================= */
+
+.nav__mobile {
+    display: none; /* скрыто по умолчанию */
+    position: fixed;
+    top: 64px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--color-bg);
+    z-index: var(--z-overlay);
+    padding: var(--spacing-xl) var(--gutter);
+    overflow-y: auto;
+}
+
+.nav__mobile.open {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.nav__mobile-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xl);
+    align-items: center;
+}
+
+.nav__mobile-list .nav__link {
+    font-size: 1.3rem;
+    letter-spacing: 0.06em;
+}
+
+/* Бургер — показывать только на мобайле */
+.burger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    padding: 8px;
+    cursor: pointer;
+    background: none;
+    border: none;
+}
+
+@media (max-width: 768px) {
+    .burger {
+        display: flex;
+    }
+}
+
+/* Бургер — анимация в крестик при открытии */
+.burger.active .burger__line:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+}
+.burger.active .burger__line:nth-child(2) {
+    opacity: 0;
+}
+.burger.active .burger__line:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+}
+
+.burger__line {
+    width: 24px;
+    height: 1px;
+    background: var(--color-text);
+    transition: all var(--transition);
+    display: block;
+}
+
+/* =========================================================
+   ФУТЕР — убираем маркеры списков
+   ========================================================= */
+
+.footer__links {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    list-style: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.footer__links li {
+    list-style: none !important;
+}
+.nav__logo svg {
+    height: 18px;
+    width: auto;
+    display: block;
+}

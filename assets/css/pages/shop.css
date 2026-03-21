@@ -1,0 +1,157 @@
+/* Palime Archive — pages/shop.css */
+
+/* === ЛЕЙАУТ МАГАЗИНА === */
+.shop-layout {
+    padding: var(--spacing-xl) 0;
+}
+
+/* === ТЕКУЩИЙ ДРОП === */
+.shop-current-drop {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-xl);
+    align-items: center;
+    margin-bottom: var(--spacing-2xl);
+    padding: var(--spacing-2xl);
+    background: var(--color-text);
+    color: #fff;
+    border-radius: var(--radius-lg);
+}
+
+.shop-current-drop__image {
+    aspect-ratio: 1/1;
+    overflow: hidden;
+    border-radius: var(--radius-md);
+}
+
+.shop-current-drop__image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.shop-current-drop__meta {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    opacity: 0.5;
+    margin-bottom: var(--spacing-md);
+}
+
+.shop-current-drop__title {
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 3vw, 2.5rem);
+    color: #fff;
+    margin-bottom: var(--spacing-md);
+}
+
+.shop-current-drop__description {
+    opacity: 0.75;
+    margin-bottom: var(--spacing-xl);
+    line-height: 1.7;
+}
+
+.shop-current-drop__price {
+    font-family: var(--font-mono);
+    font-size: 1.5rem;
+    margin-bottom: var(--spacing-lg);
+}
+
+/* Счётчик остатка */
+.shop-stock {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    opacity: 0.65;
+}
+
+.shop-stock__bar {
+    flex: 1;
+    height: 2px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 1px;
+    overflow: hidden;
+}
+
+.shop-stock__fill {
+    height: 100%;
+    background: var(--accent);
+}
+
+/* === АРХИВ ВЫПУСКОВ === */
+.shop-archive {
+    margin-top: var(--spacing-2xl);
+}
+
+.shop-archive__title {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    opacity: 0.5;
+    margin-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-sm);
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+}
+
+.shop-archive__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: var(--gutter);
+}
+
+/* Архивная карточка — приглушённая */
+.card--archived {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.card--archived .card__image::after {
+    content: 'АРХИВ';
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,0.5);
+    color: #fff;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.15em;
+}
+
+/* === WooCommerce перекрытие === */
+.woocommerce .product {
+    /* Стили отдельных продуктов WC */
+}
+
+.woocommerce-Price-amount {
+    font-family: var(--font-mono);
+}
+
+.single_add_to_cart_button {
+    background: var(--accent) !important;
+    color: #fff !important;
+    border: none !important;
+    border-radius: var(--radius-sm) !important;
+    font-family: var(--font-mono) !important;
+    font-size: 0.8rem !important;
+    letter-spacing: 0.1em !important;
+    text-transform: uppercase !important;
+    padding: 12px 28px !important;
+    transition: opacity var(--transition) !important;
+}
+
+.single_add_to_cart_button:hover {
+    opacity: 0.85 !important;
+}
+
+@media (max-width: 768px) {
+    .shop-current-drop {
+        grid-template-columns: 1fr;
+    }
+}

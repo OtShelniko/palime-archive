@@ -1,0 +1,199 @@
+/* Palime Archive — pages/archive.css */
+
+/* === ЛЕЙАУТ АРХИВА === */
+.archive-layout {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: var(--spacing-xl);
+    align-items: start;
+    padding: var(--spacing-xl) 0;
+}
+
+/* === САЙДБАР ФИЛЬТРОВ === */
+.archive-filters {
+    position: sticky;
+    top: 80px;
+    background: var(--color-second);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-lg);
+}
+
+.archive-filters__title {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    opacity: 0.5;
+    margin-bottom: var(--spacing-lg);
+}
+
+.archive-filters__group {
+    margin-bottom: var(--spacing-lg);
+}
+
+.archive-filters__label {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.6;
+    margin-bottom: var(--spacing-sm);
+    display: block;
+}
+
+.archive-filters__select {
+    width: 100%;
+    padding: 8px 12px;
+    background: var(--color-bg);
+    border: 1px solid rgba(0,0,0,0.12);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: border-color var(--transition);
+}
+
+.archive-filters__select:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+/* Автодополнение персон */
+.archive-filters__autocomplete {
+    position: relative;
+}
+
+.archive-filters__suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--color-bg);
+    border: 1px solid rgba(0,0,0,0.12);
+    border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+    z-index: 10;
+    max-height: 200px;
+    overflow-y: auto;
+    display: none;
+}
+
+.archive-filters__suggestions.open {
+    display: block;
+}
+
+.archive-filters__suggestion {
+    padding: 8px 12px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: background var(--transition);
+}
+
+.archive-filters__suggestion:hover {
+    background: var(--color-second);
+}
+
+/* Активные фильтры */
+.archive-active-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-xs);
+    margin-bottom: var(--spacing-md);
+    min-height: 32px;
+}
+
+.archive-active-filter {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: 4px 10px;
+    background: var(--accent);
+    color: #fff;
+    border-radius: 2px;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+}
+
+.archive-active-filter__remove {
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity var(--transition);
+    font-size: 1rem;
+    line-height: 1;
+}
+
+.archive-active-filter__remove:hover {
+    opacity: 1;
+}
+
+/* Кнопка сброса */
+.archive-filters__reset {
+    width: 100%;
+    padding: 8px;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-text);
+    opacity: 0.5;
+    border: 1px solid rgba(0,0,0,0.15);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all var(--transition);
+    background: transparent;
+}
+
+.archive-filters__reset:hover {
+    opacity: 1;
+    border-color: var(--color-text);
+}
+
+/* === РЕЗУЛЬТАТЫ === */
+.archive-results__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-lg);
+}
+
+.archive-results__count {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    opacity: 0.5;
+}
+
+.archive-results__grid {
+    min-height: 400px;
+    position: relative;
+}
+
+/* Оверлей загрузки */
+.archive-results__grid.loading::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(249,247,244,0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+}
+
+/* Пустые результаты */
+.archive-empty {
+    text-align: center;
+    padding: var(--spacing-2xl);
+    opacity: 0.5;
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+}
+
+@media (max-width: 1024px) {
+    .archive-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .archive-filters {
+        position: static;
+    }
+}

@@ -1,0 +1,197 @@
+/* Palime Archive — pages/profile.css */
+
+/* === ЛЕЙАУТ ПРОФИЛЯ === */
+.profile-layout {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: var(--spacing-xl);
+    align-items: start;
+    padding: var(--spacing-xl) 0;
+}
+
+/* === САЙДБАР ПРОФИЛЯ === */
+.profile-sidebar {
+    position: sticky;
+    top: 80px;
+}
+
+.profile-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: var(--color-second);
+    overflow: hidden;
+    margin-bottom: var(--spacing-md);
+}
+
+.profile-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.profile-name {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    margin-bottom: var(--spacing-xs);
+}
+
+/* === УРОВЕНЬ И ОЧКИ === */
+.profile-level {
+    margin: var(--spacing-lg) 0;
+}
+
+.profile-level__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: 6px 16px;
+    background: var(--accent);
+    color: #fff;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: var(--spacing-md);
+}
+
+.profile-level__points {
+    font-family: var(--font-mono);
+    font-size: 2rem;
+    font-weight: 400;
+    line-height: 1;
+    margin-bottom: var(--spacing-xs);
+}
+
+.profile-level__label {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    opacity: 0.5;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: var(--spacing-md);
+}
+
+/* Прогресс-бар */
+.profile-progress {
+    margin-bottom: var(--spacing-md);
+}
+
+.profile-progress__bar {
+    height: 3px;
+    background: rgba(0,0,0,0.1);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: var(--spacing-xs);
+}
+
+.profile-progress__fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 2px;
+    transition: width 0.6s ease;
+}
+
+.profile-progress__label {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    opacity: 0.45;
+    text-align: right;
+}
+
+/* === НАВИГАЦИЯ ПРОФИЛЯ === */
+.profile-nav {
+    margin-top: var(--spacing-lg);
+    border-top: 1px solid rgba(0,0,0,0.08);
+    padding-top: var(--spacing-md);
+}
+
+.profile-nav__item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: 10px 0;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    letter-spacing: 0.04em;
+    opacity: 0.6;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    cursor: pointer;
+    transition: opacity var(--transition);
+}
+
+.profile-nav__item:hover,
+.profile-nav__item.active {
+    opacity: 1;
+    color: var(--accent);
+}
+
+/* === КОНТЕНТ ПРОФИЛЯ === */
+.profile-content__section {
+    display: none;
+}
+
+.profile-content__section.active {
+    display: block;
+}
+
+.profile-content__title {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    opacity: 0.5;
+    margin-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-sm);
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+}
+
+/* === ЛОГ ОЧКОВ === */
+.points-log {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.points-log__item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: var(--color-second);
+    border-radius: var(--radius-sm);
+    font-size: 0.875rem;
+}
+
+.points-log__amount {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    color: var(--accent);
+}
+
+.points-log__amount::before {
+    content: '+';
+}
+
+.points-log__date {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    opacity: 0.4;
+}
+
+/* === СОХРАНЁННЫЕ СТАТЬИ === */
+.saved-articles {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+@media (max-width: 768px) {
+    .profile-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .profile-sidebar {
+        position: static;
+    }
+}

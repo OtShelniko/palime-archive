@@ -1,0 +1,64 @@
+/* Palime Archive — variables.css */
+
+/* === СИСТЕМНЫЕ ЦВЕТА === */
+:root {
+    --color-bg:     #F9F7F4;
+    --color-second: #F3F3F3;
+    --color-text:   #0A0A0A;
+    --color-ui:     #D91515;
+    --accent:       #D91515; /* переключается по разделу */
+
+    /* === АКЦЕНТЫ РАЗДЕЛОВ === */
+    --accent-main:   #D91515;
+    --accent-cinema: #4DB7FF;
+    --accent-lit:    #4A3428;
+    --accent-music:  #FF4FA3;
+    --accent-art:    #C6A25A;
+
+    /* === ФОНЫ РАЗДЕЛОВ === */
+    --bg-cinema: #0A1020;
+    --bg-lit:    #F5F0EA;
+    --bg-music:  #07060A;
+    --bg-art:    #0D0C0A;
+
+    /* === ТИПОГРАФИКА === */
+    --font-display: 'Trajan Pro 3', serif;
+    --font-serif:   'EB Garamond', Georgia, serif;
+    --font-mono:    'IBM Plex Mono', monospace;
+
+    /* === ОТСТУПЫ === */
+    --spacing-xs:  4px;
+    --spacing-sm:  8px;
+    --spacing-md:  16px;
+    --spacing-lg:  24px;
+    --spacing-xl:  40px;
+    --spacing-2xl: 80px;
+
+    /* === СЕТКА === */
+    --container:    1200px;
+    --gutter:       24px;
+
+    /* === РАДИУСЫ === */
+    --radius-sm:  4px;
+    --radius-md:  8px;
+    --radius-lg:  16px;
+
+    /* === ТЕНИ === */
+    --shadow-sm: 0 1px 4px rgba(0,0,0,0.08);
+    --shadow-md: 0 4px 16px rgba(0,0,0,0.12);
+    --shadow-lg: 0 8px 32px rgba(0,0,0,0.16);
+
+    /* === ПЕРЕХОДЫ === */
+    --transition: 0.15s ease;
+
+    /* === Z-INDEX === */
+    --z-header:  100;
+    --z-overlay: 200;
+    --z-modal:   300;
+}
+
+/* === ПЕРЕКЛЮЧЕНИЕ АКЦЕНТА ПО РАЗДЕЛУ === */
+body[data-section='cinema'] { --accent: var(--accent-cinema); }
+body[data-section='lit']    { --accent: var(--accent-lit); }
+body[data-section='music']  { --accent: var(--accent-music); }
+body[data-section='art']    { --accent: var(--accent-art); }
