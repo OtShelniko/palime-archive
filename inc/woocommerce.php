@@ -65,13 +65,11 @@ function palime_sync_product_section_meta( $post_id ) {
     }
 }
 
+// Синхронизируем только через acf/save_post — достаточно одного хука.
+// save_post_product дублировал вызов и мог читать устаревшее значение ACF.
 add_action( 'acf/save_post', function ( $post_id ) {
     palime_sync_product_section_meta( (int) $post_id );
 }, 20 );
-
-add_action( 'save_post_product', function ( $post_id ) {
-    palime_sync_product_section_meta( (int) $post_id );
-}, 25 );
 
 /**
  * Архивировать товар после полной распродажи.
@@ -86,7 +84,13 @@ add_action( 'woocommerce_order_status_completed', function( $order_id ) {
         $product    = wc_get_product( $product_id );
 
         if ( $product && ! $product->is_in_stock() ) {
-            update_post_meta( $product_id, 'is_archived', true );
+            // ACF хранит bool-поля под именем поля (is_archived).
+            // Используем update_field, если ACF доступен, иначе fallback на post_meta.
+            if ( function_exists( 'update_field' ) ) {
+                update_field( 'is_archived', true, $product_id );
+            } else {
+                update_post_meta( $product_id, 'is_archived', 1 );
+            }
         }
     }
 } );

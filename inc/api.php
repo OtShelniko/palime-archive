@@ -27,6 +27,8 @@ function palime_register_rest_routes() {
             'type'            => [ 'sanitize_callback' => 'sanitize_text_field' ],
             'status'          => [ 'sanitize_callback' => 'sanitize_text_field' ],
             'editorial_flag'  => [ 'sanitize_callback' => 'sanitize_text_field' ],
+            'search'          => [ 'sanitize_callback' => 'sanitize_text_field' ],
+            'sort'            => [ 'default' => 'date', 'sanitize_callback' => 'sanitize_text_field' ],
             'per_page'        => [ 'default' => 12, 'sanitize_callback' => 'absint' ],
             'page'            => [ 'default' => 1,  'sanitize_callback' => 'absint' ],
         ],
@@ -62,12 +64,30 @@ function palime_register_rest_routes() {
 // --- Callbacks ---
 
 function palime_api_get_articles( WP_REST_Request $request ) {
+    $search = $request['search'] ?? '';
+    $sort   = $request['sort'] ?? 'date';
+
+    $orderby = 'date';
+    $order   = 'DESC';
+    if ( $sort === 'popular' ) {
+        $orderby = 'comment_count';
+    }
+    if ( $sort === 'relevance' && $search ) {
+        $orderby = 'relevance';
+    }
+
     $args = [
         'post_type'      => 'article',
         'posts_per_page' => $request['per_page'],
         'paged'          => $request['page'],
         'post_status'    => 'publish',
+        'orderby'        => $orderby,
+        'order'          => $order,
     ];
+
+    if ( $search ) {
+        $args['s'] = $search;
+    }
 
     $tax_query = [ 'relation' => 'AND' ];
 
