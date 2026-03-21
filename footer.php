@@ -8,7 +8,7 @@
         <!-- Колонка 1: бренд -->
         <div class="pa-footer__brand">
             <a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="pa-footer__wordmark" aria-label="Palime Archive">
-                PALIME ARCHIVE
+                <img src="<?php echo get_template_directory_uri(); ?>/assets/img/logo-pa-white.svg" height="28" alt="Palime Archive">
             </a>
             <p class="pa-footer__desc">
                 Независимый культурный архив. Кино,<br>
@@ -28,7 +28,6 @@
                 <li><a href="<?php echo esc_url( home_url( '/blog/?type=selection' ) ); ?>" class="pa-footer__link">Подборки</a></li>
                 <li><a href="<?php echo esc_url( home_url( '/archive/' ) ); ?>" class="pa-footer__link">Рейтинги</a></li>
                 <li><a href="<?php echo esc_url( home_url( '/news/' ) ); ?>" class="pa-footer__link">Новости</a></li>
-                <li><a href="<?php echo esc_url( home_url( '/art/' ) ); ?>" class="pa-footer__link">Visual Art</a></li>
                 <li><a href="<?php echo esc_url( home_url( '/archive/' ) ); ?>" class="pa-footer__link">Поиск</a></li>
             </ul>
         </div>
@@ -41,8 +40,6 @@
                 <li><a href="<?php echo esc_url( home_url( '/literature/' ) ); ?>" class="pa-footer__link">Литература</a></li>
                 <li><a href="<?php echo esc_url( home_url( '/music/' ) ); ?>" class="pa-footer__link">Музыка</a></li>
                 <li><a href="<?php echo esc_url( home_url( '/art/' ) ); ?>" class="pa-footer__link">ИЗО</a></li>
-                <li><a href="<?php echo esc_url( home_url( '/artifacts/' ) ); ?>" class="pa-footer__link pa-footer__link--accent">Артефакты</a></li>
-                <li><a href="<?php echo esc_url( home_url( '/map/' ) ); ?>" class="pa-footer__link">The Map</a></li>
             </ul>
         </div>
 
@@ -53,11 +50,6 @@
                 <li><a href="<?php echo esc_url( home_url( '/about/' ) ); ?>" class="pa-footer__link">О проекте</a></li>
                 <li><a href="<?php echo esc_url( home_url( '/editorial/' ) ); ?>" class="pa-footer__link">Редакция</a></li>
                 <li><a href="<?php echo esc_url( home_url( '/contact/' ) ); ?>" class="pa-footer__link">Написать нам</a></li>
-                <?php
-                $help_url = get_option( 'palime_help_url' );
-                if ( $help_url ) : ?>
-                    <li><a href="<?php echo esc_url( $help_url ); ?>" class="pa-footer__link">Помочь нам</a></li>
-                <?php endif; ?>
             </ul>
 
             <h4 class="pa-footer__col-title pa-footer__col-title--sub">ПРАВОВОЕ</h4>
@@ -95,7 +87,14 @@
    PA FOOTER
    ========================================================= */
 
+/* Убрать подсветку посещённых ссылок */
+.pa-footer a:visited {
+    color: inherit;
+}
+
 .pa-footer {
+    --color-ui: #D91515;
+    --accent: #D91515;
     background: #0A0A0A;
     color: #fff;
     border-top: 1px solid rgba(255,255,255,.06);
@@ -115,15 +114,14 @@
 /* Бренд */
 .pa-footer__wordmark {
     display: block;
-    font-family: var(--font-mono);
-    font-size: clamp(1.1rem, 2vw, 1.55rem);
-    font-weight: 700;
-    letter-spacing: .12em;
-    text-transform: uppercase;
-    color: #fff;
     text-decoration: none;
-    line-height: 1;
     margin-bottom: 20px;
+}
+
+.pa-footer__wordmark img {
+    display: block;
+    height: 28px;
+    width: auto;
 }
 
 .pa-footer__desc {
@@ -188,15 +186,6 @@
 
 .pa-footer__link:hover {
     color: #fff;
-}
-
-/* Акцентная ссылка (красная, как «Артефакты» на макете) */
-.pa-footer__link--accent {
-    color: var(--color-ui);
-}
-
-.pa-footer__link--accent:hover {
-    color: #ff4444;
 }
 
 /* Нижняя полоса */

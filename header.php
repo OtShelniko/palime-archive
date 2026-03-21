@@ -25,8 +25,11 @@ $shop_url        = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_perm
 
         <!-- ── ЛОГОТИП ── -->
         <a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="pa-logo" aria-label="Palime Archive — на главную">
-            <span class="pa-logo__badge">PA</span>
-            <span class="pa-logo__name">PALIME&nbsp;ARCHIVE</span>
+            <?php
+            $dark_sections = array( 'cinema', 'music', 'art' );
+            $logo_file     = in_array( $current_section, $dark_sections, true ) ? 'logo-pa-white.svg' : 'logo-pa-dark.svg';
+            ?>
+            <img src="<?php echo get_template_directory_uri(); ?>/assets/img/<?php echo $logo_file; ?>" height="28" alt="Palime Archive">
         </a>
 
         <!-- ── ДЕСКТОПНАЯ НАВИГАЦИЯ ── -->
@@ -94,6 +97,13 @@ $shop_url        = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_perm
                 </li>
 
                 <li class="pa-nav__item">
+                    <a href="<?php echo esc_url( home_url( '/archive/' ) ); ?>"
+                       class="pa-nav__link <?php echo is_page( 'archive' ) ? 'is-active' : ''; ?>">
+                        АРХИВ
+                    </a>
+                </li>
+
+                <li class="pa-nav__item">
                     <a href="<?php echo esc_url( $shop_url ); ?>"
                        class="pa-nav__link <?php echo $is_shop ? 'is-active' : ''; ?>">
                         МАГАЗИН
@@ -150,6 +160,7 @@ $shop_url        = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_perm
             <li><a href="<?php echo esc_url( home_url( '/art/' ) ); ?>">ИЗО</a></li>
             <li><a href="<?php echo esc_url( home_url( '/blog/' ) ); ?>">Блог</a></li>
             <li><a href="<?php echo esc_url( home_url( '/news/' ) ); ?>">Новости</a></li>
+            <li><a href="<?php echo esc_url( home_url( '/archive/' ) ); ?>">Архив</a></li>
             <li><a href="<?php echo esc_url( $shop_url ); ?>">Магазин</a></li>
             <li><a href="<?php echo esc_url( home_url( '/about/' ) ); ?>">О нас</a></li>
             <?php if ( is_user_logged_in() ) : ?>
@@ -168,7 +179,14 @@ $shop_url        = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_perm
    PA HEADER
    ========================================================= */
 
+/* Убрать подсветку посещённых ссылок */
+.pa-header a:visited,
+.pa-header button:visited {
+    color: inherit;
+}
+
 .pa-header {
+    --color-ui: #D91515;
     position: sticky;
     top: 0;
     z-index: var(--z-header);
@@ -198,26 +216,10 @@ $shop_url        = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_perm
     flex-shrink: 0;
 }
 
-.pa-logo__badge {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 28px;
+.pa-logo img {
+    display: block;
     height: 28px;
-    border: 1px solid rgba(255,255,255,.35);
-    font-family: var(--font-mono);
-    font-size: .65rem;
-    letter-spacing: .04em;
-    flex-shrink: 0;
-}
-
-.pa-logo__name {
-    font-family: var(--font-mono);
-    font-size: .72rem;
-    letter-spacing: .16em;
-    text-transform: uppercase;
-    white-space: nowrap;
-    opacity: .9;
+    width: auto;
 }
 
 /* Навигация */
