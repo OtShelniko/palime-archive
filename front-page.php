@@ -1,7 +1,7 @@
 <?php
 /**
  * Palime Archive — front-page.php
- * Главная страница: 8 секций по ТЗ
+ * Главная страница: секции по ТЗ
  *
  * @package Palime_Archive
  */
@@ -9,519 +9,450 @@
 get_header();
 
 // ─── Данные разделов ───
-$sections = [
-    'cinema' => [ 'label' => 'Кино',        'slug' => 'cinema', 'url' => '/cinema/' ],
-    'lit'    => [ 'label' => 'Литература',   'slug' => 'lit',    'url' => '/literature/' ],
-    'music'  => [ 'label' => 'Музыка',       'slug' => 'music',  'url' => '/music/' ],
-    'art'    => [ 'label' => 'ИЗО',          'slug' => 'art',    'url' => '/art/' ],
+$sections_data = [
+    'lit'    => [
+        'label'  => 'Литература',
+        'slug'   => 'lit',
+        'url'    => '/literature/',
+        'slogan' => 'Тексты, которые верят форме и смыслу. Без литературного шума.',
+        'tags'   => [ 'Эссе', 'Рецензия', 'Досье' ],
+    ],
+    'cinema' => [
+        'label'  => 'Кино',
+        'slug'   => 'cinema',
+        'url'    => '/cinema/',
+        'slogan' => 'Кино как мышление: кадр, ритм, и смысл. Всё «поверхностное».',
+        'tags'   => [ 'Эссе', 'Рецензия', 'Досье' ],
+    ],
+    'music'  => [
+        'label'  => 'Музыка',
+        'slug'   => 'music',
+        'url'    => '/music/',
+        'slogan' => 'Звук, который не просит внимания. Он требует его.',
+        'tags'   => [ 'Эссе', 'Рецензия', 'Досье' ],
+    ],
+    'art'    => [
+        'label'  => 'Визуальное',
+        'slug'   => 'art',
+        'url'    => '/art/',
+        'slogan' => 'Работы, которые остаются сложны. Но контекст и память.',
+        'tags'   => [ 'Эссе', 'Рецензия', 'Досье' ],
+    ],
 ];
 
-$section_labels = [
-    'cinema' => 'Кино',
-    'lit'    => 'Литература',
-    'music'  => 'Музыка',
-    'art'    => 'ИЗО',
-];
+// ─── Последняя статья для героя ───
+$hero_query = new WP_Query( [
+    'post_type'      => 'article',
+    'posts_per_page' => 1,
+    'post_status'    => 'publish',
+    'orderby'        => 'date',
+    'order'          => 'DESC',
+    'no_found_rows'  => true,
+] );
+
+$hero_post    = $hero_query->have_posts() ? $hero_query->posts[0] : null;
+$hero_post_id = $hero_post ? $hero_post->ID : 0;
+wp_reset_postdata();
+
+// Мета героя
+$hero_section_terms = $hero_post_id ? get_the_terms( $hero_post_id, 'section' ) : false;
+$hero_section_name  = ( $hero_section_terms && ! is_wp_error( $hero_section_terms ) ) ? $hero_section_terms[0]->name : '—';
+$hero_section_slug  = ( $hero_section_terms && ! is_wp_error( $hero_section_terms ) ) ? $hero_section_terms[0]->slug : '';
+
+$hero_type_terms = $hero_post_id ? get_the_terms( $hero_post_id, 'article-type' ) : false;
+$hero_type_name  = ( $hero_type_terms && ! is_wp_error( $hero_type_terms ) ) ? $hero_type_terms[0]->name : '—';
+
+$hero_status_terms = $hero_post_id ? get_the_terms( $hero_post_id, 'status' ) : false;
+$hero_status_name  = ( $hero_status_terms && ! is_wp_error( $hero_status_terms ) ) ? $hero_status_terms[0]->name : 'АКТИВНОЕ';
+
+$hero_person_terms = $hero_post_id ? get_the_terms( $hero_post_id, 'person' ) : false;
+$hero_connected    = ( $hero_person_terms && ! is_wp_error( $hero_person_terms ) ) ? count( $hero_person_terms ) : 0;
+
+$today_date = wp_date( 'd.m.Y' );
 ?>
 
 <main id="main" role="main">
 
 <!-- ============================================================
-     1. ЗАСТАВКА
+     1. ГЕРОЙ
      ============================================================ -->
-<section class="home-hero">
-    <div class="home-hero__main">
-        <h1 class="text-display" style="font-size:clamp(2rem,5vw,4rem); line-height:1.1; letter-spacing:0.08em; text-transform:uppercase; margin-bottom:var(--spacing-lg);">
-            Современное<br>искусство<br>и&nbsp;культура
-        </h1>
-        <p class="text-display" style="font-size:clamp(1.2rem,2.5vw,2rem); letter-spacing:0.2em; text-transform:uppercase; margin-bottom:var(--spacing-lg); color:var(--color-ui);">
-            Архив
-        </p>
-        <p class="text-serif text-lg" style="max-width:480px; opacity:0.8; line-height:1.6; margin-bottom:var(--spacing-xl);">
-            Систематизируем культуру. Разбираем&nbsp;кино, литературу, музыку и&nbsp;визуальное искусство — с&nbsp;глубиной, которую они заслуживают.
-        </p>
+<section class="pa-hero">
+    <!-- Левый столбец -->
+    <div class="pa-hero__left">
+        <div class="pa-hero__inner">
+            <p class="pa-hero__eyebrow text-mono text-xs text-upper">
+                ARCHIVE · INDEXING: ON
+            </p>
+
+            <h1 class="pa-hero__title text-display text-upper">
+                Современное<br>искусство<br>и&nbsp;культура
+            </h1>
+
+            <p class="pa-hero__subtitle text-mono">
+                / Архив
+            </p>
+
+            <p class="pa-hero__meta text-mono text-xs">
+                CASE_ID: PA-2026-021 · INDEX_STATUS: LIVE · LAST_UPDATE: <?php echo esc_html( $today_date ); ?>
+            </p>
+
+            <p class="pa-hero__desc text-serif">
+                Кино. Музыка. Литература. Визуальная культура. Эссе, критика, теория. Никакого PR. Только контекст.
+            </p>
+
+            <div class="pa-hero__actions">
+                <a href="<?php echo esc_url( home_url( '/archive/' ) ); ?>" class="btn btn--primary">
+                    Открыть архив
+                </a>
+                <a href="<?php echo esc_url( home_url( '/blog/' ) ); ?>" class="btn btn--outline" style="color:#fff; border-color:rgba(255,255,255,0.4);">
+                    Читать журнал
+                </a>
+            </div>
+
+            <p class="pa-hero__footer text-mono text-xs">
+                ACCESS LEVEL: PUBLIC · SOME RECORDS ARE DISPUTED · THIS ARCHIVE IS NOT NEUTRAL
+            </p>
+        </div>
     </div>
 
-    <div class="home-hero__sections">
-        <?php foreach ( $sections as $key => $sec ) : ?>
-            <a href="<?php echo esc_url( home_url( $sec['url'] ) ); ?>"
-               class="home-hero__section home-hero__section--<?php echo esc_attr( $key ); ?>">
-                <span class="home-hero__section-title"><?php echo esc_html( $sec['label'] ); ?></span>
+    <!-- Правый столбец -->
+    <div class="pa-hero__right">
+        <?php if ( $hero_post_id && has_post_thumbnail( $hero_post_id ) ) : ?>
+            <a href="<?php echo esc_url( get_permalink( $hero_post_id ) ); ?>" class="pa-hero__image-link">
+                <?php echo get_the_post_thumbnail( $hero_post_id, 'hero', [
+                    'alt'   => esc_attr( get_the_title( $hero_post_id ) ),
+                    'class' => 'pa-hero__image img-cover',
+                ] ); ?>
             </a>
-        <?php endforeach; ?>
+
+            <!-- Мета-карточка поверх изображения -->
+            <div class="pa-hero__exhibit">
+                <table class="pa-hero__exhibit-table">
+                    <tr>
+                        <td class="text-mono text-xs" style="opacity:0.5;">EXHIBIT ID</td>
+                        <td class="text-mono text-xs"><?php echo esc_html( 'PA-' . get_the_date( 'Y', $hero_post_id ) . '-' . str_pad( $hero_post_id, 3, '0', STR_PAD_LEFT ) ); ?></td>
+                    </tr>
+                    <tr>
+                        <td class="text-mono text-xs" style="opacity:0.5;">МЕДИУМ</td>
+                        <td class="text-mono text-xs"><?php echo esc_html( $hero_section_name ); ?></td>
+                    </tr>
+                    <tr>
+                        <td class="text-mono text-xs" style="opacity:0.5;">СТАТУС</td>
+                        <td class="text-mono text-xs"><?php echo esc_html( mb_strtoupper( $hero_status_name ) ); ?></td>
+                    </tr>
+                    <tr>
+                        <td class="text-mono text-xs" style="opacity:0.5;">СВЯЗИ</td>
+                        <td class="text-mono text-xs"><?php echo esc_html( $hero_connected ); ?></td>
+                    </tr>
+                </table>
+            </div>
+        <?php else : ?>
+            <!-- Заглушка без изображения -->
+            <div class="pa-hero__placeholder">
+                <span class="text-mono text-upper" style="color:var(--color-ui); font-size:1.2rem; letter-spacing:0.2em;">DISPUTED</span>
+            </div>
+        <?php endif; ?>
     </div>
 </section>
 
 
 <!-- ============================================================
-     2. ЖИВОЙ ИНДЕКС
+     2. ИНДЕКС ПО МЕДИУМУ
+     ============================================================ -->
+<section class="section" style="background:var(--color-bg);">
+    <div class="container">
+        <h2 class="text-display text-upper mb-sm" style="font-size:clamp(1.6rem,3vw,2.4rem); letter-spacing:0.1em;">
+            Индекс по медиуму
+        </h2>
+        <p class="text-mono text-sm mb-xl" style="opacity:0.5;">
+            Четыре каталога. Один фильтр.
+        </p>
+
+        <div class="grid grid--4">
+            <?php
+            $medium_index = 0;
+            foreach ( $sections_data as $sec_slug => $sec ) :
+                $medium_index++;
+
+                // Последняя статья раздела
+                $sec_query = new WP_Query( [
+                    'post_type'              => 'article',
+                    'posts_per_page'         => 1,
+                    'post_status'            => 'publish',
+                    'no_found_rows'          => true,
+                    'update_post_meta_cache' => false,
+                    'tax_query'              => [ [
+                        'taxonomy' => 'section',
+                        'field'    => 'slug',
+                        'terms'    => $sec_slug,
+                    ] ],
+                ] );
+
+                $sec_post_id = $sec_query->have_posts() ? $sec_query->posts[0]->ID : 0;
+                wp_reset_postdata();
+            ?>
+                <article class="pa-medium-card section-<?php echo esc_attr( $sec_slug ); ?>">
+                    <!-- Обложка -->
+                    <div class="pa-medium-card__image">
+                        <?php if ( $sec_post_id && has_post_thumbnail( $sec_post_id ) ) : ?>
+                            <?php echo palime_get_thumbnail( $sec_post_id, 'card', $sec['label'] ); ?>
+                        <?php else : ?>
+                            <div class="pa-medium-card__placeholder">
+                                <span class="text-mono text-xs" style="opacity:0.3;">НЕТ ДАННЫХ</span>
+                            </div>
+                        <?php endif; ?>
+                        <!-- Красная полоска слева -->
+                        <span class="pa-medium-card__accent"></span>
+                    </div>
+
+                    <!-- Мета -->
+                    <div class="pa-medium-card__body">
+                        <p class="text-mono text-xs" style="opacity:0.4; margin-bottom:var(--spacing-sm);">
+                            PA-2026-<?php echo esc_html( str_pad( $medium_index, 3, '0', STR_PAD_LEFT ) ); ?> · <?php echo esc_html( mb_strtoupper( $sec['label'] ) ); ?> · ACTIVE
+                        </p>
+
+                        <h3 class="text-display text-upper" style="font-size:1.3rem; letter-spacing:0.08em; margin-bottom:var(--spacing-sm);">
+                            <?php echo esc_html( $sec['label'] ); ?>
+                        </h3>
+
+                        <p class="text-serif text-sm" style="opacity:0.7; line-height:1.5; margin-bottom:var(--spacing-md);">
+                            <?php echo esc_html( $sec['slogan'] ); ?>
+                        </p>
+
+                        <!-- Теги -->
+                        <div class="flex flex--gap flex--wrap" style="gap:6px; margin-bottom:var(--spacing-md);">
+                            <?php foreach ( $sec['tags'] as $tag_name ) : ?>
+                                <span class="tag tag--section" style="font-size:0.65rem; padding:2px 8px;">
+                                    <?php echo esc_html( $tag_name ); ?>
+                                </span>
+                            <?php endforeach; ?>
+                        </div>
+
+                        <!-- Кнопка -->
+                        <a href="<?php echo esc_url( home_url( $sec['url'] ) ); ?>" class="pa-medium-card__btn text-mono text-xs text-upper">
+                            Открыть индекс →
+                        </a>
+                    </div>
+                </article>
+            <?php endforeach; ?>
+        </div>
+    </div>
+</section>
+
+
+<!-- ============================================================
+     3. АРХИВ — НЕ БЛОГ
+     ============================================================ -->
+<section class="section" style="background:var(--color-bg); border-top:1px solid rgba(0,0,0,0.06);">
+    <div class="container">
+        <div class="grid grid--2" style="gap:var(--spacing-2xl); align-items:start;">
+
+            <!-- Левый блок: манифест -->
+            <div>
+                <h2 class="text-display text-upper mb-lg" style="font-size:clamp(1.8rem,3.5vw,2.8rem); letter-spacing:0.08em; line-height:1.1;">
+                    Архив —<br>не блог
+                </h2>
+                <div class="text-serif" style="font-size:1.05rem; line-height:1.8; opacity:0.85;">
+                    <p>Мы не гонимся за трендами. Мы не публикуем пресс-релизы под видом критики. Мы не путаем маркетинг со смыслом.</p>
+                    <p style="margin-top:var(--spacing-md);">Каждый артефакт входит в систему: с&nbsp;тегами, индексом, перекрёстными ссылками. Кино связано с&nbsp;теорией. Музыка переплетена с&nbsp;литературой.</p>
+                    <p style="margin-top:var(--spacing-md);">Это не контент. Это контекст.<br>Это живое досье.</p>
+                </div>
+            </div>
+
+            <!-- Правый блок: таблица индексации -->
+            <div>
+                <table class="pa-index-table">
+                    <tr>
+                        <td class="pa-index-table__num text-mono">01</td>
+                        <td class="pa-index-table__label text-mono text-xs text-upper">Медиум</td>
+                        <td class="pa-index-table__values text-serif text-sm">Кино · Музыка · Литература · ИЗО · Теория</td>
+                    </tr>
+                    <tr>
+                        <td class="pa-index-table__num text-mono">02</td>
+                        <td class="pa-index-table__label text-mono text-xs text-upper">Форма</td>
+                        <td class="pa-index-table__values text-serif text-sm">Эссе · Рецензия · Интервью · Досье · Индекс</td>
+                    </tr>
+                    <tr>
+                        <td class="pa-index-table__num text-mono">03</td>
+                        <td class="pa-index-table__label text-mono text-xs text-upper">Тема</td>
+                        <td class="pa-index-table__values text-serif text-sm">Память · Власть · Идентичность · Место · Время</td>
+                    </tr>
+                    <tr>
+                        <td class="pa-index-table__num text-mono">04</td>
+                        <td class="pa-index-table__label text-mono text-xs text-upper">Связи</td>
+                        <td class="pa-index-table__values text-serif text-sm">Кросс-реф · Контекст · Поток · Сеть</td>
+                    </tr>
+                </table>
+
+                <!-- Статусы -->
+                <div class="flex flex--gap flex--wrap mt-lg" style="gap:8px;">
+                    <span class="tag" style="border-color:var(--color-ui); color:var(--color-ui);">Спорное</span>
+                    <span class="tag" style="border-color:var(--color-text); color:var(--color-text);">Активное</span>
+                    <span class="tag" style="border-color:rgba(0,0,0,0.3); color:rgba(0,0,0,0.5);">В архиве</span>
+                    <span class="tag" style="border-color:var(--color-text); color:var(--color-text);">Подтверждено</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+<!-- ============================================================
+     4. ЖИВОЙ ИНДЕКС
      ============================================================ -->
 <?php
 $live_query = new WP_Query( [
     'post_type'              => [ 'article', 'news' ],
-    'posts_per_page'         => 12,
+    'posts_per_page'         => 10,
     'post_status'            => 'publish',
     'orderby'                => 'date',
     'order'                  => 'DESC',
     'no_found_rows'          => true,
     'update_post_meta_cache' => false,
 ] );
+
+// Общее количество записей в архиве
+$total_articles = wp_count_posts( 'article' );
+$total_news     = wp_count_posts( 'news' );
+$total_count    = ( isset( $total_articles->publish ) ? $total_articles->publish : 0 )
+                + ( isset( $total_news->publish ) ? $total_news->publish : 0 );
 ?>
 <section class="section--dark" style="padding:var(--spacing-2xl) 0;">
     <div class="container">
 
-        <div class="live-index__header" style="border-bottom-color:rgba(255,255,255,0.12);">
-            <span class="live-index__label" style="color:var(--color-bg);">
-                <span class="live-index__dot"></span>
-                Живой индекс
-            </span>
-            <a href="<?php echo esc_url( home_url( '/archive/' ) ); ?>" class="btn btn--sm" style="color:var(--color-bg); border-color:rgba(255,255,255,0.3);">
-                Смотреть все →
+        <!-- Заголовок -->
+        <div class="live-index__header" style="border-bottom-color:rgba(255,255,255,0.12); margin-bottom:var(--spacing-lg);">
+            <div class="flex" style="align-items:center; gap:var(--spacing-md);">
+                <span class="live-index__label" style="color:var(--color-bg);">
+                    <span class="live-index__dot"></span>
+                    Живой индекс
+                </span>
+                <span class="text-mono text-xs" style="color:rgba(255,255,255,0.35);">
+                    РАЗМЕР АРХИВА: <?php echo esc_html( $total_count ); ?> ЗАПИСЕЙ · ОБНОВЛЕНО: СЕГОДНЯ
+                </span>
+            </div>
+            <a href="<?php echo esc_url( home_url( '/archive/' ) ); ?>" class="btn btn--sm" style="color:var(--color-bg); border-color:rgba(255,255,255,0.25);">
+                Полный реестр →
             </a>
         </div>
 
+        <!-- Вкладки -->
+        <div class="pa-live-tabs flex flex--gap mb-lg" style="gap:0;">
+            <button class="pa-live-tab is-active text-mono text-xs text-upper" data-tab="newest">Новейшие</button>
+            <button class="pa-live-tab text-mono text-xs text-upper" data-tab="popular">Популярные</button>
+            <button class="pa-live-tab text-mono text-xs text-upper" data-tab="updated">Обновлено сегодня</button>
+            <button class="pa-live-tab text-mono text-xs text-upper" data-tab="editors">Выбор редактора</button>
+        </div>
+
+        <!-- Таблица -->
         <?php if ( $live_query->have_posts() ) : ?>
             <div style="overflow-x:auto;">
-                <table style="width:100%; border-collapse:collapse; font-size:0.85rem;">
-                    <?php while ( $live_query->have_posts() ) : $live_query->the_post();
-                        $pid           = get_the_ID();
-                        $s_terms       = get_the_terms( $pid, 'section' );
-                        $s_name        = ( $s_terms && ! is_wp_error( $s_terms ) ) ? $s_terms[0]->name : '—';
-                        $s_slug        = ( $s_terms && ! is_wp_error( $s_terms ) ) ? $s_terms[0]->slug : '';
-                        $type_label    = get_post_type( $pid ) === 'news' ? 'Новость' : 'Статья';
-                    ?>
-                        <tr style="border-bottom:1px solid rgba(255,255,255,0.06);">
-                            <td class="text-mono text-xs section-<?php echo esc_attr( $s_slug ); ?>" style="padding:10px 12px 10px 0; color:var(--accent); white-space:nowrap; width:100px;">
-                                <?php echo esc_html( $s_name ); ?>
-                            </td>
-                            <td class="text-mono text-xs text-muted" style="padding:10px 12px; white-space:nowrap; width:80px;">
-                                <?php echo esc_html( $type_label ); ?>
-                            </td>
-                            <td style="padding:10px 12px;">
-                                <a href="<?php echo esc_url( get_permalink() ); ?>" style="color:var(--color-bg); font-family:var(--font-serif); transition:color var(--transition);">
-                                    <?php echo esc_html( get_the_title() ); ?>
-                                </a>
-                            </td>
-                            <td class="text-mono text-xs text-muted hide-mobile" style="padding:10px 0 10px 12px; white-space:nowrap; text-align:right;">
-                                <?php echo esc_html( palime_get_date( $pid ) ); ?>
-                            </td>
+                <table class="pa-live-table" style="width:100%; border-collapse:collapse;">
+                    <thead>
+                        <tr>
+                            <th class="text-mono text-xs" style="color:rgba(255,255,255,0.3); text-align:left; padding:8px 12px 8px 0; font-weight:400; border-bottom:1px solid rgba(255,255,255,0.1);">ID</th>
+                            <th class="text-mono text-xs" style="color:rgba(255,255,255,0.3); text-align:left; padding:8px 12px; font-weight:400; border-bottom:1px solid rgba(255,255,255,0.1);">Заголовок</th>
+                            <th class="text-mono text-xs hide-mobile" style="color:rgba(255,255,255,0.3); text-align:left; padding:8px 12px; font-weight:400; border-bottom:1px solid rgba(255,255,255,0.1);">Медиум</th>
+                            <th class="text-mono text-xs hide-mobile" style="color:rgba(255,255,255,0.3); text-align:left; padding:8px 12px; font-weight:400; border-bottom:1px solid rgba(255,255,255,0.1);">Форма</th>
+                            <th class="text-mono text-xs hide-mobile" style="color:rgba(255,255,255,0.3); text-align:right; padding:8px 12px; font-weight:400; border-bottom:1px solid rgba(255,255,255,0.1);">Мин</th>
+                            <th class="text-mono text-xs hide-mobile" style="color:rgba(255,255,255,0.3); text-align:right; padding:8px 0 8px 12px; font-weight:400; border-bottom:1px solid rgba(255,255,255,0.1);">Связи</th>
+                            <th style="border-bottom:1px solid rgba(255,255,255,0.1); width:30px;"></th>
                         </tr>
-                    <?php endwhile; ?>
+                    </thead>
+                    <tbody>
+                        <?php while ( $live_query->have_posts() ) : $live_query->the_post();
+                            $pid      = get_the_ID();
+                            $plink    = get_permalink();
+                            $ptitle   = get_the_title();
+                            $ptype    = get_post_type( $pid );
+
+                            // Раздел (медиум)
+                            $s_terms  = get_the_terms( $pid, 'section' );
+                            $s_name   = ( $s_terms && ! is_wp_error( $s_terms ) ) ? $s_terms[0]->name : '—';
+                            $s_slug   = ( $s_terms && ! is_wp_error( $s_terms ) ) ? $s_terms[0]->slug : '';
+
+                            // Форма (тип статьи / новость)
+                            $form_label = 'Новость';
+                            if ( $ptype === 'article' ) {
+                                $at_terms   = get_the_terms( $pid, 'article-type' );
+                                $form_label = ( $at_terms && ! is_wp_error( $at_terms ) ) ? $at_terms[0]->name : 'Статья';
+                            }
+
+                            // Время чтения (ACF)
+                            $reading_time = function_exists( 'get_field' ) ? get_field( 'reading_time', $pid ) : '';
+
+                            // Связи (персоны)
+                            $person_terms  = get_the_terms( $pid, 'person' );
+                            $person_count  = ( $person_terms && ! is_wp_error( $person_terms ) ) ? count( $person_terms ) : 0;
+
+                            // ID в формате PA-YYYY-NNN
+                            $exhibit_id = 'PA-' . get_the_date( 'Y', $pid ) . '-' . str_pad( $pid, 3, '0', STR_PAD_LEFT );
+                        ?>
+                            <tr class="pa-live-row" style="border-bottom:1px solid rgba(255,255,255,0.06); cursor:pointer;" onclick="window.location='<?php echo esc_url( $plink ); ?>'">
+                                <td class="text-mono text-xs section-<?php echo esc_attr( $s_slug ); ?>" style="padding:10px 12px 10px 0; color:var(--accent); white-space:nowrap;">
+                                    <?php echo esc_html( $exhibit_id ); ?>
+                                </td>
+                                <td style="padding:10px 12px;">
+                                    <a href="<?php echo esc_url( $plink ); ?>" style="color:var(--color-bg); font-family:var(--font-serif); font-size:0.95rem; transition:color var(--transition);">
+                                        <?php echo esc_html( $ptitle ); ?>
+                                    </a>
+                                </td>
+                                <td class="text-mono text-xs hide-mobile section-<?php echo esc_attr( $s_slug ); ?>" style="padding:10px 12px; color:var(--accent);">
+                                    <?php echo esc_html( $s_name ); ?>
+                                </td>
+                                <td class="text-mono text-xs hide-mobile" style="padding:10px 12px; color:rgba(255,255,255,0.5);">
+                                    <?php echo esc_html( $form_label ); ?>
+                                </td>
+                                <td class="text-mono text-xs hide-mobile" style="padding:10px 12px; color:rgba(255,255,255,0.5); text-align:right;">
+                                    <?php echo $reading_time ? esc_html( $reading_time ) : '—'; ?>
+                                </td>
+                                <td class="text-mono text-xs hide-mobile" style="padding:10px 0 10px 12px; color:rgba(255,255,255,0.5); text-align:right;">
+                                    <?php echo esc_html( $person_count ); ?>
+                                </td>
+                                <td style="padding:10px 0; text-align:right;">
+                                    <span style="color:rgba(255,255,255,0.3); font-size:0.9rem;">→</span>
+                                </td>
+                            </tr>
+                        <?php endwhile; ?>
+                    </tbody>
                 </table>
             </div>
         <?php else : ?>
-            <p class="text-mono text-sm text-muted" style="padding:var(--spacing-xl) 0;">Материалы скоро появятся.</p>
-        <?php endif;
-        wp_reset_postdata(); ?>
-
-    </div>
-</section>
-
-
-<!-- ============================================================
-     3. ВЫБОР РЕДАКЦИИ
-     ============================================================ -->
-<?php
-$editors_query = new WP_Query( [
-    'post_type'      => 'article',
-    'posts_per_page' => 5,
-    'post_status'    => 'publish',
-    'no_found_rows'  => true,
-    'tax_query'      => [ [
-        'taxonomy' => 'status',
-        'field'    => 'slug',
-        'terms'    => 'redakciya',
-    ] ],
-] );
-?>
-<section class="section">
-    <div class="container">
-
-        <h2 class="text-display text-upper mb-lg" style="font-size:clamp(1.4rem,3vw,2.2rem); letter-spacing:0.1em;">
-            Выбор редакции
-        </h2>
-
-        <?php if ( $editors_query->have_posts() ) :
-            $posts_arr = $editors_query->posts;
-            $first     = $posts_arr[0];
-            $rest      = array_slice( $posts_arr, 1 );
-        ?>
-            <div class="grid grid--sidebar" style="align-items:start;">
-
-                <!-- Большая карточка -->
-                <article class="card fade-in">
-                    <?php
-                    $fp_id     = $first->ID;
-                    $fp_link   = get_permalink( $fp_id );
-                    $fp_title  = get_the_title( $fp_id );
-                    $fp_terms  = get_the_terms( $fp_id, 'section' );
-                    $fp_sec    = ( $fp_terms && ! is_wp_error( $fp_terms ) ) ? $fp_terms[0]->name : '';
-                    $fp_slug   = ( $fp_terms && ! is_wp_error( $fp_terms ) ) ? $fp_terms[0]->slug : '';
-                    $fp_lead   = function_exists( 'get_field' ) ? get_field( 'article_lead', $fp_id ) : '';
-                    ?>
-                    <div class="card__image aspect-16-9">
-                        <a href="<?php echo esc_url( $fp_link ); ?>" tabindex="-1" aria-hidden="true">
-                            <?php echo palime_get_thumbnail( $fp_id, 'card-lg', $fp_title ); ?>
-                        </a>
-                    </div>
-                    <div class="card__body">
-                        <div class="card__meta">
-                            <?php if ( $fp_sec ) : ?>
-                                <span class="text-accent section-<?php echo esc_attr( $fp_slug ); ?>"><?php echo esc_html( $fp_sec ); ?></span>
-                                <span>·</span>
-                            <?php endif; ?>
-                            <span><?php echo esc_html( palime_get_date( $fp_id ) ); ?></span>
-                        </div>
-                        <h3 class="card__title" style="font-size:1.4rem;">
-                            <a href="<?php echo esc_url( $fp_link ); ?>"><?php echo esc_html( $fp_title ); ?></a>
-                        </h3>
-                        <?php if ( $fp_lead ) : ?>
-                            <p class="card__excerpt"><?php echo esc_html( palime_excerpt( $fp_lead, 30 ) ); ?></p>
-                        <?php endif; ?>
-                        <div class="card__footer">
-                            <a href="<?php echo esc_url( $fp_link ); ?>" class="btn btn--ghost btn--sm">Открыть дело →</a>
-                        </div>
-                    </div>
-                </article>
-
-                <!-- Малые карточки -->
-                <?php if ( $rest ) : ?>
-                    <div style="display:flex; flex-direction:column; gap:var(--spacing-md);">
-                        <?php foreach ( $rest as $rp ) :
-                            $rp_id    = $rp->ID;
-                            $rp_link  = get_permalink( $rp_id );
-                            $rp_title = get_the_title( $rp_id );
-                            $rp_terms = get_the_terms( $rp_id, 'section' );
-                            $rp_sec   = ( $rp_terms && ! is_wp_error( $rp_terms ) ) ? $rp_terms[0]->name : '';
-                            $rp_slug  = ( $rp_terms && ! is_wp_error( $rp_terms ) ) ? $rp_terms[0]->slug : '';
-                        ?>
-                            <article class="card card--horizontal fade-in">
-                                <?php if ( has_post_thumbnail( $rp_id ) ) : ?>
-                                    <div class="card__image">
-                                        <a href="<?php echo esc_url( $rp_link ); ?>" tabindex="-1" aria-hidden="true">
-                                            <?php echo palime_get_thumbnail( $rp_id, 'card', $rp_title ); ?>
-                                        </a>
-                                    </div>
-                                <?php endif; ?>
-                                <div class="card__body">
-                                    <div class="card__meta">
-                                        <?php if ( $rp_sec ) : ?>
-                                            <span class="text-accent section-<?php echo esc_attr( $rp_slug ); ?>"><?php echo esc_html( $rp_sec ); ?></span>
-                                            <span>·</span>
-                                        <?php endif; ?>
-                                        <span><?php echo esc_html( palime_get_date( $rp_id ) ); ?></span>
-                                    </div>
-                                    <h3 class="card__title">
-                                        <a href="<?php echo esc_url( $rp_link ); ?>"><?php echo esc_html( $rp_title ); ?></a>
-                                    </h3>
-                                </div>
-                            </article>
-                        <?php endforeach; ?>
-                    </div>
-                <?php endif; ?>
-
+            <div style="padding:var(--spacing-xl) 0; text-align:center;">
+                <p class="text-mono text-sm" style="color:rgba(255,255,255,0.4);">РЕЕСТР ПУСТ. ИНДЕКСАЦИЯ НАЧНЁТСЯ ПОСЛЕ ПЕРВОЙ ПУБЛИКАЦИИ.</p>
             </div>
-        <?php else : ?>
-            <p class="text-mono text-sm text-muted">Редакция готовит подборку.</p>
         <?php endif;
         wp_reset_postdata(); ?>
 
-    </div>
-</section>
-
-
-<!-- ============================================================
-     4. ЛУЧШЕЕ ЗА МЕСЯЦ
-     ============================================================ -->
-<?php
-$monthly_query = new WP_Query( [
-    'post_type'              => 'monthly_best',
-    'posts_per_page'         => 1,
-    'post_status'            => 'publish',
-    'no_found_rows'          => true,
-    'update_post_meta_cache' => false,
-] );
-?>
-<section class="section section--accent">
-    <div class="container">
-
-        <h2 class="text-display text-upper mb-lg" style="font-size:clamp(1.4rem,3vw,2.2rem); letter-spacing:0.1em;">
-            Лучшее за месяц
-        </h2>
-
-        <?php if ( $monthly_query->have_posts() ) : $monthly_query->the_post();
-            $mb_id = get_the_ID();
-        ?>
-            <div class="grid grid--2" style="align-items:start;">
-                <div>
-                    <h3 class="text-display mb-sm" style="font-size:1.3rem; letter-spacing:0.06em;">
-                        <?php echo esc_html( get_the_title() ); ?>
-                    </h3>
-                    <div class="text-serif" style="line-height:1.7; opacity:0.85;">
-                        <?php the_content(); ?>
-                    </div>
-                </div>
-
-                <div>
-                    <?php
-                    $mb_sections = get_the_terms( $mb_id, 'section' );
-                    if ( $mb_sections && ! is_wp_error( $mb_sections ) ) : ?>
-                        <div style="display:flex; flex-direction:column; gap:var(--spacing-sm);">
-                            <?php foreach ( $mb_sections as $mb_sec ) : ?>
-                                <span class="tag section-<?php echo esc_attr( $mb_sec->slug ); ?>">
-                                    <?php echo esc_html( $mb_sec->name ); ?>
-                                </span>
-                            <?php endforeach; ?>
-                        </div>
-                    <?php else : ?>
-                        <div class="flex flex--gap flex--wrap">
-                            <?php foreach ( $section_labels as $slug => $label ) : ?>
-                                <span class="tag section-<?php echo esc_attr( $slug ); ?>"><?php echo esc_html( $label ); ?></span>
-                            <?php endforeach; ?>
-                        </div>
-                    <?php endif; ?>
-                </div>
-            </div>
-        <?php else : ?>
-            <p class="text-mono text-sm text-muted">Итоги месяца формируются.</p>
-        <?php endif;
-        wp_reset_postdata(); ?>
-
-    </div>
-</section>
-
-
-<!-- ============================================================
-     5. НОВОСТИ
-     ============================================================ -->
-<?php
-$news_query = new WP_Query( [
-    'post_type'              => 'news',
-    'posts_per_page'         => 6,
-    'post_status'            => 'publish',
-    'orderby'                => 'date',
-    'order'                  => 'DESC',
-    'no_found_rows'          => true,
-    'update_post_meta_cache' => false,
-] );
-?>
-<section class="section">
-    <div class="container">
-
-        <div class="flex flex--between mb-lg">
-            <h2 class="text-display text-upper" style="font-size:clamp(1.4rem,3vw,2.2rem); letter-spacing:0.1em;">
-                Новости
-            </h2>
-            <a href="<?php echo esc_url( home_url( '/news/' ) ); ?>" class="btn btn--outline btn--sm">
-                Все новости →
-            </a>
-        </div>
-
-        <?php if ( $news_query->have_posts() ) : ?>
-            <ul style="list-style:none; padding:0; margin:0;">
-                <?php while ( $news_query->have_posts() ) : $news_query->the_post();
-                    $n_id    = get_the_ID();
-                    $n_terms = get_the_terms( $n_id, 'section' );
-                    $n_sec   = ( $n_terms && ! is_wp_error( $n_terms ) ) ? $n_terms[0]->name : '';
-                    $n_slug  = ( $n_terms && ! is_wp_error( $n_terms ) ) ? $n_terms[0]->slug : '';
-                ?>
-                    <li style="border-bottom:1px solid rgba(0,0,0,0.08); padding:var(--spacing-md) 0;">
-                        <a href="<?php echo esc_url( get_permalink() ); ?>" class="flex flex--between flex--gap" style="color:inherit; text-decoration:none;">
-                            <div style="flex:1; min-width:0;">
-                                <div class="card__meta mb-xs">
-                                    <?php if ( $n_sec ) : ?>
-                                        <span class="text-accent section-<?php echo esc_attr( $n_slug ); ?>"><?php echo esc_html( $n_sec ); ?></span>
-                                        <span>·</span>
-                                    <?php endif; ?>
-                                    <span><?php echo esc_html( palime_get_date( $n_id ) ); ?></span>
-                                </div>
-                                <h3 style="font-family:var(--font-serif); font-size:1.05rem; font-weight:400; line-height:1.4;">
-                                    <?php echo esc_html( get_the_title() ); ?>
-                                </h3>
-                            </div>
-                            <span class="text-mono" style="flex-shrink:0; align-self:center; font-size:1.2rem; opacity:0.4;">→</span>
-                        </a>
-                    </li>
-                <?php endwhile; ?>
-            </ul>
-        <?php else : ?>
-            <p class="text-mono text-sm text-muted">Новостей пока нет.</p>
-        <?php endif;
-        wp_reset_postdata(); ?>
-
-    </div>
-</section>
-
-
-<!-- ============================================================
-     6. О ПРОЕКТЕ
-     ============================================================ -->
-<section class="section" style="background:var(--color-bg);">
-    <div class="container container--narrow text-center">
-
-        <h2 class="text-display text-upper mb-lg" style="font-size:clamp(1.4rem,3vw,2.2rem); letter-spacing:0.1em;">
-            О проекте
-        </h2>
-
-        <?php
-        $manifesto = get_option( 'palime_manifesto' );
-        if ( ! $manifesto ) :
-            $manifesto = 'PALIME ARCHIVE — независимый медиаархив современной культуры. Мы систематизируем кино, литературу, музыку и визуальное искусство с глубиной и вниманием, которых они заслуживают. Каждый материал — это исследование: не рецензия, а разбор. Не мнение, а аргумент. Мы верим, что культура — не развлечение, а способ понимания мира.';
-        endif;
-        ?>
-        <p class="text-serif text-lg" style="line-height:1.8; max-width:640px; margin:0 auto var(--spacing-xl);">
-            <?php echo esc_html( $manifesto ); ?>
+        <!-- Подпись -->
+        <p class="text-serif mt-lg" style="font-style:italic; color:rgba(255,255,255,0.4); font-size:0.9rem;">
+            Этот архив собирает то, что культура пытается забыть.
         </p>
 
-        <div class="flex flex--center flex--gap">
-            <a href="<?php echo esc_url( home_url( '/about/' ) ); ?>" class="btn btn--outline btn--sm">Подробнее</a>
-        </div>
-
     </div>
 </section>
 
 
 <!-- ============================================================
-     7. ПРЕВЬЮ МАГАЗИНА (АРТЕФАКТЫ)
+     5–9: ОСТАЛЬНЫЕ СЕКЦИИ (будут добавлены позже)
      ============================================================ -->
-<?php
-$shop_product = null;
-if ( class_exists( 'WooCommerce' ) ) {
-    $shop_query = new WP_Query( [
-        'post_type'      => 'product',
-        'posts_per_page' => 1,
-        'post_status'    => 'publish',
-        'orderby'        => 'date',
-        'order'          => 'DESC',
-        'no_found_rows'  => true,
-    ] );
-    if ( $shop_query->have_posts() ) {
-        $shop_query->the_post();
-        $shop_product = wc_get_product( get_the_ID() );
-    }
-    wp_reset_postdata();
-}
-?>
-<section class="section--dark" style="padding:var(--spacing-2xl) 0;">
-    <div class="container">
 
-        <h2 class="text-display text-upper mb-lg" style="font-size:clamp(1.4rem,3vw,2.2rem); letter-spacing:0.1em; color:var(--color-bg);">
-            Артефакты
-        </h2>
-
-        <?php if ( $shop_product ) :
-            $sp_name  = $shop_product->get_name();
-            $sp_desc  = $shop_product->get_short_description();
-            $sp_link  = $shop_product->get_permalink();
-            $sp_price = $shop_product->get_price();
-            $sp_img   = $shop_product->get_image_id();
-        ?>
-            <div class="grid grid--2" style="align-items:center; gap:var(--spacing-xl);">
-                <div>
-                    <?php if ( $sp_img ) : ?>
-                        <div class="aspect-1-1 overflow-hidden" style="border-radius:var(--radius-md);">
-                            <?php echo $shop_product->get_image( 'large', [ 'alt' => esc_attr( $sp_name ), 'style' => 'width:100%;height:100%;object-fit:cover;' ] ); ?>
-                        </div>
-                    <?php else : ?>
-                        <div class="aspect-1-1" style="background:rgba(255,255,255,0.05); border-radius:var(--radius-md); display:flex; align-items:center; justify-content:center;">
-                            <span class="text-mono text-muted" style="color:var(--color-bg);">Изображение скоро</span>
-                        </div>
-                    <?php endif; ?>
-                </div>
-                <div>
-                    <p class="text-mono text-xs text-upper mb-sm" style="color:var(--color-ui); letter-spacing:0.15em;">Текущий дроп</p>
-                    <h3 class="text-display mb-md" style="font-size:1.6rem; color:var(--color-bg); letter-spacing:0.06em;">
-                        <?php echo esc_html( $sp_name ); ?>
-                    </h3>
-                    <?php if ( $sp_desc ) : ?>
-                        <p class="text-serif mb-lg" style="color:rgba(249,247,244,0.7); line-height:1.6;">
-                            <?php echo esc_html( wp_strip_all_tags( $sp_desc ) ); ?>
-                        </p>
-                    <?php endif; ?>
-                    <?php if ( $sp_price ) : ?>
-                        <p class="text-mono mb-lg" style="font-size:1.2rem; color:var(--color-bg);">
-                            <?php echo esc_html( number_format( (float) $sp_price, 0, '.', ' ' ) ); ?> ₽
-                        </p>
-                    <?php endif; ?>
-                    <a href="<?php echo esc_url( home_url( '/shop/' ) ); ?>" class="btn btn--primary">
-                        В магазин →
-                    </a>
-                </div>
-            </div>
-        <?php else : ?>
-            <div class="text-center" style="padding:var(--spacing-xl) 0;">
-                <p class="text-mono text-sm" style="color:rgba(249,247,244,0.5); margin-bottom:var(--spacing-lg);">Коллекция готовится к запуску.</p>
-                <a href="<?php echo esc_url( home_url( '/shop/' ) ); ?>" class="btn" style="color:var(--color-bg); border-color:rgba(255,255,255,0.3);">
-                    В магазин →
-                </a>
-            </div>
-        <?php endif; ?>
-
-    </div>
-</section>
-
-
-<!-- ============================================================
-     8. ПРИСОЕДИНИТЬСЯ К АРХИВУ
-     ============================================================ -->
-<section class="section--dark" style="padding:var(--spacing-2xl) 0; border-top:1px solid rgba(255,255,255,0.06);">
-    <div class="container container--narrow text-center">
-
-        <h2 class="text-display text-upper mb-lg" style="font-size:clamp(1.4rem,3vw,2.2rem); letter-spacing:0.1em; color:var(--color-bg);">
-            Присоединиться к&nbsp;архиву
-        </h2>
-
-        <!-- Уровни -->
-        <div class="grid grid--4 mb-xl" style="gap:var(--spacing-md);">
-            <?php
-            $levels = [
-                [ 'name' => 'Читатель',  'desc' => 'Доступ к материалам и живому индексу' ],
-                [ 'name' => 'Архивист',  'desc' => 'Голосования, комментарии, сохранение статей' ],
-                [ 'name' => 'Куратор',   'desc' => 'Ранний доступ к дропам и рейтингам' ],
-                [ 'name' => 'Хранитель', 'desc' => 'Полный доступ, влияние на контент' ],
-            ];
-            foreach ( $levels as $level ) : ?>
-                <div style="padding:var(--spacing-lg) var(--spacing-md); border:1px solid rgba(255,255,255,0.1); border-radius:var(--radius-sm);">
-                    <p class="text-mono text-xs text-upper mb-sm" style="color:var(--color-ui); letter-spacing:0.12em;">
-                        <?php echo esc_html( $level['name'] ); ?>
-                    </p>
-                    <p class="text-serif text-sm" style="color:rgba(249,247,244,0.6); line-height:1.5;">
-                        <?php echo esc_html( $level['desc'] ); ?>
-                    </p>
-                </div>
-            <?php endforeach; ?>
-        </div>
-
-        <!-- Форма подписки -->
-        <form class="subscribe-form mb-lg" style="max-width:480px; margin-left:auto; margin-right:auto;" action="#" method="post">
-            <input type="email" name="email" class="form-input" placeholder="Email для подписки" required style="background:rgba(255,255,255,0.05); border-color:rgba(255,255,255,0.2); color:var(--color-bg);">
-            <button type="submit" class="btn btn--primary">Подписаться</button>
-        </form>
-
-        <!-- Соцсети -->
-        <div class="flex flex--center flex--gap">
-            <?php
-            $tg_url = get_option( 'palime_telegram_url' );
-            $vk_url = get_option( 'palime_vk_url' );
-            ?>
-            <?php if ( $tg_url ) : ?>
-                <a href="<?php echo esc_url( $tg_url ); ?>" class="btn btn--sm" style="color:var(--color-bg); border-color:rgba(255,255,255,0.3);" target="_blank" rel="noopener noreferrer">
-                    Telegram
-                </a>
-            <?php endif; ?>
-            <?php if ( $vk_url ) : ?>
-                <a href="<?php echo esc_url( $vk_url ); ?>" class="btn btn--sm" style="color:var(--color-bg); border-color:rgba(255,255,255,0.3);" target="_blank" rel="noopener noreferrer">
-                    VK
-                </a>
-            <?php endif; ?>
-            <?php if ( ! $tg_url && ! $vk_url ) : ?>
-                <span class="text-mono text-xs text-muted" style="color:rgba(249,247,244,0.4);">Ссылки на соцсети настраиваются в панели Palime</span>
-            <?php endif; ?>
-        </div>
-
-    </div>
-</section>
 
 </main>
+
+<!-- JS: вкладки живого индекса -->
+<script>
+(function(){
+    var tabs = document.querySelectorAll('.pa-live-tab');
+    if (!tabs.length) return;
+    tabs.forEach(function(tab){
+        tab.addEventListener('click', function(){
+            tabs.forEach(function(t){ t.classList.remove('is-active'); });
+            tab.classList.add('is-active');
+        });
+    });
+})();
+</script>
 
 <?php get_footer(); ?>

@@ -1,6 +1,288 @@
 /* Palime Archive — pages/home.css */
 
-/* === HERO ГЛАВНОЙ === */
+/* ============================================================
+   ГЕРОЙ — два столбца 50/50, полная высота экрана
+   ============================================================ */
+.pa-hero {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 100vh;
+}
+
+/* --- Левый столбец --- */
+.pa-hero__left {
+    background: #0A0A0A;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.pa-hero__inner {
+    padding: var(--spacing-2xl) var(--spacing-xl) var(--spacing-xl) var(--spacing-xl);
+    max-width: 640px;
+}
+
+.pa-hero__eyebrow {
+    color: rgba(255,255,255,0.35);
+    letter-spacing: 0.15em;
+    margin-bottom: var(--spacing-xl);
+}
+
+.pa-hero__title {
+    font-size: clamp(2.2rem, 5.5vw, 4.5rem);
+    line-height: 1.05;
+    letter-spacing: 0.06em;
+    margin-bottom: var(--spacing-md);
+}
+
+.pa-hero__subtitle {
+    font-size: clamp(1.4rem, 3vw, 2.2rem);
+    color: var(--color-ui);
+    letter-spacing: 0.15em;
+    margin-bottom: var(--spacing-lg);
+}
+
+.pa-hero__meta {
+    color: rgba(255,255,255,0.3);
+    letter-spacing: 0.08em;
+    margin-bottom: var(--spacing-lg);
+    line-height: 1.6;
+}
+
+.pa-hero__desc {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: rgba(255,255,255,0.7);
+    margin-bottom: var(--spacing-xl);
+    max-width: 460px;
+}
+
+.pa-hero__actions {
+    display: flex;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-xl);
+    flex-wrap: wrap;
+}
+
+.pa-hero__footer {
+    color: rgba(255,255,255,0.2);
+    letter-spacing: 0.08em;
+    line-height: 1.6;
+}
+
+/* --- Правый столбец --- */
+.pa-hero__right {
+    position: relative;
+    overflow: hidden;
+    background: #0A0A0A;
+}
+
+.pa-hero__image-link {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.pa-hero__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.pa-hero__placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #0A0A0A;
+}
+
+/* Мета-карточка поверх изображения */
+.pa-hero__exhibit {
+    position: absolute;
+    right: var(--spacing-lg);
+    bottom: var(--spacing-lg);
+    background: rgba(10,10,10,0.92);
+    padding: var(--spacing-md) var(--spacing-lg);
+    border-radius: var(--radius-sm);
+    min-width: 200px;
+}
+
+.pa-hero__exhibit-table {
+    border-collapse: collapse;
+}
+
+.pa-hero__exhibit-table td {
+    padding: 4px 0;
+}
+
+.pa-hero__exhibit-table td:first-child {
+    padding-right: var(--spacing-lg);
+    white-space: nowrap;
+}
+
+
+/* ============================================================
+   ИНДЕКС ПО МЕДИУМУ — карточки разделов
+   ============================================================ */
+.pa-medium-card {
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    transition: box-shadow var(--transition), transform var(--transition);
+    background: var(--color-bg);
+}
+
+.pa-medium-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+.pa-medium-card__image {
+    position: relative;
+    aspect-ratio: 4/3;
+    overflow: hidden;
+    background: var(--color-second);
+}
+
+.pa-medium-card__image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.3s ease;
+}
+
+.pa-medium-card:hover .pa-medium-card__image img {
+    transform: scale(1.03);
+}
+
+.pa-medium-card__placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-second);
+}
+
+/* Красная полоска слева на изображении */
+.pa-medium-card__accent {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 4px;
+    height: 100%;
+    background: var(--color-ui);
+}
+
+.pa-medium-card__body {
+    padding: var(--spacing-md);
+}
+
+.pa-medium-card__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: 8px 0;
+    color: var(--accent);
+    letter-spacing: 0.08em;
+    border-bottom: 1px solid var(--accent);
+    transition: opacity var(--transition);
+}
+
+.pa-medium-card__btn:hover {
+    opacity: 0.7;
+}
+
+
+/* ============================================================
+   АРХИВ НЕ БЛОГ — таблица индексации
+   ============================================================ */
+.pa-index-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.pa-index-table tr {
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+}
+
+.pa-index-table td {
+    padding: var(--spacing-md) 0;
+    vertical-align: top;
+}
+
+.pa-index-table__num {
+    width: 40px;
+    font-size: 0.9rem;
+    opacity: 0.25;
+    padding-right: var(--spacing-md) !important;
+}
+
+.pa-index-table__label {
+    width: 80px;
+    letter-spacing: 0.1em;
+    opacity: 0.5;
+    padding-right: var(--spacing-md) !important;
+    white-space: nowrap;
+}
+
+.pa-index-table__values {
+    line-height: 1.6;
+    opacity: 0.8;
+}
+
+
+/* ============================================================
+   ЖИВОЙ ИНДЕКС — вкладки
+   ============================================================ */
+.pa-live-tab {
+    padding: 10px 20px;
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.12);
+    color: rgba(255,255,255,0.4);
+    cursor: pointer;
+    transition: all var(--transition);
+    letter-spacing: 0.08em;
+    margin-right: -1px;
+}
+
+.pa-live-tab:first-child {
+    border-radius: var(--radius-sm) 0 0 var(--radius-sm);
+}
+
+.pa-live-tab:last-child {
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
+.pa-live-tab:hover {
+    color: rgba(255,255,255,0.7);
+    border-color: rgba(255,255,255,0.25);
+}
+
+.pa-live-tab.is-active {
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+    border-color: rgba(255,255,255,0.25);
+}
+
+/* Строка таблицы при наведении */
+.pa-live-row:hover {
+    background: rgba(255,255,255,0.03);
+}
+
+.pa-live-row:hover a {
+    color: var(--color-ui) !important;
+}
+
+
+/* ============================================================
+   LEGACY — поддержка старых классов
+   ============================================================ */
 .home-hero {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -55,7 +337,7 @@
     color: var(--color-text);
 }
 
-/* === ЖИВОЙ ИНДЕКС === */
+/* === ЖИВОЙ ИНДЕКС — базовые === */
 .live-index {
     border-top: 1px solid rgba(0,0,0,0.08);
 }
@@ -92,45 +374,6 @@
     50%       { opacity: 0.3; }
 }
 
-/* === БЛОК ТЕСТ / РЕКОМЕНДАЦИИ === */
-.test-block {
-    background: var(--color-text);
-    color: #fff;
-    padding: var(--spacing-2xl) 0;
-    text-align: center;
-}
-
-.test-block__question {
-    font-family: var(--font-display);
-    font-size: clamp(1.5rem, 3vw, 2.5rem);
-    margin-bottom: var(--spacing-xl);
-}
-
-.test-block__options {
-    display: flex;
-    gap: var(--spacing-md);
-    justify-content: center;
-    flex-wrap: wrap;
-}
-
-.test-block__option {
-    padding: 12px 28px;
-    border: 1px solid rgba(255,255,255,0.3);
-    color: #fff;
-    font-family: var(--font-mono);
-    font-size: 0.8rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: all var(--transition);
-    border-radius: var(--radius-sm);
-}
-
-.test-block__option:hover {
-    background: var(--accent);
-    border-color: var(--accent);
-}
-
 /* === ДРОПЫ / МАГАЗИН === */
 .drops-preview {
     background: var(--color-second);
@@ -142,13 +385,60 @@
     gap: var(--gutter);
 }
 
+
+/* ============================================================
+   АДАПТИВ
+   ============================================================ */
 @media (max-width: 1024px) {
+    .pa-hero {
+        grid-template-columns: 1fr;
+        min-height: auto;
+    }
+
+    .pa-hero__right {
+        min-height: 50vh;
+    }
+
     .home-hero { grid-template-columns: 1fr; }
     .drops-preview__grid { grid-template-columns: 1fr 1fr; }
+
+    .pa-live-tab {
+        padding: 8px 14px;
+        font-size: 0.65rem;
+    }
 }
 
 @media (max-width: 768px) {
+    .pa-hero__inner {
+        padding: var(--spacing-xl) var(--gutter);
+    }
+
+    .pa-hero__title {
+        font-size: clamp(1.8rem, 8vw, 3rem);
+    }
+
+    .pa-hero__exhibit {
+        right: var(--spacing-md);
+        bottom: var(--spacing-md);
+        padding: var(--spacing-sm) var(--spacing-md);
+    }
+
+    .pa-live-tabs {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
     .home-hero__sections { grid-template-columns: 1fr 1fr; }
     .drops-preview__grid { grid-template-columns: 1fr; }
-    .test-block__options { flex-direction: column; align-items: center; }
+}
+
+@media (max-width: 480px) {
+    .pa-hero__actions {
+        flex-direction: column;
+    }
+
+    .pa-hero__actions .btn {
+        width: 100%;
+        justify-content: center;
+    }
 }
