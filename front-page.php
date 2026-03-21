@@ -424,4 +424,502 @@ document.querySelectorAll('.pa-tab').forEach(function(btn) {
 }
 </style>
 
+<?php
+$editorial = new WP_Query( [
+    'post_type'              => 'article',
+    'posts_per_page'         => 5,
+    'post_status'            => 'publish',
+    'tax_query'              => [ [
+        'taxonomy' => 'status',
+        'field'    => 'slug',
+        'terms'    => 'редакция',
+    ] ],
+    'update_post_meta_cache' => false,
+] );
+?>
+<section style="background:var(--color-bg); padding:80px 0;">
+    <div class="container">
+ 
+        <div style="display:flex; align-items:baseline; justify-content:space-between; margin-bottom:40px;">
+            <h2 style="font-family:'Trajan Pro 3',serif; font-size:clamp(1.6rem,3vw,2.4rem); letter-spacing:0.1em; text-transform:uppercase;">
+                Выбор редакции
+            </h2>
+            <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; opacity:0.4; text-transform:uppercase; letter-spacing:0.08em;">
+                Редакционная подборка недели
+            </span>
+        </div>
+ 
+        <?php if ( $editorial->have_posts() ) :
+            $ed_posts = $editorial->posts;
+            $featured = $ed_posts[0];
+            $rest     = array_slice( $ed_posts, 1, 4 );
+ 
+            // Featured data
+            $f_id      = $featured->ID;
+            $f_terms   = get_the_terms( $f_id, 'section' );
+            $f_medium  = ( $f_terms && ! is_wp_error( $f_terms ) ) ? $f_terms[0]->name : '—';
+            $f_at      = get_the_terms( $f_id, 'article-type' );
+            $f_form    = ( $f_at && ! is_wp_error( $f_at ) ) ? $f_at[0]->name : 'Статья';
+            $f_reading = function_exists( 'get_field' ) ? get_field( 'reading_time', $f_id ) : '';
+            $f_thumb   = get_the_post_thumbnail_url( $f_id, 'large' );
+            $f_author  = get_the_author_meta( 'display_name', $featured->post_author );
+        ?>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:2px;">
+ 
+                <!-- Большая карточка -->
+                <div style="background:var(--color-second); padding:32px;">
+                    <p style="font-family:'IBM Plex Mono',monospace; font-size:10px; color:#D91515; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:8px;">
+                        ВЫПУСК #<?php echo esc_html( str_pad( $f_id, 3, '0', STR_PAD_LEFT ) ); ?>
+                    </p>
+                    <p style="font-family:'IBM Plex Mono',monospace; font-size:11px; opacity:0.4; margin-bottom:12px;">
+                        <?php echo esc_html( $f_medium ); ?> · <?php echo esc_html( $f_form ); ?>
+                    </p>
+                    <h3 style="font-family:'Trajan Pro 3',serif; font-size:clamp(1.4rem,2.5vw,2rem); letter-spacing:0.06em; text-transform:uppercase; margin-bottom:12px;">
+                        <?php echo esc_html( get_the_title( $f_id ) ); ?>
+                    </h3>
+                    <p style="font-family:'IBM Plex Mono',monospace; font-size:11px; opacity:0.5; margin-bottom:20px;">
+                        <?php echo esc_html( $f_author ); ?><?php if ( $f_reading ) : ?> · <?php echo esc_html( $f_reading ); ?> мин<?php endif; ?>
+                    </p>
+                    <?php if ( $f_thumb ) : ?>
+                        <div style="aspect-ratio:16/9; overflow:hidden; margin-bottom:20px;">
+                            <img src="<?php echo esc_url( $f_thumb ); ?>" style="width:100%; height:100%; object-fit:cover;" alt="<?php echo esc_attr( get_the_title( $f_id ) ); ?>">
+                        </div>
+                    <?php endif; ?>
+                    <a href="<?php echo esc_url( get_permalink( $f_id ) ); ?>" style="display:inline-block; padding:10px 24px; background:#D91515; color:#fff; font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; border:none;">
+                        Читать сейчас →
+                    </a>
+                </div>
+ 
+                <!-- Правая сетка 2×2 -->
+                <div style="display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr; gap:2px;">
+                    <?php
+                    $ed_counter = 2;
+                    foreach ( $rest as $ed_post ) :
+                        $ep_id     = $ed_post->ID;
+                        $ep_terms  = get_the_terms( $ep_id, 'section' );
+                        $ep_medium = ( $ep_terms && ! is_wp_error( $ep_terms ) ) ? $ep_terms[0]->name : '—';
+                        $ep_reading = function_exists( 'get_field' ) ? get_field( 'reading_time', $ep_id ) : '';
+                    ?>
+                        <a href="<?php echo esc_url( get_permalink( $ep_id ) ); ?>" style="background:var(--color-second); padding:24px; text-decoration:none; color:inherit; display:flex; flex-direction:column; justify-content:space-between;">
+                            <div>
+                                <p style="font-family:'IBM Plex Mono',monospace; font-size:10px; color:#D91515; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:8px;">
+                                    #<?php echo esc_html( str_pad( $ep_id, 3, '0', STR_PAD_LEFT ) ); ?> · <?php echo esc_html( $ep_medium ); ?>
+                                </p>
+                                <h4 style="font-family:'Trajan Pro 3',serif; font-size:1rem; letter-spacing:0.04em; text-transform:uppercase; margin-bottom:8px;">
+                                    <?php echo esc_html( get_the_title( $ep_id ) ); ?>
+                                </h4>
+                                <p style="font-family:'IBM Plex Mono',monospace; font-size:10px; opacity:0.4;">
+                                    <?php echo esc_html( $ep_medium ); ?><?php if ( $ep_reading ) : ?> · <?php echo esc_html( $ep_reading ); ?> мин<?php endif; ?>
+                                </p>
+                            </div>
+                            <span style="font-family:'IBM Plex Mono',monospace; font-size:14px; color:#D91515; align-self:flex-end;">→</span>
+                        </a>
+                    <?php
+                        $ed_counter++;
+                    endforeach;
+ 
+                    // Fill empty slots
+                    while ( $ed_counter <= 5 ) :
+                    ?>
+                        <div style="background:var(--color-second); padding:24px; opacity:0.15;">
+                            <p style="font-family:'IBM Plex Mono',monospace; font-size:10px;">—</p>
+                        </div>
+                    <?php
+                        $ed_counter++;
+                    endwhile;
+                    ?>
+                </div>
+ 
+            </div>
+        <?php else : ?>
+            <div style="padding:60px; text-align:center; opacity:0.4; font-family:'IBM Plex Mono',monospace; font-size:11px;">
+                РЕДАКЦИЯ ГОТОВИТ ПОДБОРКУ · СЛЕДИТЕ ЗА ОБНОВЛЕНИЯМИ
+            </div>
+        <?php endif; wp_reset_postdata(); ?>
+ 
+    </div>
+</section>
+ 
+ 
+<!-- ============================================================
+     6. НОВОСТИ
+     ============================================================ -->
+<?php
+$section_colors = [
+    'cinema' => '#4DB7FF',
+    'lit'    => '#4A3428',
+    'music'  => '#FF4FA3',
+    'art'    => '#C6A25A',
+];
+ 
+$news = new WP_Query( [
+    'post_type'              => 'news',
+    'posts_per_page'         => 6,
+    'post_status'            => 'publish',
+    'update_post_meta_cache' => false,
+    'update_post_term_cache' => false,
+] );
+?>
+<section style="background:var(--color-second); padding:80px 0;">
+    <div class="container">
+ 
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:32px;">
+            <h2 style="font-family:'Trajan Pro 3',serif; font-size:clamp(1.6rem,3vw,2.4rem); letter-spacing:0.1em; text-transform:uppercase;">
+                Новости
+            </h2>
+            <a href="<?php echo esc_url( home_url( '/news/' ) ); ?>" style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.08em; text-transform:uppercase; color:inherit; text-decoration:none; opacity:0.6;">
+                Все новости →
+            </a>
+        </div>
+ 
+        <?php if ( $news->have_posts() ) : ?>
+            <div>
+                <?php while ( $news->have_posts() ) : $news->the_post();
+                    $n_id    = get_the_ID();
+                    $n_terms = get_the_terms( $n_id, 'section' );
+                    $n_slug  = ( $n_terms && ! is_wp_error( $n_terms ) ) ? $n_terms[0]->slug : '';
+                    $n_name  = ( $n_terms && ! is_wp_error( $n_terms ) ) ? $n_terms[0]->name : '—';
+                    $n_color = isset( $section_colors[ $n_slug ] ) ? $section_colors[ $n_slug ] : '#D91515';
+                ?>
+                    <div style="display:grid; grid-template-columns:80px 1fr 120px 24px; gap:16px; align-items:center; padding:14px 0; border-bottom:1px solid rgba(0,0,0,0.08);">
+                        <span style="background:<?php echo esc_attr( $n_color ); ?>; color:#fff; font-family:'IBM Plex Mono',monospace; font-size:10px; padding:2px 8px; text-transform:uppercase; text-align:center; white-space:nowrap;">
+                            <?php echo esc_html( $n_name ); ?>
+                        </span>
+                        <a href="<?php echo esc_url( get_permalink() ); ?>" style="color:inherit; text-decoration:none; font-family:'EB Garamond',Georgia,serif; font-size:0.95rem;">
+                            <?php echo esc_html( get_the_title() ); ?>
+                        </a>
+                        <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; opacity:0.4;">
+                            <?php echo esc_html( get_the_date( 'd.m.Y' ) ); ?>
+                        </span>
+                        <a href="<?php echo esc_url( get_permalink() ); ?>" style="font-size:14px; color:<?php echo esc_attr( $n_color ); ?>; text-decoration:none;">→</a>
+                    </div>
+                <?php endwhile; ?>
+            </div>
+        <?php else : ?>
+            <div>
+                <?php for ( $i = 0; $i < 6; $i++ ) : ?>
+                    <div style="display:grid; grid-template-columns:80px 1fr 120px 24px; gap:16px; align-items:center; padding:14px 0; border-bottom:1px solid rgba(0,0,0,0.08); opacity:0.15;">
+                        <span style="font-family:'IBM Plex Mono',monospace; font-size:10px;">——</span>
+                        <span style="font-family:'IBM Plex Mono',monospace; font-size:11px;">————————————————</span>
+                        <span style="font-family:'IBM Plex Mono',monospace; font-size:11px;">——.——.————</span>
+                        <span>—</span>
+                    </div>
+                <?php endfor; ?>
+            </div>
+        <?php endif; wp_reset_postdata(); ?>
+ 
+    </div>
+</section>
+ 
+ 
+<!-- ============================================================
+     7. О ПРОЕКТЕ
+     ============================================================ -->
+<section style="background:var(--color-second); padding:80px 0;">
+    <div class="container">
+        <div style="text-align:center; max-width:600px; margin:0 auto;">
+ 
+            <h2 style="font-family:'Trajan Pro 3',serif; font-size:clamp(1.6rem,3vw,2.4rem); letter-spacing:0.1em; text-transform:uppercase; margin-bottom:24px;">
+                О проекте
+            </h2>
+ 
+            <p style="font-family:'EB Garamond',Georgia,serif; font-size:1.05rem; line-height:1.8; opacity:0.85; margin-bottom:32px;">
+                Palime Archive — независимый медиаархив современной культуры. Мы систематизируем кино, литературу, музыку и визуальное искусство с глубиной и вниманием, которых они заслуживают. Каждый материал — это исследование: не рецензия, а разбор. Не мнение, а аргумент. Мы верим, что культура — не развлечение, а способ понимания мира.
+            </p>
+ 
+            <a href="<?php echo esc_url( home_url( '/about/' ) ); ?>" style="display:inline-block; padding:10px 24px; font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.1em; text-transform:uppercase; color:#0A0A0A; border:1px solid #0A0A0A; text-decoration:none; transition:all 0.15s ease;">
+                Подробнее
+            </a>
+ 
+        </div>
+    </div>
+</section>
+ 
+ 
+<!-- ============================================================
+     8. МАГАЗИН — ТЕКУЩАЯ КОЛЛЕКЦИЯ
+     ============================================================ -->
+<?php
+$shop_products = null;
+if ( class_exists( 'WooCommerce' ) ) {
+    $shop_query = new WP_Query( [
+        'post_type'              => 'product',
+        'posts_per_page'         => 4,
+        'post_status'            => 'publish',
+        'update_post_meta_cache' => true,
+    ] );
+    if ( $shop_query->have_posts() ) {
+        $shop_products = $shop_query->posts;
+    }
+    wp_reset_postdata();
+}
+$section_colors_shop = [
+    'cinema' => '#4DB7FF',
+    'lit'    => '#4A3428',
+    'music'  => '#FF4FA3',
+    'art'    => '#C6A25A',
+];
+?>
+<section style="background:#0A0A0A; color:#fff; padding:80px 0;">
+    <div class="container">
+ 
+        <!-- Шапка -->
+        <div style="text-align:center; margin-bottom:40px;">
+            <h2 style="font-family:'Trajan Pro 3',serif; font-size:clamp(1.6rem,3vw,2.4rem); letter-spacing:0.1em; text-transform:uppercase; color:#fff; margin-bottom:12px;">
+                <?php
+                if ( $shop_products ) {
+                    echo esc_html( get_post_meta( $shop_products[0]->ID, 'collection_title', true ) ?: 'ТЕКУЩАЯ КОЛЛЕКЦИЯ' );
+                } else {
+                    echo 'ТЕКУЩАЯ КОЛЛЕКЦИЯ';
+                }
+                ?>
+            </h2>
+            <p style="font-family:'EB Garamond',Georgia,serif; font-size:1rem; color:rgba(255,255,255,0.7); margin-bottom:8px;">
+                Лимитированные артефакты. Одна тема — одна идея.
+            </p>
+            <p style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:rgba(255,255,255,0.35); letter-spacing:0.08em;">
+                КАТАЛОГ: АКТИВЕН · ТИРАЖ: ОГРАНИЧЕН
+            </p>
+        </div>
+ 
+        <!-- О выпуске -->
+        <div style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); padding:24px; margin:32px 0;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#fff; text-transform:uppercase; letter-spacing:0.1em;">О выпуске</span>
+                <span style="font-family:'IBM Plex Mono',monospace; font-size:10px; color:#D91515; text-transform:uppercase; letter-spacing:0.08em;">Активен</span>
+            </div>
+            <div class="pa-shop-about-grid" style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:24px;">
+                <div>
+                    <p style="font-family:'IBM Plex Mono',monospace; font-size:10px; opacity:0.4; text-transform:uppercase; margin-bottom:6px;">Тема</p>
+                    <p style="font-family:'EB Garamond',Georgia,serif; font-size:0.9rem; color:rgba(255,255,255,0.8);">
+                        <?php
+                        if ( $shop_products ) {
+                            $coll_theme = function_exists( 'get_field' ) ? get_field( 'collection_theme', $shop_products[0]->ID ) : '';
+                            echo esc_html( $coll_theme ?: 'Тема коллекции определяется' );
+                        } else {
+                            echo 'Тема коллекции определяется';
+                        }
+                        ?>
+                    </p>
+                </div>
+                <div>
+                    <p style="font-family:'IBM Plex Mono',monospace; font-size:10px; opacity:0.4; text-transform:uppercase; margin-bottom:6px;">Формат</p>
+                    <p style="font-family:'EB Garamond',Georgia,serif; font-size:0.9rem; color:rgba(255,255,255,0.8);">Четыре товара. Четыре раздела.</p>
+                </div>
+                <div>
+                    <p style="font-family:'IBM Plex Mono',monospace; font-size:10px; opacity:0.4; text-transform:uppercase; margin-bottom:6px;">Смысл</p>
+                    <p style="font-family:'EB Garamond',Georgia,serif; font-size:0.9rem; color:rgba(255,255,255,0.8);">Не что купить. А что помнить.</p>
+                </div>
+            </div>
+        </div>
+ 
+        <!-- Товары -->
+        <?php if ( $shop_products ) : ?>
+            <div class="pa-shop-grid" style="display:grid; grid-template-columns:repeat(4,1fr); gap:2px; margin-top:32px;">
+                <?php foreach ( $shop_products as $product_post ) :
+                    $p_id          = $product_post->ID;
+                    $section_slug  = get_post_meta( $p_id, 'section', true );
+                    $accent        = isset( $section_colors_shop[ $section_slug ] ) ? $section_colors_shop[ $section_slug ] : '#D91515';
+                    $price         = get_post_meta( $p_id, '_price', true );
+                    $stock         = get_post_meta( $p_id, '_stock', true );
+                    $stock_total   = get_post_meta( $p_id, '_stock_total', true );
+                    $img           = get_the_post_thumbnail_url( $p_id, 'large' );
+                    $p_section_t   = get_the_terms( $p_id, 'section' );
+                    $p_section_nm  = ( $p_section_t && ! is_wp_error( $p_section_t ) ) ? $p_section_t[0]->name : ( $section_slug ?: '—' );
+                ?>
+                    <div style="background:#111; position:relative;">
+                        <div style="position:absolute; top:12px; left:12px; background:<?php echo esc_attr( $accent ); ?>; color:#fff; font-family:'IBM Plex Mono',monospace; font-size:10px; padding:2px 8px; text-transform:uppercase; z-index:1;">
+                            <?php echo esc_html( $p_section_nm ); ?>
+                        </div>
+                        <div style="aspect-ratio:3/4; overflow:hidden; background:#1a1a1a;">
+                            <?php if ( $img ) : ?>
+                                <img src="<?php echo esc_url( $img ); ?>" style="width:100%; height:100%; object-fit:cover;" alt="<?php echo esc_attr( get_the_title( $p_id ) ); ?>">
+                            <?php else : ?>
+                                <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-family:'IBM Plex Mono',monospace; font-size:11px; opacity:0.2; color:#fff;">ФОТО</div>
+                            <?php endif; ?>
+                        </div>
+                        <div style="padding:16px; border-top:2px solid <?php echo esc_attr( $accent ); ?>;">
+                            <p style="font-family:'IBM Plex Mono',monospace; font-size:10px; opacity:0.5; margin-bottom:6px; color:#fff;">
+                                <?php echo esc_html( $p_id ); ?> · <?php echo esc_html( $stock_total ?: '—' ); ?> / <?php echo esc_html( $stock ?: '—' ); ?>
+                            </p>
+                            <h4 style="font-family:'Trajan Pro 3',serif; font-size:1rem; color:#fff; margin-bottom:8px;">
+                                <?php echo esc_html( get_the_title( $p_id ) ); ?>
+                            </h4>
+                            <p style="font-size:0.8rem; opacity:0.6; margin-bottom:12px; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                                <?php echo esc_html( wp_trim_words( $product_post->post_excerpt ?: $product_post->post_content, 8, '...' ) ); ?>
+                            </p>
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <span style="font-family:'IBM Plex Mono',monospace; font-size:0.9rem; color:<?php echo esc_attr( $accent ); ?>;">
+                                    <?php echo $price ? esc_html( $price ) . ' ₽' : '—'; ?>
+                                </span>
+                                <span style="font-family:'IBM Plex Mono',monospace; font-size:10px; color:#4caf50;">ДОСТУПНО</span>
+                            </div>
+                            <a href="<?php echo esc_url( get_permalink( $p_id ) ); ?>" style="display:block; margin-top:12px; font-family:'IBM Plex Mono',monospace; font-size:11px; color:<?php echo esc_attr( $accent ); ?>; text-transform:uppercase; text-decoration:none;">
+                                Купить →
+                            </a>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        <?php else : ?>
+            <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:2px; margin-top:32px;">
+                <div style="grid-column:1/-1; text-align:center; padding:80px; opacity:0.4; font-family:'IBM Plex Mono',monospace; color:#fff;">
+                    КОЛЛЕКЦИЯ ГОТОВИТСЯ К ЗАПУСКУ
+                </div>
+            </div>
+        <?php endif; ?>
+ 
+        <!-- Кнопка магазина -->
+        <div style="text-align:center; margin-top:40px;">
+            <a href="<?php echo esc_url( home_url( '/shop/' ) ); ?>" style="display:inline-block; padding:12px 32px; font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.1em; text-transform:uppercase; color:#fff; border:1px solid rgba(255,255,255,0.4); text-decoration:none; transition:all 0.15s ease;">
+                В магазин →
+            </a>
+        </div>
+ 
+    </div>
+</section>
+ 
+ 
+<!-- ============================================================
+     9. ПРИСОЕДИНИТЬСЯ К АРХИВУ
+     ============================================================ -->
+<section style="background:#0A0A0A; color:#fff; padding:80px 0;">
+    <div class="container">
+ 
+        <div style="text-align:center; margin-bottom:16px;">
+            <h2 style="font-family:'Trajan Pro 3',serif; font-size:clamp(1.6rem,3vw,2.4rem); letter-spacing:0.1em; text-transform:uppercase; color:#fff; margin-bottom:12px;">
+                Присоединиться к архиву
+            </h2>
+            <p style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:rgba(255,255,255,0.5); letter-spacing:0.08em;">
+                Выберите уровень. Все письма написаны вручную.
+            </p>
+        </div>
+ 
+        <!-- 4 уровня -->
+        <div class="pa-join-grid" style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin:40px 0;">
+            <div style="border:1px solid rgba(255,255,255,0.15); padding:24px; text-align:center;">
+                <p style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#D91515; margin-bottom:8px;">ЧИТАТЕЛЬ</p>
+                <p style="font-size:0.8rem; opacity:0.6; color:#fff;">Доступ к материалам и живому индексу</p>
+            </div>
+            <div style="border:1px solid rgba(255,255,255,0.15); padding:24px; text-align:center;">
+                <p style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#D91515; margin-bottom:8px;">АРХИВИСТ</p>
+                <p style="font-size:0.8rem; opacity:0.6; color:#fff;">Голосование, комментарии, сохранение статей</p>
+            </div>
+            <div style="border:1px solid rgba(255,255,255,0.15); padding:24px; text-align:center;">
+                <p style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#D91515; margin-bottom:8px;">КУРАТОР</p>
+                <p style="font-size:0.8rem; opacity:0.6; color:#fff;">Ранний доступ к дропам и рейтингам</p>
+            </div>
+            <div style="border:1px solid rgba(255,255,255,0.15); padding:24px; text-align:center;">
+                <p style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#D91515; margin-bottom:8px;">ХРАНИТЕЛЬ</p>
+                <p style="font-size:0.8rem; opacity:0.6; color:#fff;">Полный доступ, влияние на контент</p>
+            </div>
+        </div>
+ 
+        <!-- Форма подписки -->
+        <div style="max-width:500px; margin:0 auto; text-align:center;">
+            <form class="subscribe-form" style="display:flex; gap:8px; margin-top:32px;">
+                <input type="email" placeholder="Email для подписки" style="flex:1; padding:12px 16px; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2); color:#fff; font-family:'IBM Plex Mono',monospace; font-size:12px;" required>
+                <button type="submit" style="background:#D91515; color:#fff; border:none; padding:12px 24px; font-family:'IBM Plex Mono',monospace; font-size:12px; text-transform:uppercase; cursor:pointer;">Подписаться</button>
+            </form>
+ 
+            <!-- Соцсети -->
+            <?php
+            $tg = get_option( 'palime_telegram_url' );
+            $vk = get_option( 'palime_vk_url' );
+            if ( $tg || $vk ) :
+            ?>
+                <div style="display:flex; gap:16px; justify-content:center; margin-top:24px;">
+                    <?php if ( $tg ) : ?>
+                        <a href="<?php echo esc_url( $tg ); ?>" style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#fff; opacity:0.5; text-decoration:none;">TELEGRAM →</a>
+                    <?php endif; ?>
+                    <?php if ( $vk ) : ?>
+                        <a href="<?php echo esc_url( $vk ); ?>" style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#fff; opacity:0.5; text-decoration:none;">VK →</a>
+                    <?php endif; ?>
+                </div>
+            <?php endif; ?>
+ 
+            <p style="font-family:'IBM Plex Mono',monospace; font-size:10px; color:rgba(255,255,255,0.3); margin-top:16px; letter-spacing:0.04em;">
+                Никакого спама. Только контекст. Можно отписаться в любой момент.
+            </p>
+        </div>
+ 
+    </div>
+</section>
+ 
+ 
+</main>
+
+Expand 16 hidden lines
+});
+</script>
+ 
+<!-- CSS: адаптив героя и сетки разделов -->
+<!-- CSS: адаптив всех секций -->
+<style>
+@media (max-width: 1024px) {
+    /* Герой: одна колонка */
+
+Expand 12 hidden lines
+        grid-template-columns: 1fr !important;
+        gap: 40px !important;
+    }
+    /* Магазин: товары 2×2 */
+    .pa-shop-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+    /* Присоединиться: 2×2 */
+    .pa-join-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+}
+@media (max-width: 768px) {
+    #main > section:first-child > div:first-child {
+        padding: 40px 16px !important;
+    }
+    #main > section:nth-child(2),
+    #main > section:nth-child(3),
+    #main > section:nth-child(4) {
+    #main > section {
+        padding: 40px 0 !important;
+    }
+    /* Выбор редакции: одна колонка */
+    #main > section:nth-child(5) .container > div:nth-child(2) {
+        grid-template-columns: 1fr !important;
+    }
+    #main > section:nth-child(5) .container > div:nth-child(2) > div:last-child {
+        grid-template-columns: 1fr 1fr !important;
+    }
+    /* Новости: убираем дату и стрелку */
+    #main > section:nth-child(6) .container > div > div {
+        grid-template-columns: 60px 1fr !important;
+    }
+    /* О выпуске: одна колонка */
+    .pa-shop-about-grid {
+        grid-template-columns: 1fr !important;
+    }
+    /* Магазин: одна колонка */
+    .pa-shop-grid {
+        grid-template-columns: 1fr !important;
+    }
+    /* Присоединиться: одна колонка */
+    .pa-join-grid {
+        grid-template-columns: 1fr !important;
+    }
+    /* Форма подписки: колонка */
+    .subscribe-form {
+        flex-direction: column !important;
+    }
+}
+@media (max-width: 480px) {
+    /* Разделы: одна колонка */
+    #main > section:nth-child(2) .container > div:last-child {
+        grid-template-columns: 1fr !important;
+    }
+    /* Выбор редакции: мини-карточки в одну колонку */
+    #main > section:nth-child(5) .container > div:nth-child(2) > div:last-child {
+        grid-template-columns: 1fr !important;
+    }
+}
+</style>
+
 <?php get_footer(); ?>
