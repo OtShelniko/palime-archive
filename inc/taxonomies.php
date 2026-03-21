@@ -23,6 +23,49 @@ function palime_register_taxonomies() {
         'rewrite'      => [ 'slug' => 'type' ],
     ] );
 
+    // Темы / мотивы (смысловые оси) — не путать с monthly-theme (выпуск/магазин).
+    register_taxonomy( 'theme', [ 'article' ], [
+        'label'             => 'Темы / мотивы',
+        'labels'            => [
+            'name'          => 'Темы / мотивы',
+            'singular_name' => 'Тема / мотив',
+            'search_items'  => 'Найти темы',
+            'all_items'     => 'Все темы',
+            'edit_item'     => 'Изменить тему',
+            'update_item'   => 'Обновить тему',
+            'add_new_item'  => 'Добавить тему',
+            'new_item_name' => 'Название темы',
+            'menu_name'     => 'Темы / мотивы',
+        ],
+        'description'       => 'Смысловые оси материала (власть, память, война…). Отдельно от жанра и от темы месяца.',
+        'hierarchical'      => false,
+        'show_in_rest'      => true,
+        'show_admin_column' => true,
+        'rewrite'           => [ 'slug' => 'theme' ],
+    ] );
+
+    // Редакторские подборочные метки — не путать со статусом верификации (status).
+    register_taxonomy( 'editorial-flag', [ 'article' ], [
+        'label'             => 'Редакторские метки',
+        'labels'            => [
+            'name'          => 'Редакторские метки',
+            'singular_name' => 'Метка',
+            'search_items'  => 'Найти метки',
+            'all_items'     => 'Все метки',
+            'edit_item'     => 'Изменить метку',
+            'update_item'   => 'Обновить метку',
+            'add_new_item'  => 'Добавить метку',
+            'new_item_name' => 'Название метки',
+            'menu_name'     => 'Редакторские метки',
+        ],
+        'description'       => 'Подборки редакции: канон, essential, спорное и т.д. Статус проверки материала — в таксономии «Статус».',
+        'hierarchical'      => false,
+        'show_in_rest'      => true,
+        'show_admin_column' => true,
+        'rest_base'         => 'palime-editorial-flag',
+        'rewrite'           => [ 'slug' => 'editorial' ],
+    ] );
+
     register_taxonomy( 'monthly-theme', [ 'article', 'product' ], [
         'label'        => 'Тема месяца',
         'hierarchical' => false,

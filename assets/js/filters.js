@@ -15,16 +15,17 @@
 
         // ── Состояние ────────────────────────────────────────
         state: {
-            section:  '',
-            person:   '',
-            era:      '',
-            genre:    '',
-            type:     '',
-            status:   '',
-            search:   '',
-            sort:     'date',
-            page:     1,
-            loading:  false,
+            section:         '',
+            person:          '',
+            era:             '',
+            theme:           '',
+            editorial_flag:  '',
+            type:            '',
+            status:          '',
+            search:          '',
+            sort:            'date',
+            page:            1,
+            loading:         false,
         },
 
         // ── DOM-ссылки ────────────────────────────────────────
@@ -50,6 +51,7 @@
             this.bindReset();
             this.bindPagination();
             this.readUrlParams();
+            this.updateActiveTags();
             this.fetch();
         },
 
@@ -57,7 +59,7 @@
         // БИНДИНГИ
         // =========================================================
 
-        /** Теги-кнопки (Раздел, Тип, Эпоха, Жанр, Статус) */
+        /** Теги-кнопки (раздел, тип, темы, эпоха, статус, редакторские метки) */
         bindTagFilters() {
             document.querySelectorAll('.pa-filter-tag[data-filter]').forEach(btn => {
                 btn.addEventListener('click', () => {
@@ -180,7 +182,7 @@
 
             btn.addEventListener('click', () => {
                 Object.assign(this.state, {
-                    section: '', person: '', era: '', genre: '',
+                    section: '', person: '', era: '', theme: '', editorial_flag: '',
                     type: '', status: '', search: '', sort: 'date', page: 1,
                 });
 
@@ -226,9 +228,15 @@
         readUrlParams() {
             var params = new URLSearchParams(window.location.search);
             var map    = {
-                section: 'section', person: 'person', era: 'era',
-                genre: 'genre',     type: 'type',     status: 'status',
-                s: 'search',        sort: 'sort',
+                section: 'section',
+                person: 'person',
+                era: 'era',
+                theme: 'theme',
+                editorial_flag: 'editorial_flag',
+                type: 'type',
+                status: 'status',
+                q: 'search',
+                sort: 'sort',
             };
 
             Object.keys(map).forEach(urlKey => {
@@ -238,8 +246,14 @@
 
                 this.state[stateKey] = val;
 
-                var tag = document.querySelector(`.pa-filter-tag[data-filter="${stateKey}"][data-value="${val}"]`);
-                if (tag) { tag.classList.add('is-active'); tag.setAttribute('aria-pressed', 'true'); }
+                var esc = (typeof CSS !== 'undefined' && CSS.escape) ? CSS.escape(val) : String(val).replace(/\\/g, '\\\\');
+                var tag = document.querySelector('.pa-filter-tag[data-filter="' + stateKey + '"][data-value="' + esc + '"]');
+                if (tag) {
+                    tag.classList.add('is-active');
+                    tag.setAttribute('aria-pressed', 'true');
+                    var details = tag.closest('details.pa-filter-details');
+                    if (details) details.open = true;
+                }
 
                 if (stateKey === 'search') {
                     var si = document.querySelector('#pa-archive-search');
@@ -255,6 +269,16 @@
                     if (st) st.classList.add('is-active');
                 }
             });
+
+            // Старые закладки с ?s= (WordPress search)
+            if (!this.state.search) {
+                var legacy = params.get('s');
+                if (legacy) {
+                    this.state.search = legacy;
+                    var siLegacy = document.querySelector('#pa-archive-search');
+                    if (siLegacy) siLegacy.value = legacy;
+                }
+            }
         },
 
         // =========================================================
@@ -274,17 +298,19 @@
             var nonce   = (window.Palime && window.Palime.data) ? window.Palime.data.nonce   : '';
 
             var params = new URLSearchParams({
-                action:  'palime_filter_archive',
-                nonce:   nonce,
-                section: this.state.section,
-                person:  this.state.person,
-                era:     this.state.era,
-                genre:   this.state.genre,
-                type:    this.state.type,
-                status:  this.state.status,
-                search:  this.state.search,
-                sort:    this.state.sort,
-                paged:   this.state.page,
+                action:           'palime_filter_archive',
+                nonce:            nonce,
+                post_type:        'article',
+                section:          this.state.section,
+                person:           this.state.person,
+                era:              this.state.era,
+                theme:            this.state.theme,
+                editorial_flag:   this.state.editorial_flag,
+                type:             this.state.type,
+                status:           this.state.status,
+                search:           this.state.search,
+                sort:             this.state.sort,
+                paged:            this.state.page,
             });
 
             fetch(ajaxUrl, {
@@ -434,18 +460,30 @@
             container.innerHTML = '';
 
             var labels = {
-                section: 'Раздел',  person: 'Персона', era:    'Эпоха',
-                genre:   'Жанр',    type:   'Тип',      status: 'Статус',
-                search:  'Поиск',
+                section:         'Раздел',
+                person:          'Персона',
+                era:             'Эпоха',
+                theme:           'Тема',
+                editorial_flag:  'Метка',
+                type:            'Тип',
+                status:          'Статус',
+                search:          'Поиск',
             };
 
             Object.keys(labels).forEach(key => {
                 if (!this.state[key]) return;
 
                 var label = labels[key];
+                var displayVal = this.state[key];
+                if (key !== 'search') {
+                    var activeBtn = document.querySelector('.pa-filter-tag.is-active[data-filter="' + key + '"]');
+                    if (activeBtn && activeBtn.textContent) {
+                        displayVal = activeBtn.textContent.trim();
+                    }
+                }
                 var pill  = document.createElement('span');
                 pill.className = 'pa-active-filter';
-                pill.innerHTML = label + ': ' + this._esc(this.state[key])
+                pill.innerHTML = label + ': ' + this._esc(displayVal)
                     + '<span class="pa-active-filter__remove" role="button" tabindex="0" aria-label="Убрать">×</span>';
 
                 var removeBtn = pill.querySelector('[role="button"]');

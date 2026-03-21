@@ -38,8 +38,12 @@ $max_qty     = (int) ( $product->get_meta( '_stock' ) ?: $product->get_stock_qua
 $stock_qty   = (int) $product->get_stock_quantity();
 $sold        = $max_qty - max( $stock_qty, 0 );
 
-// ACF
-$section     = function_exists( 'get_field' ) ? get_field( 'section', $product_id )      : '';
+// Раздел: ACF `section` — канон; meta `_palime_section` синхронизируется в inc/woocommerce.php
+$section = function_exists( 'get_field' ) ? get_field( 'section', $product_id ) : '';
+if ( ! $section ) {
+    $section = get_post_meta( $product_id, '_palime_section', true );
+}
+$section = is_string( $section ) ? $section : '';
 $is_archived = function_exists( 'get_field' ) ? get_field( 'is_archived', $product_id )  : false;
 $issue_num   = function_exists( 'get_field' ) ? get_field( 'issue_number', $product_id ) : '';
 

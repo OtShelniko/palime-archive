@@ -20,12 +20,15 @@ function palime_register_rest_routes() {
         'callback'            => 'palime_api_get_articles',
         'permission_callback' => '__return_true',
         'args' => [
-            'section' => [ 'sanitize_callback' => 'sanitize_text_field' ],
-            'person'  => [ 'sanitize_callback' => 'sanitize_text_field' ],
-            'era'     => [ 'sanitize_callback' => 'sanitize_text_field' ],
-            'genre'   => [ 'sanitize_callback' => 'sanitize_text_field' ],
-            'per_page'=> [ 'default' => 12, 'sanitize_callback' => 'absint' ],
-            'page'    => [ 'default' => 1,  'sanitize_callback' => 'absint' ],
+            'section'         => [ 'sanitize_callback' => 'sanitize_text_field' ],
+            'person'          => [ 'sanitize_callback' => 'sanitize_text_field' ],
+            'era'             => [ 'sanitize_callback' => 'sanitize_text_field' ],
+            'theme'           => [ 'sanitize_callback' => 'sanitize_text_field' ],
+            'type'            => [ 'sanitize_callback' => 'sanitize_text_field' ],
+            'status'          => [ 'sanitize_callback' => 'sanitize_text_field' ],
+            'editorial_flag'  => [ 'sanitize_callback' => 'sanitize_text_field' ],
+            'per_page'        => [ 'default' => 12, 'sanitize_callback' => 'absint' ],
+            'page'            => [ 'default' => 1,  'sanitize_callback' => 'absint' ],
         ],
     ] );
 
@@ -64,17 +67,32 @@ function palime_api_get_articles( WP_REST_Request $request ) {
         'posts_per_page' => $request['per_page'],
         'paged'          => $request['page'],
         'post_status'    => 'publish',
-        'tax_query'      => [ 'relation' => 'AND' ],
     ];
 
-    foreach ( [ 'section', 'person', 'era', 'genre' ] as $tax ) {
-        if ( ! empty( $request[ $tax ] ) ) {
-            $args['tax_query'][] = [
-                'taxonomy' => $tax,
+    $tax_query = [ 'relation' => 'AND' ];
+
+    $param_to_taxonomy = [
+        'section'        => 'section',
+        'person'         => 'person',
+        'era'            => 'era',
+        'theme'          => 'theme',
+        'type'           => 'article-type',
+        'status'         => 'status',
+        'editorial_flag' => 'editorial-flag',
+    ];
+
+    foreach ( $param_to_taxonomy as $param => $taxonomy ) {
+        if ( ! empty( $request[ $param ] ) ) {
+            $tax_query[] = [
+                'taxonomy' => $taxonomy,
                 'field'    => 'slug',
-                'terms'    => $request[ $tax ],
+                'terms'    => $request[ $param ],
             ];
         }
+    }
+
+    if ( count( $tax_query ) > 1 ) {
+        $args['tax_query'] = $tax_query;
     }
 
     $query = new WP_Query( $args );

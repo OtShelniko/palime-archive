@@ -32,6 +32,24 @@ function palime_get_current_section() {
 }
 
 /**
+ * URL архива рейтингов (CPT ranking). После включения has_archive — канонический /rankings/.
+ *
+ * @param string $section_slug Опционально — добавить ?section= (slug таксономии section).
+ * @return string
+ */
+function palime_get_rankings_archive_url( $section_slug = '' ) {
+    $base = get_post_type_archive_link( 'ranking' );
+    if ( ! $base ) {
+        $base = home_url( '/rankings/' );
+    }
+    $section_slug = is_string( $section_slug ) ? sanitize_title( $section_slug ) : '';
+    if ( $section_slug ) {
+        return add_query_arg( 'section', $section_slug, $base );
+    }
+    return $base;
+}
+
+/**
  * Получить миниатюру с фолбэком на placeholder.
  *
  * @param int    $post_id

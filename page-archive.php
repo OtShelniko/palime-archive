@@ -58,11 +58,12 @@ $total_disputed = $disputed_query->found_posts;
 wp_reset_postdata();
 
 // ── Термины для тег-фильтров ──────────────────────────────
-$terms_section  = get_terms( [ 'taxonomy' => 'section',      'hide_empty' => true ] );
-$terms_type     = get_terms( [ 'taxonomy' => 'article-type', 'hide_empty' => true ] );
-$terms_era      = get_terms( [ 'taxonomy' => 'era',          'hide_empty' => true ] );
-$terms_genre    = get_terms( [ 'taxonomy' => 'genre',        'hide_empty' => true ] );
-$terms_status   = get_terms( [ 'taxonomy' => 'status',       'hide_empty' => true ] );
+$terms_section  = get_terms( [ 'taxonomy' => 'section',          'hide_empty' => true ] );
+$terms_type     = get_terms( [ 'taxonomy' => 'article-type',   'hide_empty' => true ] );
+$terms_theme    = get_terms( [ 'taxonomy' => 'theme',          'hide_empty' => true ] );
+$terms_era      = get_terms( [ 'taxonomy' => 'era',            'hide_empty' => true ] );
+$terms_editorial = get_terms( [ 'taxonomy' => 'editorial-flag', 'hide_empty' => true ] );
+$terms_status   = get_terms( [ 'taxonomy' => 'status',         'hide_empty' => true ] );
 
 // Имена разделов для CSS-класса бейджа
 $section_css = [
@@ -196,34 +197,16 @@ $current_month = $months_ru[ (int) date( 'n' ) ] . ' ' . date( 'Y' );
             </div>
         </div>
 
-        <!-- ЭПОХА -->
-        <?php if ( $terms_era && ! is_wp_error( $terms_era ) ) : ?>
+        <!-- ТЕМЫ / МОТИВЫ -->
+        <?php if ( $terms_theme && ! is_wp_error( $terms_theme ) ) : ?>
         <div class="pa-filter-group">
-            <span class="pa-filter-group__label">Эпоха</span>
-            <div class="pa-filter-tags" data-filter-group="era">
-                <?php foreach ( $terms_era as $t ) : ?>
+            <span class="pa-filter-group__label">Темы</span>
+            <div class="pa-filter-tags pa-filter-tags--theme" data-filter-group="theme">
+                <?php foreach ( $terms_theme as $t ) : ?>
                     <button
                         type="button"
                         class="pa-filter-tag"
-                        data-filter="era"
-                        data-value="<?php echo esc_attr( $t->slug ); ?>"
-                        aria-pressed="false"
-                    ><?php echo esc_html( $t->name ); ?></button>
-                <?php endforeach; ?>
-            </div>
-        </div>
-        <?php endif; ?>
-
-        <!-- ЖАНР -->
-        <?php if ( $terms_genre && ! is_wp_error( $terms_genre ) ) : ?>
-        <div class="pa-filter-group">
-            <span class="pa-filter-group__label">Жанр</span>
-            <div class="pa-filter-tags" data-filter-group="genre">
-                <?php foreach ( $terms_genre as $t ) : ?>
-                    <button
-                        type="button"
-                        class="pa-filter-tag"
-                        data-filter="genre"
+                        data-filter="theme"
                         data-value="<?php echo esc_attr( $t->slug ); ?>"
                         aria-pressed="false"
                     ><?php echo esc_html( $t->name ); ?></button>
@@ -253,6 +236,42 @@ $current_month = $months_ru[ (int) date( 'n' ) ] . ' ' . date( 'Y' );
                 <?php endif; ?>
             </div>
         </div>
+
+        <!-- РЕДАКТОРСКИЕ МЕТКИ (вторичный блок) -->
+        <?php if ( $terms_editorial && ! is_wp_error( $terms_editorial ) ) : ?>
+        <details class="pa-filter-details">
+            <summary class="pa-filter-details__summary">Редакторские метки</summary>
+            <div class="pa-filter-tags pa-filter-tags--nested" data-filter-group="editorial_flag">
+                <?php foreach ( $terms_editorial as $t ) : ?>
+                    <button
+                        type="button"
+                        class="pa-filter-tag"
+                        data-filter="editorial_flag"
+                        data-value="<?php echo esc_attr( $t->slug ); ?>"
+                        aria-pressed="false"
+                    ><?php echo esc_html( $t->name ); ?></button>
+                <?php endforeach; ?>
+            </div>
+        </details>
+        <?php endif; ?>
+
+        <!-- ЭПОХА (вторичный / по данным) -->
+        <?php if ( $terms_era && ! is_wp_error( $terms_era ) ) : ?>
+        <details class="pa-filter-details">
+            <summary class="pa-filter-details__summary">Эпоха</summary>
+            <div class="pa-filter-tags pa-filter-tags--nested" data-filter-group="era">
+                <?php foreach ( $terms_era as $t ) : ?>
+                    <button
+                        type="button"
+                        class="pa-filter-tag"
+                        data-filter="era"
+                        data-value="<?php echo esc_attr( $t->slug ); ?>"
+                        aria-pressed="false"
+                    ><?php echo esc_html( $t->name ); ?></button>
+                <?php endforeach; ?>
+            </div>
+        </details>
+        <?php endif; ?>
 
         <!-- Сброс всех фильтров -->
         <button type="button" class="pa-filter-reset" id="pa-filter-reset">

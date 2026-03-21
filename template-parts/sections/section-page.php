@@ -91,9 +91,11 @@ if ( $section_slug ) {
 	];
 }
 
-$archive_url   = $section_slug ? home_url( '/archive/?section=' . rawurlencode( $section_slug ) ) : home_url( '/archive/' );
-$news_url      = $section_slug ? home_url( '/news/?section=' . rawurlencode( $section_slug ) ) : home_url( '/news/' );
-$rankings_url  = $section_slug ? home_url( '/rankings/?section=' . rawurlencode( $section_slug ) ) : home_url( '/rankings/' );
+$archive_url  = $section_slug ? home_url( '/archive/?section=' . rawurlencode( $section_slug ) ) : home_url( '/archive/' );
+$news_url     = $section_slug ? home_url( '/news/?section=' . rawurlencode( $section_slug ) ) : home_url( '/news/' );
+$rankings_url = function_exists( 'palime_get_rankings_archive_url' )
+	? palime_get_rankings_archive_url( $section_slug )
+	: ( $section_slug ? home_url( '/rankings/?section=' . rawurlencode( $section_slug ) ) : home_url( '/rankings/' ) );
 
 // --- Hero: фоновое изображение справа (последняя статья раздела или заглушка) ---
 $hero_thumb_url = is_string( $hero_image_url ) ? esc_url_raw( $hero_image_url ) : '';
@@ -621,12 +623,17 @@ $monthly_query = new WP_Query(
 				if ( function_exists( 'wc_get_products' ) && $section_slug ) {
 					$drop_products = wc_get_products(
 						[
-							'limit'    => 1,
-							'status'   => 'publish',
-							'orderby'  => 'date',
-							'order'    => 'DESC',
-							'meta_key' => '_palime_section',
-							'meta_value' => $section_slug,
+							'limit'      => 1,
+							'status'     => 'publish',
+							'orderby'    => 'date',
+							'order'      => 'DESC',
+							'meta_query' => [
+								[
+									'key'     => '_palime_section',
+									'value'   => $section_slug,
+									'compare' => '=',
+								],
+							],
 						]
 					);
 					if ( ! empty( $drop_products ) ) {
@@ -647,7 +654,7 @@ $monthly_query = new WP_Query(
 						<?php esc_html_e( 'Магазин Palime', 'palime-archive' ); ?>
 					</h2>
 					<p class="text-mono text-xs mb-lg" style="opacity:.45;">
-						<?php esc_html_e( 'Товар с мета _palime_section или WooCommerce не подключён.', 'palime-archive' ); ?>
+						<?php esc_html_e( 'Товар с разделом (ACF section → _palime_section) или WooCommerce не подключён.', 'palime-archive' ); ?>
 					</p>
 				<?php endif; ?>
 

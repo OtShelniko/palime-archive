@@ -32,10 +32,46 @@ add_filter( 'loop_shop_columns', function() {
 // КАСТОМНЫЕ ПОЛЯ ПРОДУКТОВ (через ACF)
 // =========================================================
 // Поля добавляются через ACF UI и сохраняются в acf-json/:
-// — section (раздел: cinema / lit / music / art)
+// — section (раздел: cinema / lit / music / art) — канонический источник для темы
 // — monthly_theme (тема месяца)
 // — issue_number (номер выпуска)
 // — is_archived (bool — товар архивирован после распродажи)
+//
+// Значение ACF `section` дублируется в post meta `_palime_section` для запросов WC API / блоков разделов.
+
+/**
+ * Синхронизация ACF section → meta _palime_section (для wc_get_products и единообразия).
+ *
+ * @param int $post_id ID товара.
+ */
+function palime_sync_product_section_meta( $post_id ) {
+    if ( (int) $post_id <= 0 ) {
+        return;
+    }
+    if ( get_post_type( $post_id ) !== 'product' ) {
+        return;
+    }
+    if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+        return;
+    }
+    if ( ! function_exists( 'get_field' ) ) {
+        return;
+    }
+    $section = get_field( 'section', $post_id );
+    if ( $section !== null && $section !== '' && false !== $section ) {
+        update_post_meta( $post_id, '_palime_section', sanitize_text_field( (string) $section ) );
+    } else {
+        delete_post_meta( $post_id, '_palime_section' );
+    }
+}
+
+add_action( 'acf/save_post', function ( $post_id ) {
+    palime_sync_product_section_meta( (int) $post_id );
+}, 20 );
+
+add_action( 'save_post_product', function ( $post_id ) {
+    palime_sync_product_section_meta( (int) $post_id );
+}, 25 );
 
 /**
  * Архивировать товар после полной распродажи.

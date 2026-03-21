@@ -256,6 +256,43 @@
 .pa-filter-tag--music.is-active   { background: #FF4FA3; border-color: #FF4FA3; color: #fff; }
 .pa-filter-tag--art.is-active     { background: #C6A25A; border-color: #C6A25A; color: #000; }
 
+/* Вторичные фильтры: редакторские метки, эпоха */
+.pa-filter-details {
+    margin-bottom: 22px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid rgba(0,0,0,.07);
+}
+
+.pa-filter-details__summary {
+    cursor: pointer;
+    font-family: var(--font-mono);
+    font-size: .58rem;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: rgba(0,0,0,.35);
+    margin-bottom: 10px;
+    list-style: none;
+}
+
+.pa-filter-details__summary::-webkit-details-marker {
+    display: none;
+}
+
+.pa-filter-details[open] .pa-filter-details__summary {
+    color: rgba(0,0,0,.55);
+}
+
+.pa-filter-tags--nested {
+    margin-top: 4px;
+}
+
+.pa-filter-tags--theme {
+    max-height: 220px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0,0,0,.15) transparent;
+}
+
 /* Кнопка сброса */
 .pa-filter-reset {
     width: 100%;

@@ -65,21 +65,26 @@ function palime_handle_filter_archive() {
         $post_type = 'article';
     }
 
-    $section = sanitize_text_field( $req['section'] ?? '' );
-    $person  = sanitize_text_field( $req['person']  ?? '' );
-    $era     = sanitize_text_field( $req['era']     ?? '' );
-    $genre   = sanitize_text_field( $req['genre']   ?? '' );
-    $type    = sanitize_text_field( $req['type']    ?? '' );
-    $status  = sanitize_text_field( $req['status']  ?? '' );
-    $search  = sanitize_text_field( $req['search']  ?? '' );
-    $sort    = sanitize_text_field( $req['sort']    ?? 'date' );
-    $paged   = max( 1, (int) ( $req['paged'] ?? 1 ) );
+    $section         = sanitize_text_field( $req['section'] ?? '' );
+    $person          = sanitize_text_field( $req['person'] ?? '' );
+    $era             = sanitize_text_field( $req['era'] ?? '' );
+    $type            = sanitize_text_field( $req['type'] ?? '' );
+    $status          = sanitize_text_field( $req['status'] ?? '' );
+    $theme           = sanitize_text_field( $req['theme'] ?? '' );
+    $editorial_flag  = sanitize_text_field( $req['editorial_flag'] ?? '' );
+    $search          = sanitize_text_field( $req['search'] ?? $req['q'] ?? '' );
+    $sort            = sanitize_text_field( $req['sort'] ?? 'date' );
+    $paged           = max( 1, (int) ( $req['paged'] ?? 1 ) );
 
     // Сортировка
     $orderby = 'date';
     $order   = 'DESC';
-    if ( $sort === 'popular' )              $orderby = 'comment_count';
-    if ( $sort === 'relevance' && $search ) $orderby = 'relevance';
+    if ( $sort === 'popular' ) {
+        $orderby = 'comment_count';
+    }
+    if ( $sort === 'relevance' && $search ) {
+        $orderby = 'relevance';
+    }
 
     $args = [
         'post_type'              => $post_type,
@@ -88,18 +93,45 @@ function palime_handle_filter_archive() {
         'post_status'            => 'publish',
         'orderby'                => $orderby,
         'order'                  => $order,
-        'tax_query'              => [ 'relation' => 'AND' ],
         'update_post_meta_cache' => false,
         'update_post_term_cache' => false,
     ];
 
-    if ( $search )  $args['s'] = $search;
-    if ( $section ) $args['tax_query'][] = [ 'taxonomy' => 'section',      'field' => 'slug', 'terms' => $section ];
-    if ( $person )  $args['tax_query'][] = [ 'taxonomy' => 'person',       'field' => 'slug', 'terms' => $person ];
-    if ( $era )     $args['tax_query'][] = [ 'taxonomy' => 'era',          'field' => 'slug', 'terms' => $era ];
-    if ( $genre )   $args['tax_query'][] = [ 'taxonomy' => 'genre',        'field' => 'slug', 'terms' => $genre ];
-    if ( $type )    $args['tax_query'][] = [ 'taxonomy' => 'article-type', 'field' => 'slug', 'terms' => $type ];
-    if ( $status )  $args['tax_query'][] = [ 'taxonomy' => 'status',       'field' => 'slug', 'terms' => $status ];
+    if ( $search ) {
+        $args['s'] = $search;
+    }
+
+    $tax_query = [ 'relation' => 'AND' ];
+
+    if ( $section ) {
+        $tax_query[] = [ 'taxonomy' => 'section', 'field' => 'slug', 'terms' => $section ];
+    }
+    if ( $status ) {
+        $tax_query[] = [ 'taxonomy' => 'status', 'field' => 'slug', 'terms' => $status ];
+    }
+
+    // Таксономии только для статей (theme, editorial-flag, era, article-type, person).
+    if ( $post_type === 'article' ) {
+        if ( $person ) {
+            $tax_query[] = [ 'taxonomy' => 'person', 'field' => 'slug', 'terms' => $person ];
+        }
+        if ( $type ) {
+            $tax_query[] = [ 'taxonomy' => 'article-type', 'field' => 'slug', 'terms' => $type ];
+        }
+        if ( $theme ) {
+            $tax_query[] = [ 'taxonomy' => 'theme', 'field' => 'slug', 'terms' => $theme ];
+        }
+        if ( $editorial_flag ) {
+            $tax_query[] = [ 'taxonomy' => 'editorial-flag', 'field' => 'slug', 'terms' => $editorial_flag ];
+        }
+        if ( $era ) {
+            $tax_query[] = [ 'taxonomy' => 'era', 'field' => 'slug', 'terms' => $era ];
+        }
+    }
+
+    if ( count( $tax_query ) > 1 ) {
+        $args['tax_query'] = $tax_query;
+    }
 
     $type_labels = [
         'author'    => 'про автора',
