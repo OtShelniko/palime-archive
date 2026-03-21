@@ -152,7 +152,13 @@ $current_month = $months_ru[ (int) date( 'n' ) ] . ' ' . date( 'Y' );
                         data-value="<?php echo esc_attr( $t->slug ); ?>"
                         aria-pressed="false"
                     ><?php echo esc_html( $t->name ); ?></button>
-                <?php endforeach; endif; ?>
+                <?php endforeach;
+                else : ?>
+                    <button type="button" class="pa-filter-tag pa-filter-tag--lg pa-filter-tag--cinema" data-filter="section" data-value="cinema" aria-pressed="false">Кино</button>
+                    <button type="button" class="pa-filter-tag pa-filter-tag--lg pa-filter-tag--lit" data-filter="section" data-value="lit" aria-pressed="false">Литература</button>
+                    <button type="button" class="pa-filter-tag pa-filter-tag--lg pa-filter-tag--music" data-filter="section" data-value="music" aria-pressed="false">Музыка</button>
+                    <button type="button" class="pa-filter-tag pa-filter-tag--lg pa-filter-tag--art" data-filter="section" data-value="art" aria-pressed="false">Искусство</button>
+                <?php endif; ?>
             </div>
         </div>
 
@@ -198,11 +204,16 @@ $current_month = $months_ru[ (int) date( 'n' ) ] . ' ' . date( 'Y' );
         </div>
 
         <!-- ТЕМЫ / МОТИВЫ -->
-        <?php if ( $terms_theme && ! is_wp_error( $terms_theme ) ) : ?>
+        <?php if ( $terms_theme && ! is_wp_error( $terms_theme ) ) :
+            // Сортируем по количеству записей (популярные первыми)
+            usort( $terms_theme, function( $a, $b ) { return $b->count - $a->count; } );
+            $themes_visible = array_slice( $terms_theme, 0, 8 );
+            $themes_rest    = array_slice( $terms_theme, 8 );
+        ?>
         <div class="pa-filter-group">
             <span class="pa-filter-group__label">Темы</span>
             <div class="pa-filter-tags pa-filter-tags--theme" data-filter-group="theme">
-                <?php foreach ( $terms_theme as $t ) : ?>
+                <?php foreach ( $themes_visible as $t ) : ?>
                     <button
                         type="button"
                         class="pa-filter-tag"
@@ -212,6 +223,22 @@ $current_month = $months_ru[ (int) date( 'n' ) ] . ' ' . date( 'Y' );
                     ><?php echo esc_html( $t->name ); ?></button>
                 <?php endforeach; ?>
             </div>
+            <?php if ( $themes_rest ) : ?>
+            <details class="pa-filter-details pa-filter-details--inline">
+                <summary class="pa-filter-details__summary">Ещё <?php echo count( $themes_rest ); ?></summary>
+                <div class="pa-filter-tags pa-filter-tags--nested" data-filter-group="theme">
+                    <?php foreach ( $themes_rest as $t ) : ?>
+                        <button
+                            type="button"
+                            class="pa-filter-tag"
+                            data-filter="theme"
+                            data-value="<?php echo esc_attr( $t->slug ); ?>"
+                            aria-pressed="false"
+                        ><?php echo esc_html( $t->name ); ?></button>
+                    <?php endforeach; ?>
+                </div>
+            </details>
+            <?php endif; ?>
         </div>
         <?php endif; ?>
 
