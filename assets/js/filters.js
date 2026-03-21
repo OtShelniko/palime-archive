@@ -116,6 +116,7 @@
                                 PalimeFilters.state.person = person.slug;
                                 PalimeFilters.state.page   = 1;
                                 input.value = person.name;
+                                input.dataset.resolvedName = person.name;
                                 suggestions.classList.remove('is-open');
                                 PalimeFilters.updateActiveTags();
                                 PalimeFilters.fetch();
@@ -132,11 +133,33 @@
 
             input.addEventListener('keydown', function(e) {
                 if (e.key === 'Enter') {
-                    PalimeFilters.state.person = input.value.trim();
-                    PalimeFilters.state.page   = 1;
-                    suggestions.classList.remove('is-open');
-                    PalimeFilters.updateActiveTags();
-                    PalimeFilters.fetch();
+                    e.preventDefault();
+                    var q = input.value.trim();
+                    if (!q) return;
+
+                    // If person was already resolved via autocomplete click, just apply
+                    if (PalimeFilters.state.person && input.value === input.dataset.resolvedName) {
+                        suggestions.classList.remove('is-open');
+                        return;
+                    }
+
+                    // Resolve typed name to slug via REST before applying filter
+                    var restUrl = window.Palime && window.Palime.data ? window.Palime.data.restUrl : '/wp-json/';
+                    fetch(restUrl + 'palime/v1/persons?search=' + encodeURIComponent(q))
+                        .then(function(r) { return r.json(); })
+                        .then(function(data) {
+                            suggestions.classList.remove('is-open');
+                            if (data && data.length) {
+                                PalimeFilters.state.person = data[0].slug;
+                                input.value = data[0].name;
+                                input.dataset.resolvedName = data[0].name;
+                                PalimeFilters.state.page = 1;
+                                PalimeFilters.updateActiveTags();
+                                PalimeFilters.fetch();
+                            }
+                            // No match — do nothing, let user refine their input
+                        })
+                        .catch(function() { suggestions.classList.remove('is-open'); });
                 }
                 if (e.key === 'Escape') suggestions.classList.remove('is-open');
             });

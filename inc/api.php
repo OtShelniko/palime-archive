@@ -178,7 +178,7 @@ function palime_api_get_persons( WP_REST_Request $request ) {
 
     $terms = get_terms( [
         'taxonomy'   => 'person',
-        'hide_empty' => false,
+        'hide_empty' => true,
         'search'     => $search,
         'number'     => 10,
     ] );
