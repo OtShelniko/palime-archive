@@ -55,32 +55,50 @@ add_action( 'wp_ajax_nopriv_palime_filter_archive', 'palime_handle_filter_archiv
 function palime_handle_filter_archive() {
     check_ajax_referer( 'wp_rest', 'nonce' );
 
-    $section  = sanitize_text_field( $_POST['section']  ?? '' );
-    $person   = sanitize_text_field( $_POST['person']   ?? '' );
-    $era      = sanitize_text_field( $_POST['era']      ?? '' );
-    $genre    = sanitize_text_field( $_POST['genre']    ?? '' );
-    $paged    = max( 1, (int) ( $_POST['paged'] ?? 1 ) );
+    $section = sanitize_text_field( $_POST['section'] ?? '' );
+    $person  = sanitize_text_field( $_POST['person']  ?? '' );
+    $era     = sanitize_text_field( $_POST['era']     ?? '' );
+    $genre   = sanitize_text_field( $_POST['genre']   ?? '' );
+    $type    = sanitize_text_field( $_POST['type']    ?? '' );
+    $status  = sanitize_text_field( $_POST['status']  ?? '' );
+    $search  = sanitize_text_field( $_POST['search']  ?? '' );
+    $sort    = sanitize_text_field( $_POST['sort']    ?? 'date' );
+    $paged   = max( 1, (int) ( $_POST['paged'] ?? 1 ) );
+
+    // Сортировка
+    $orderby = 'date';
+    $order   = 'DESC';
+    if ( $sort === 'popular' )              $orderby = 'comment_count';
+    if ( $sort === 'relevance' && $search ) $orderby = 'relevance';
 
     $args = [
         'post_type'      => 'article',
         'posts_per_page' => 12,
         'paged'          => $paged,
         'post_status'    => 'publish',
+        'orderby'        => $orderby,
+        'order'          => $order,
         'tax_query'      => [ 'relation' => 'AND' ],
     ];
 
-    if ( $section ) {
-        $args['tax_query'][] = [ 'taxonomy' => 'section', 'field' => 'slug', 'terms' => $section ];
-    }
-    if ( $person ) {
-        $args['tax_query'][] = [ 'taxonomy' => 'person', 'field' => 'slug', 'terms' => $person ];
-    }
-    if ( $era ) {
-        $args['tax_query'][] = [ 'taxonomy' => 'era', 'field' => 'slug', 'terms' => $era ];
-    }
-    if ( $genre ) {
-        $args['tax_query'][] = [ 'taxonomy' => 'genre', 'field' => 'slug', 'terms' => $genre ];
-    }
+    if ( $search )  $args['s'] = $search;
+    if ( $section ) $args['tax_query'][] = [ 'taxonomy' => 'section',      'field' => 'slug', 'terms' => $section ];
+    if ( $person )  $args['tax_query'][] = [ 'taxonomy' => 'person',       'field' => 'slug', 'terms' => $person ];
+    if ( $era )     $args['tax_query'][] = [ 'taxonomy' => 'era',          'field' => 'slug', 'terms' => $era ];
+    if ( $genre )   $args['tax_query'][] = [ 'taxonomy' => 'genre',        'field' => 'slug', 'terms' => $genre ];
+    if ( $type )    $args['tax_query'][] = [ 'taxonomy' => 'article-type', 'field' => 'slug', 'terms' => $type ];
+    if ( $status )  $args['tax_query'][] = [ 'taxonomy' => 'status',       'field' => 'slug', 'terms' => $status ];
+
+    $type_labels = [
+        'author'    => 'про автора',
+        'work'      => 'про произведение',
+        'selection' => 'подборка',
+    ];
+    $status_labels = [
+        'verified' => 'подтверждено',
+        'disputed' => 'спорно',
+        'archived' => 'в архиве',
+    ];
 
     $query = new WP_Query( $args );
     $posts = [];
@@ -88,22 +106,65 @@ function palime_handle_filter_archive() {
     if ( $query->have_posts() ) {
         while ( $query->have_posts() ) {
             $query->the_post();
+            $post_id = get_the_ID();
+
+            // Раздел
+            $s_terms      = get_the_terms( $post_id, 'section' );
+            $section_slug = ( $s_terms && ! is_wp_error( $s_terms ) ) ? $s_terms[0]->slug : '';
+            $section_name = ( $s_terms && ! is_wp_error( $s_terms ) ) ? $s_terms[0]->name : '';
+
+            // Тип материала
+            $t_terms    = get_the_terms( $post_id, 'article-type' );
+            $type_slug  = ( $t_terms && ! is_wp_error( $t_terms ) ) ? $t_terms[0]->slug : '';
+            $type_label = isset( $type_labels[ $type_slug ] ) ? $type_labels[ $type_slug ] : ( ( $t_terms && ! is_wp_error( $t_terms ) ) ? $t_terms[0]->name : '' );
+
+            // Статус
+            $st_terms     = get_the_terms( $post_id, 'status' );
+            $status_slug  = ( $st_terms && ! is_wp_error( $st_terms ) ) ? $st_terms[0]->slug : '';
+            $status_label = isset( $status_labels[ $status_slug ] ) ? $status_labels[ $status_slug ] : ( ( $st_terms && ! is_wp_error( $st_terms ) ) ? $st_terms[0]->name : '' );
+
+            // ACF: время чтения и лид
+            $reading_time = function_exists( 'get_field' ) ? (int) get_field( 'reading_time', $post_id ) : 0;
+            $lead         = function_exists( 'get_field' ) ? get_field( 'article_lead', $post_id ) : '';
+            if ( ! $lead ) $lead = get_the_excerpt();
+
+            // Персоны
+            $p_terms = get_the_terms( $post_id, 'person' );
+            $persons = [];
+            if ( $p_terms && ! is_wp_error( $p_terms ) ) {
+                foreach ( array_slice( $p_terms, 0, 4 ) as $pt ) {
+                    $persons[] = [
+                        'name' => $pt->name,
+                        'slug' => $pt->slug,
+                        'url'  => (string) get_term_link( $pt ),
+                    ];
+                }
+            }
+
             $posts[] = [
-                'id'        => get_the_ID(),
-                'title'     => get_the_title(),
-                'url'       => get_permalink(),
-                'excerpt'   => get_the_excerpt(),
-                'thumbnail' => get_the_post_thumbnail_url( get_the_ID(), 'card' ),
-                'date'      => get_the_date( 'j F Y' ),
+                'id'           => $post_id,
+                'title'        => get_the_title(),
+                'url'          => get_permalink(),
+                'lead'         => wp_trim_words( $lead, 18, '…' ),
+                'excerpt'      => get_the_excerpt(),
+                'date'         => get_the_date( 'd.m.Y' ),
+                'section_slug' => $section_slug,
+                'section_name' => $section_name,
+                'type_slug'    => $type_slug,
+                'type_label'   => $type_label,
+                'status_slug'  => $status_slug,
+                'status_label' => $status_label,
+                'reading_time' => $reading_time ?: '',
+                'persons'      => $persons,
             ];
         }
         wp_reset_postdata();
     }
 
     wp_send_json_success( [
-        'posts'      => $posts,
-        'max_pages'  => $query->max_num_pages,
-        'total'      => $query->found_posts,
+        'posts'     => $posts,
+        'max_pages' => $query->max_num_pages,
+        'total'     => $query->found_posts,
     ] );
 }
 
