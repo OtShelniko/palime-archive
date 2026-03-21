@@ -215,28 +215,6 @@ $current_month = $months_ru[ (int) date( 'n' ) ] . ' ' . date( 'Y' );
         </div>
         <?php endif; ?>
 
-        <!-- СТАТУС -->
-        <div class="pa-filter-group">
-            <span class="pa-filter-group__label">Статус</span>
-            <div class="pa-filter-tags" data-filter-group="status">
-                <?php if ( $terms_status && ! is_wp_error( $terms_status ) ) :
-                    foreach ( $terms_status as $t ) : ?>
-                        <button
-                            type="button"
-                            class="pa-filter-tag"
-                            data-filter="status"
-                            data-value="<?php echo esc_attr( $t->slug ); ?>"
-                            aria-pressed="false"
-                        ><?php echo esc_html( $t->name ); ?></button>
-                    <?php endforeach;
-                else : ?>
-                    <button type="button" class="pa-filter-tag" data-filter="status" data-value="verified">Подтверждено</button>
-                    <button type="button" class="pa-filter-tag" data-filter="status" data-value="disputed">Спорно</button>
-                    <button type="button" class="pa-filter-tag" data-filter="status" data-value="archived">В архиве</button>
-                <?php endif; ?>
-            </div>
-        </div>
-
         <!-- РЕДАКТОРСКИЕ МЕТКИ (вторичный блок) -->
         <?php if ( $terms_editorial && ! is_wp_error( $terms_editorial ) ) : ?>
         <details class="pa-filter-details">
@@ -254,6 +232,33 @@ $current_month = $months_ru[ (int) date( 'n' ) ] . ' ' . date( 'Y' );
             </div>
         </details>
         <?php endif; ?>
+
+        <!-- СТАТУС (вторичный) -->
+        <details class="pa-filter-details">
+            <summary class="pa-filter-details__summary">Статус</summary>
+            <div class="pa-filter-tags pa-filter-tags--nested" data-filter-group="status">
+                <?php
+                // Публичные термины (без служебного «редакция»)
+                $status_exclude = [ 'redakciya', 'редакция' ];
+                if ( $terms_status && ! is_wp_error( $terms_status ) ) :
+                    foreach ( $terms_status as $t ) :
+                        if ( in_array( $t->slug, $status_exclude, true ) ) continue;
+                ?>
+                    <button
+                        type="button"
+                        class="pa-filter-tag"
+                        data-filter="status"
+                        data-value="<?php echo esc_attr( $t->slug ); ?>"
+                        aria-pressed="false"
+                    ><?php echo esc_html( $t->name ); ?></button>
+                <?php endforeach;
+                else : ?>
+                    <button type="button" class="pa-filter-tag" data-filter="status" data-value="verified">Подтверждено</button>
+                    <button type="button" class="pa-filter-tag" data-filter="status" data-value="disputed">Спорно</button>
+                    <button type="button" class="pa-filter-tag" data-filter="status" data-value="archived">В архиве</button>
+                <?php endif; ?>
+            </div>
+        </details>
 
         <!-- ЭПОХА (вторичный / по данным) -->
         <?php if ( $terms_era && ! is_wp_error( $terms_era ) ) : ?>
