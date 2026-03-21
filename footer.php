@@ -1,105 +1,270 @@
-</main><!-- #main-content -->
+</main><!-- /#main-content -->
 
-<footer class="site-footer">
-    <div class="container">
+<footer class="pa-footer">
 
-        <!-- Верхняя часть: логотип + колонки -->
-        <div class="footer__top grid grid--4 mb-2xl">
+    <!-- ── ОСНОВНАЯ СЕТКА ── -->
+    <div class="pa-footer__grid">
 
-            <!-- Логотип и описание -->
-            <div class="footer__brand">
-                <a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="footer__logo" aria-label="Palime Archive">
-                    <?php
-                    $logo_path = get_template_directory() . '/assets/img/logo-white.svg';
-                    if ( file_exists( $logo_path ) ) {
-                        echo file_get_contents( $logo_path );
-                    }
-                    ?>
-                </a>
-                <p class="footer__desc text-sm mt-md" style="opacity:.5; line-height:1.6;">
-                    Архив культуры.<br>Кино, литература, музыка, ИЗО.
-                </p>
-                <!-- Соцсети -->
-                <div class="footer__socials flex flex--gap mt-lg">
-                    <?php $tg = get_option( 'palime_telegram_url' ); ?>
-                    <?php $vk = get_option( 'palime_vk_url' ); ?>
-                    <?php if ( $tg ) : ?>
-                        <a href="<?php echo esc_url( $tg ); ?>" class="footer__social text-mono text-xs" target="_blank" rel="noopener">TG</a>
-                    <?php endif; ?>
-                    <?php if ( $vk ) : ?>
-                        <a href="<?php echo esc_url( $vk ); ?>" class="footer__social text-mono text-xs" target="_blank" rel="noopener">VK</a>
-                    <?php endif; ?>
-                </div>
-            </div>
-
-            <!-- Разделы -->
-            <div class="footer__col">
-                <h4 class="footer__col-title text-mono text-xs text-upper mb-md" style="opacity:.4; letter-spacing:.12em;">Разделы</h4>
-                <ul class="footer__links">
-                    <li><a href="<?php echo esc_url( home_url( '/cinema/' ) ); ?>" class="footer__link text-sm">Кино</a></li>
-                    <li><a href="<?php echo esc_url( home_url( '/literature/' ) ); ?>" class="footer__link text-sm">Литература</a></li>
-                    <li><a href="<?php echo esc_url( home_url( '/music/' ) ); ?>" class="footer__link text-sm">Музыка</a></li>
-                    <li><a href="<?php echo esc_url( home_url( '/art/' ) ); ?>" class="footer__link text-sm">ИЗО</a></li>
-                </ul>
-            </div>
-
-            <!-- Проект -->
-            <div class="footer__col">
-                <h4 class="footer__col-title text-mono text-xs text-upper mb-md" style="opacity:.4; letter-spacing:.12em;">Проект</h4>
-                <ul class="footer__links">
-                    <li><a href="<?php echo esc_url( home_url( '/archive/' ) ); ?>" class="footer__link text-sm">Архив</a></li>
-                    <li><a href="<?php echo esc_url( home_url( '/blog/' ) ); ?>" class="footer__link text-sm">Блог</a></li>
-                    <li><a href="<?php echo esc_url( home_url( '/news/' ) ); ?>" class="footer__link text-sm">Новости</a></li>
-                    <li><a href="<?php echo esc_url( wc_get_page_permalink( 'shop' ) ); ?>" class="footer__link text-sm">Магазин</a></li>
-                </ul>
-            </div>
-
-            <!-- Подписка -->
-            <div class="footer__col">
-                <h4 class="footer__col-title text-mono text-xs text-upper mb-md" style="opacity:.4; letter-spacing:.12em;">Рассылка</h4>
-                <p class="text-sm mb-md" style="opacity:.5;">Лучшее раз в месяц — без спама</p>
-                <form class="subscribe-form" novalidate>
-                    <input
-                        type="email"
-                        class="form-input"
-                        placeholder="your@email.com"
-                        style="background:rgba(255,255,255,.08); border-color:rgba(255,255,255,.15); color:#fff;"
-                        required
-                    >
-                    <button type="submit" class="btn btn--primary btn--sm">→</button>
-                </form>
-            </div>
-
+        <!-- Колонка 1: бренд -->
+        <div class="pa-footer__brand">
+            <a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="pa-footer__wordmark" aria-label="Palime Archive">
+                PALIME ARCHIVE
+            </a>
+            <p class="pa-footer__desc">
+                Независимый культурный архив. Кино,<br>
+                литература, музыка, изобразительное<br>
+                искусство.
+            </p>
+            <p class="pa-footer__meta">ОСН. 2026</p>
+            <p class="pa-footer__disclaimer">Некоторые записи остаются спорными.</p>
+            <p class="pa-footer__version">ВЕРСИЯ 1.8</p>
         </div>
 
-        <!-- Нижняя часть: копирайт + ссылки -->
-        <div class="footer__bottom flex flex--between" style="border-top:1px solid rgba(255,255,255,.08); padding-top:var(--spacing-lg); opacity:.4;">
-            <p class="text-mono text-xs">
-                © <?php echo date( 'Y' ); ?> Palime Archive
-            </p>
-            <div class="flex flex--gap">
-                <a href="<?php echo esc_url( home_url( '/privacy-policy/' ) ); ?>" class="text-mono text-xs">Политика конфиденциальности</a>
-            </div>
+        <!-- Колонка 2: Архив -->
+        <div class="pa-footer__col">
+            <h4 class="pa-footer__col-title">АРХИВ</h4>
+            <ul class="pa-footer__links">
+                <li><a href="<?php echo esc_url( get_post_type_archive_link( 'article' ) ); ?>" class="pa-footer__link">Все статьи</a></li>
+                <li><a href="<?php echo esc_url( home_url( '/articles/?type=selection' ) ); ?>" class="pa-footer__link">Подборки</a></li>
+                <li><a href="<?php echo esc_url( get_post_type_archive_link( 'ranking' ) ); ?>" class="pa-footer__link">Рейтинги</a></li>
+                <li><a href="<?php echo esc_url( home_url( '/news/' ) ); ?>" class="pa-footer__link">Новости</a></li>
+                <li><a href="<?php echo esc_url( home_url( '/visual-art/' ) ); ?>" class="pa-footer__link">Visual Art</a></li>
+                <li><a href="<?php echo esc_url( home_url( '/archive/' ) ); ?>" class="pa-footer__link">Поиск</a></li>
+            </ul>
+        </div>
+
+        <!-- Колонка 3: Разделы -->
+        <div class="pa-footer__col">
+            <h4 class="pa-footer__col-title">РАЗДЕЛЫ</h4>
+            <ul class="pa-footer__links">
+                <li><a href="<?php echo esc_url( home_url( '/cinema/' ) ); ?>" class="pa-footer__link">Кино</a></li>
+                <li><a href="<?php echo esc_url( home_url( '/literature/' ) ); ?>" class="pa-footer__link">Литература</a></li>
+                <li><a href="<?php echo esc_url( home_url( '/music/' ) ); ?>" class="pa-footer__link">Музыка</a></li>
+                <li><a href="<?php echo esc_url( home_url( '/art/' ) ); ?>" class="pa-footer__link">ИЗО</a></li>
+                <li><a href="<?php echo esc_url( home_url( '/artifacts/' ) ); ?>" class="pa-footer__link pa-footer__link--accent">Артефакты</a></li>
+                <li><a href="<?php echo esc_url( home_url( '/map/' ) ); ?>" class="pa-footer__link">The Map</a></li>
+            </ul>
+        </div>
+
+        <!-- Колонка 4: Информация + Правовое -->
+        <div class="pa-footer__col">
+            <h4 class="pa-footer__col-title">ИНФОРМАЦИЯ</h4>
+            <ul class="pa-footer__links">
+                <li><a href="<?php echo esc_url( home_url( '/about/' ) ); ?>" class="pa-footer__link">О проекте</a></li>
+                <li><a href="<?php echo esc_url( home_url( '/editorial/' ) ); ?>" class="pa-footer__link">Редакция</a></li>
+                <li><a href="<?php echo esc_url( home_url( '/contact/' ) ); ?>" class="pa-footer__link">Написать нам</a></li>
+                <?php
+                $help_url = get_option( 'palime_help_url' );
+                if ( $help_url ) : ?>
+                    <li><a href="<?php echo esc_url( $help_url ); ?>" class="pa-footer__link">Помочь нам</a></li>
+                <?php endif; ?>
+            </ul>
+
+            <h4 class="pa-footer__col-title pa-footer__col-title--sub">ПРАВОВОЕ</h4>
+            <ul class="pa-footer__links">
+                <li><a href="<?php echo esc_url( home_url( '/privacy-policy/' ) ); ?>" class="pa-footer__link">Политика</a></li>
+                <li><a href="<?php echo esc_url( home_url( '/terms/' ) ); ?>" class="pa-footer__link">Условия</a></li>
+                <li><a href="<?php echo esc_url( home_url( '/copyright/' ) ); ?>" class="pa-footer__link">Авторское право</a></li>
+                <li><a href="<?php echo esc_url( home_url( '/licenses/' ) ); ?>" class="pa-footer__link">Лицензии</a></li>
+            </ul>
         </div>
 
     </div>
+    <!-- /.pa-footer__grid -->
+
+    <!-- ── НИЖНЯЯ ПОЛОСА ── -->
+    <div class="pa-footer__bottom">
+        <p class="pa-footer__copy">
+            © <?php echo date( 'Y' ); ?> PALIME ARCHIVE &middot; ВСЕ ПРАВА ЗАЩИЩЕНЫ
+        </p>
+        <div class="pa-footer__lang">
+            <a href="<?php echo esc_url( home_url( '/?lang=vk' ) ); ?>" class="pa-footer__lang-link">ВКЛ.</a>
+            <span class="pa-footer__lang-sep">|</span>
+            <a href="<?php echo esc_url( home_url( '/?lang=net' ) ); ?>" class="pa-footer__lang-link">НЕТ</a>
+            <span class="pa-footer__lang-sep">&middot;</span>
+            <a href="<?php echo esc_url( home_url( '/?lang=en' ) ); ?>" class="pa-footer__lang-link">ENGLISH</a>
+            <span class="pa-footer__lang-sep">|</span>
+            <a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="pa-footer__lang-link pa-footer__lang-link--active">RU</a>
+        </div>
+    </div>
+
 </footer>
 
-<!-- Стили для футера (инлайн, чтобы не создавать отдельный файл) -->
 <style>
-.footer__logo svg { height: 20px; width: auto; }
-.footer__links    { display: flex; flex-direction: column; gap: var(--spacing-sm); }
-.footer__link     { opacity: .6; transition: opacity var(--transition); }
-.footer__link:hover { opacity: 1; color: #fff; }
-.footer__social   { opacity: .5; transition: opacity var(--transition); }
-.footer__social:hover { opacity: 1; }
+/* =========================================================
+   PA FOOTER
+   ========================================================= */
 
-@media (max-width: 768px) {
-    .footer__top { grid-template-columns: 1fr 1fr; }
-    .footer__bottom { flex-direction: column; gap: var(--spacing-sm); align-items: flex-start; }
+.pa-footer {
+    background: #0A0A0A;
+    color: #fff;
+    border-top: 1px solid rgba(255,255,255,.06);
+    font-family: var(--font-mono);
 }
-@media (max-width: 480px) {
-    .footer__top { grid-template-columns: 1fr; }
+
+/* Основная сетка: 1 широкая + 3 колонки */
+.pa-footer__grid {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr 1fr 1.2fr;
+    gap: var(--spacing-xl);
+    max-width: var(--container);
+    margin: 0 auto;
+    padding: 56px var(--gutter) 48px;
+}
+
+/* Бренд */
+.pa-footer__wordmark {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: clamp(1.1rem, 2vw, 1.55rem);
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: #fff;
+    text-decoration: none;
+    line-height: 1;
+    margin-bottom: 20px;
+}
+
+.pa-footer__desc {
+    font-size: .72rem;
+    line-height: 1.75;
+    color: rgba(255,255,255,.45);
+    margin-bottom: 18px;
+}
+
+.pa-footer__meta {
+    font-size: .65rem;
+    letter-spacing: .1em;
+    color: rgba(255,255,255,.25);
+    margin-bottom: 14px;
+}
+
+.pa-footer__disclaimer {
+    font-size: .68rem;
+    color: rgba(255,255,255,.35);
+    margin-bottom: 8px;
+    line-height: 1.5;
+}
+
+.pa-footer__version {
+    font-size: .63rem;
+    letter-spacing: .1em;
+    color: rgba(255,255,255,.2);
+}
+
+/* Заголовок колонки */
+.pa-footer__col-title {
+    font-family: var(--font-mono);
+    font-size: .62rem;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,.3);
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+    font-weight: 400;
+}
+
+.pa-footer__col-title--sub {
+    margin-top: 28px;
+}
+
+/* Ссылки */
+.pa-footer__links {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.pa-footer__link {
+    font-size: .72rem;
+    letter-spacing: .04em;
+    color: rgba(255,255,255,.45);
+    text-decoration: none;
+    transition: color .12s;
+}
+
+.pa-footer__link:hover {
+    color: #fff;
+}
+
+/* Акцентная ссылка (красная, как «Артефакты» на макете) */
+.pa-footer__link--accent {
+    color: var(--color-ui);
+}
+
+.pa-footer__link--accent:hover {
+    color: #ff4444;
+}
+
+/* Нижняя полоса */
+.pa-footer__bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: var(--container);
+    margin: 0 auto;
+    padding: 16px var(--gutter);
+    border-top: 1px solid rgba(255,255,255,.06);
+    gap: var(--spacing-md);
+}
+
+.pa-footer__copy {
+    font-size: .6rem;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,.22);
+}
+
+.pa-footer__lang {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.pa-footer__lang-link {
+    font-size: .6rem;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,.25);
+    text-decoration: none;
+    transition: color .12s;
+}
+
+.pa-footer__lang-link:hover {
+    color: rgba(255,255,255,.6);
+}
+
+.pa-footer__lang-link--active {
+    color: rgba(255,255,255,.55);
+}
+
+.pa-footer__lang-sep {
+    color: rgba(255,255,255,.12);
+    font-size: .6rem;
+}
+
+/* ── АДАПТИВ ── */
+@media (max-width: 1024px) {
+    .pa-footer__grid {
+        grid-template-columns: 1fr 1fr;
+        gap: var(--spacing-lg);
+    }
+}
+
+@media (max-width: 600px) {
+    .pa-footer__grid {
+        grid-template-columns: 1fr;
+        padding-top: 40px;
+        padding-bottom: 32px;
+    }
+    .pa-footer__bottom {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
 }
 </style>
 

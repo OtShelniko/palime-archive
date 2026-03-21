@@ -1,13 +1,7 @@
 <?php
 /**
- * The template for displaying all pages
- *
- * This is the template that displays all pages by default.
- * Please note that this is the WordPress construct of pages
- * and that other 'pages' on your WordPress site may use a
- * different template.
- *
- * @link https://developer.wordpress.org/themes/basics/template-hierarchy/
+ * Palime Archive — page.php
+ * Базовый шаблон для страниц WordPress
  *
  * @package Palime_Archive
  */
@@ -15,24 +9,40 @@
 get_header();
 ?>
 
-	<main id="primary" class="site-main">
+<div class="section">
+    <div class="container container--narrow">
 
-		<?php
-		while ( have_posts() ) :
-			the_post();
+        <?php while ( have_posts() ) : the_post(); ?>
 
-			get_template_part( 'template-parts/content', 'page' );
+            <article class="page-content">
 
-			// If comments are open or we have at least one comment, load up the comment template.
-			if ( comments_open() || get_comments_number() ) :
-				comments_template();
-			endif;
+                <header class="mb-xl">
+                    <h1 class="text-display mb-md" style="font-family:var(--font-display); font-size:2.5rem; line-height:1.2;">
+                        <?php the_title(); ?>
+                    </h1>
+                    <hr class="divider">
+                </header>
 
-		endwhile; // End of the loop.
-		?>
+                <div class="entry-content text-serif" style="font-family:var(--font-serif); font-size:1.1rem; line-height:1.8;">
+                    <?php the_content(); ?>
+                </div>
 
-	</main><!-- #main -->
+                <?php if ( get_edit_post_link() ) : ?>
+                    <footer class="mt-xl">
+                        <a href="<?php echo esc_url( get_edit_post_link() ); ?>" class="btn btn--outline btn--sm">Редактировать</a>
+                    </footer>
+                <?php endif; ?>
 
-<?php
-get_sidebar();
-get_footer();
+            </article>
+
+            <?php if ( comments_open() || get_comments_number() ) : ?>
+                <hr class="divider">
+                <?php comments_template(); ?>
+            <?php endif; ?>
+
+        <?php endwhile; ?>
+
+    </div>
+</div>
+
+<?php get_footer(); ?>

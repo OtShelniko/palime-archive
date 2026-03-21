@@ -55,32 +55,65 @@ add_action( 'wp_ajax_nopriv_palime_filter_archive', 'palime_handle_filter_archiv
 function palime_handle_filter_archive() {
     check_ajax_referer( 'wp_rest', 'nonce' );
 
-    $section  = sanitize_text_field( $_POST['section']  ?? '' );
-    $person   = sanitize_text_field( $_POST['person']   ?? '' );
-    $era      = sanitize_text_field( $_POST['era']      ?? '' );
-    $genre    = sanitize_text_field( $_POST['genre']    ?? '' );
-    $paged    = max( 1, (int) ( $_POST['paged'] ?? 1 ) );
+    // Поддерживаем как POST (filters.js), так и GET (page-blog/news inline JS)
+    $req = array_merge( $_GET, $_POST );
+
+    // Тип записи — только разрешённые значения
+    $allowed_post_types = [ 'article', 'news' ];
+    $post_type = sanitize_key( $req['post_type'] ?? 'article' );
+    if ( ! in_array( $post_type, $allowed_post_types, true ) ) {
+        $post_type = 'article';
+    }
+
+    $section = sanitize_text_field( $req['section'] ?? '' );
+    $person  = sanitize_text_field( $req['person']  ?? '' );
+    $era     = sanitize_text_field( $req['era']     ?? '' );
+    $genre   = sanitize_text_field( $req['genre']   ?? '' );
+    $type    = sanitize_text_field( $req['type']    ?? '' );
+    $status  = sanitize_text_field( $req['status']  ?? '' );
+    $search  = sanitize_text_field( $req['search']  ?? '' );
+    $sort    = sanitize_text_field( $req['sort']    ?? 'date' );
+    $paged   = max( 1, (int) ( $req['paged'] ?? 1 ) );
+
+    // Сортировка
+    $orderby = 'date';
+    $order   = 'DESC';
+    if ( $sort === 'popular' )              $orderby = 'comment_count';
+    if ( $sort === 'relevance' && $search ) $orderby = 'relevance';
 
     $args = [
-        'post_type'      => 'article',
-        'posts_per_page' => 12,
-        'paged'          => $paged,
-        'post_status'    => 'publish',
-        'tax_query'      => [ 'relation' => 'AND' ],
+        'post_type'              => $post_type,
+        'posts_per_page'         => 12,
+        'paged'                  => $paged,
+        'post_status'            => 'publish',
+        'orderby'                => $orderby,
+        'order'                  => $order,
+        'tax_query'              => [ 'relation' => 'AND' ],
+        'update_post_meta_cache' => false,
+        'update_post_term_cache' => false,
     ];
 
-    if ( $section ) {
-        $args['tax_query'][] = [ 'taxonomy' => 'section', 'field' => 'slug', 'terms' => $section ];
-    }
-    if ( $person ) {
-        $args['tax_query'][] = [ 'taxonomy' => 'person', 'field' => 'slug', 'terms' => $person ];
-    }
-    if ( $era ) {
-        $args['tax_query'][] = [ 'taxonomy' => 'era', 'field' => 'slug', 'terms' => $era ];
-    }
-    if ( $genre ) {
-        $args['tax_query'][] = [ 'taxonomy' => 'genre', 'field' => 'slug', 'terms' => $genre ];
-    }
+    if ( $search )  $args['s'] = $search;
+    if ( $section ) $args['tax_query'][] = [ 'taxonomy' => 'section',      'field' => 'slug', 'terms' => $section ];
+    if ( $person )  $args['tax_query'][] = [ 'taxonomy' => 'person',       'field' => 'slug', 'terms' => $person ];
+    if ( $era )     $args['tax_query'][] = [ 'taxonomy' => 'era',          'field' => 'slug', 'terms' => $era ];
+    if ( $genre )   $args['tax_query'][] = [ 'taxonomy' => 'genre',        'field' => 'slug', 'terms' => $genre ];
+    if ( $type )    $args['tax_query'][] = [ 'taxonomy' => 'article-type', 'field' => 'slug', 'terms' => $type ];
+    if ( $status )  $args['tax_query'][] = [ 'taxonomy' => 'status',       'field' => 'slug', 'terms' => $status ];
+
+    $type_labels = [
+        'author'    => 'про автора',
+        'work'      => 'про произведение',
+        'selection' => 'подборка',
+    ];
+    $status_labels = [
+        'verified' => 'подтверждено',
+        'disputed' => 'спорно',
+        'archived' => 'в архиве',
+    ];
+
+    // Налоговые запросы требуют кеша терминов — включаем обратно
+    $args['update_post_term_cache'] = true;
 
     $query = new WP_Query( $args );
     $posts = [];
@@ -88,22 +121,79 @@ function palime_handle_filter_archive() {
     if ( $query->have_posts() ) {
         while ( $query->have_posts() ) {
             $query->the_post();
-            $posts[] = [
-                'id'        => get_the_ID(),
-                'title'     => get_the_title(),
-                'url'       => get_permalink(),
-                'excerpt'   => get_the_excerpt(),
-                'thumbnail' => get_the_post_thumbnail_url( get_the_ID(), 'card' ),
-                'date'      => get_the_date( 'j F Y' ),
+            $post_id = get_the_ID();
+
+            // Раздел
+            $s_terms      = get_the_terms( $post_id, 'section' );
+            $section_slug = ( $s_terms && ! is_wp_error( $s_terms ) ) ? $s_terms[0]->slug : '';
+            $section_name = ( $s_terms && ! is_wp_error( $s_terms ) ) ? $s_terms[0]->name : '';
+
+            // Тип материала (только для статей)
+            $t_terms    = get_the_terms( $post_id, 'article-type' );
+            $type_slug  = ( $t_terms && ! is_wp_error( $t_terms ) ) ? $t_terms[0]->slug : '';
+            $type_label = isset( $type_labels[ $type_slug ] )
+                ? $type_labels[ $type_slug ]
+                : ( ( $t_terms && ! is_wp_error( $t_terms ) ) ? $t_terms[0]->name : '' );
+
+            // Статус
+            $st_terms     = get_the_terms( $post_id, 'status' );
+            $status_slug  = ( $st_terms && ! is_wp_error( $st_terms ) ) ? $st_terms[0]->slug : '';
+            $status_label = isset( $status_labels[ $status_slug ] )
+                ? $status_labels[ $status_slug ]
+                : ( ( $st_terms && ! is_wp_error( $st_terms ) ) ? $st_terms[0]->name : '' );
+
+            // ACF: время чтения и лид
+            $reading_time = function_exists( 'get_field' ) ? (int) get_field( 'reading_time', $post_id ) : 0;
+            $lead         = function_exists( 'get_field' ) ? get_field( 'article_lead', $post_id ) : '';
+            if ( ! $lead ) $lead = get_the_excerpt();
+
+            // Персоны
+            $p_terms = get_the_terms( $post_id, 'person' );
+            $persons = [];
+            if ( $p_terms && ! is_wp_error( $p_terms ) ) {
+                foreach ( array_slice( $p_terms, 0, 4 ) as $pt ) {
+                    $persons[] = [
+                        'name' => $pt->name,
+                        'slug' => $pt->slug,
+                        'url'  => (string) get_term_link( $pt ),
+                    ];
+                }
+            }
+
+            $post_data = [
+                'id'           => $post_id,
+                'title'        => get_the_title(),
+                'url'          => get_permalink(),
+                'lead'         => wp_trim_words( $lead, 18, '…' ),
+                'date'         => get_the_date( 'd.m.Y' ),
+                'date_raw'     => get_the_date( 'Y-m-d H:i:s' ),
+                'section_slug' => $section_slug,
+                'section_name' => $section_name,
+                'type_slug'    => $type_slug,
+                'type_label'   => $type_label,
+                'status_slug'  => $status_slug,
+                'status_label' => $status_label,
+                'reading_time' => $reading_time ?: '',
+                'persons'      => $persons,
             ];
+
+            // Дополнительные поля для новостей (ACF)
+            if ( $post_type === 'news' ) {
+                $post_data['is_urgent'] = function_exists( 'get_field' ) ? (bool) get_field( 'is_urgent',   $post_id ) : false;
+                $post_data['source']    = function_exists( 'get_field' ) ? (string) get_field( 'news_source', $post_id ) : '';
+                $post_data['editor']    = function_exists( 'get_field' ) ? (string) get_field( 'news_editor', $post_id ) : '';
+                $post_data['verified']  = function_exists( 'get_field' ) ? (bool) get_field( 'is_verified',  $post_id ) : false;
+            }
+
+            $posts[] = $post_data;
         }
         wp_reset_postdata();
     }
 
     wp_send_json_success( [
-        'posts'      => $posts,
-        'max_pages'  => $query->max_num_pages,
-        'total'      => $query->found_posts,
+        'posts'     => $posts,
+        'max_pages' => $query->max_num_pages,
+        'total'     => $query->found_posts,
     ] );
 }
 

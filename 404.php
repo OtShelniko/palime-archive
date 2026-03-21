@@ -1,8 +1,7 @@
 <?php
 /**
- * The template for displaying 404 pages (not found)
- *
- * @link https://codex.wordpress.org/Creating_an_Error_404_Page
+ * Palime Archive — 404.php
+ * Страница «Запись не найдена»
  *
  * @package Palime_Archive
  */
@@ -10,51 +9,43 @@
 get_header();
 ?>
 
-	<main id="primary" class="site-main">
+<div class="section" style="min-height: 60vh; display:flex; align-items:center;">
+    <div class="container text-center">
 
-		<section class="error-404 not-found">
-			<header class="page-header">
-				<h1 class="page-title"><?php esc_html_e( 'Oops! That page can&rsquo;t be found.', 'palime-archive' ); ?></h1>
-			</header><!-- .page-header -->
+        <p class="text-mono text-muted text-upper mb-lg" style="letter-spacing:.2em; font-size:.75rem;">
+            — Ошибка 404 —
+        </p>
 
-			<div class="page-content">
-				<p><?php esc_html_e( 'It looks like nothing was found at this location. Maybe try one of the links below or a search?', 'palime-archive' ); ?></p>
+        <h1 class="mb-md" style="font-family:var(--font-display); font-size:clamp(4rem,12vw,10rem); line-height:1; color:var(--accent);">
+            404
+        </h1>
 
-					<?php
-					get_search_form();
+        <p class="text-lg text-muted mb-xl" style="font-family:var(--font-serif); max-width:480px; margin-left:auto; margin-right:auto; line-height:1.7;">
+            Эта страница не существует или была удалена из архива.
+        </p>
 
-					the_widget( 'WP_Widget_Recent_Posts' );
-					?>
+        <div class="flex flex--center flex--gap flex--wrap">
+            <a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="btn btn--primary">На главную</a>
+            <a href="<?php echo esc_url( home_url( '/archive/' ) ); ?>" class="btn btn--outline">Открыть архив</a>
+        </div>
 
-					<div class="widget widget_categories">
-						<h2 class="widget-title"><?php esc_html_e( 'Most Used Categories', 'palime-archive' ); ?></h2>
-						<ul>
-							<?php
-							wp_list_categories(
-								array(
-									'orderby'    => 'count',
-									'order'      => 'DESC',
-									'show_count' => 1,
-									'title_li'   => '',
-									'number'     => 10,
-								)
-							);
-							?>
-						</ul>
-					</div><!-- .widget -->
+        <!-- Поиск -->
+        <div class="mt-2xl" style="max-width: 480px; margin-left: auto; margin-right: auto;">
+            <form role="search" method="get" action="<?php echo esc_url( home_url( '/' ) ); ?>">
+                <div class="subscribe-form">
+                    <input
+                        type="search"
+                        class="form-input"
+                        placeholder="Поиск по архиву…"
+                        value="<?php echo esc_attr( get_search_query() ); ?>"
+                        name="s"
+                    >
+                    <button type="submit" class="btn btn--primary">→</button>
+                </div>
+            </form>
+        </div>
 
-					<?php
-					/* translators: %1$s: smiley */
-					$palime_archive_archive_content = '<p>' . sprintf( esc_html__( 'Try looking in the monthly archives. %1$s', 'palime-archive' ), convert_smilies( ':)' ) ) . '</p>';
-					the_widget( 'WP_Widget_Archives', 'dropdown=1', "after_title=</h2>$palime_archive_archive_content" );
+    </div>
+</div>
 
-					the_widget( 'WP_Widget_Tag_Cloud' );
-					?>
-
-			</div><!-- .page-content -->
-		</section><!-- .error-404 -->
-
-	</main><!-- #main -->
-
-<?php
-get_footer();
+<?php get_footer(); ?>

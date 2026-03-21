@@ -1,8 +1,7 @@
 <?php
 /**
- * The template for displaying all single posts
- *
- * @link https://developer.wordpress.org/themes/basics/template-hierarchy/#single-post
+ * Palime Archive — single.php
+ * Базовый шаблон для отдельных записей (стандартные посты)
  *
  * @package Palime_Archive
  */
@@ -10,31 +9,80 @@
 get_header();
 ?>
 
-	<main id="primary" class="site-main">
+<div class="section">
+    <div class="container container--narrow">
 
-		<?php
-		while ( have_posts() ) :
-			the_post();
+        <?php while ( have_posts() ) : the_post(); ?>
 
-			get_template_part( 'template-parts/content', get_post_type() );
+            <article <?php post_class(); ?>>
 
-			the_post_navigation(
-				array(
-					'prev_text' => '<span class="nav-subtitle">' . esc_html__( 'Previous:', 'palime-archive' ) . '</span> <span class="nav-title">%title</span>',
-					'next_text' => '<span class="nav-subtitle">' . esc_html__( 'Next:', 'palime-archive' ) . '</span> <span class="nav-title">%title</span>',
-				)
-			);
+                <!-- Мета -->
+                <div class="flex flex--gap mb-lg flex--wrap">
+                    <?php palime_the_terms( get_the_ID(), 'category', 'tag' ); ?>
+                    <span class="text-mono text-xs text-muted"><?php echo esc_html( palime_get_date() ); ?></span>
+                </div>
 
-			// If comments are open or we have at least one comment, load up the comment template.
-			if ( comments_open() || get_comments_number() ) :
-				comments_template();
-			endif;
+                <!-- Заголовок -->
+                <header class="mb-xl">
+                    <h1 class="text-display mb-md" style="font-family:var(--font-display); font-size:2.5rem; line-height:1.2;">
+                        <?php the_title(); ?>
+                    </h1>
+                    <?php if ( has_excerpt() ) : ?>
+                        <p class="text-lg text-muted" style="font-family:var(--font-serif); line-height:1.6;">
+                            <?php the_excerpt(); ?>
+                        </p>
+                    <?php endif; ?>
+                </header>
 
-		endwhile; // End of the loop.
-		?>
+                <!-- Обложка -->
+                <?php if ( has_post_thumbnail() ) : ?>
+                    <div class="mb-xl overflow-hidden" style="border-radius:var(--radius-md);">
+                        <?php the_post_thumbnail( 'large', [ 'style' => 'width:100%;height:auto;display:block;', 'alt' => esc_attr( get_the_title() ) ] ); ?>
+                    </div>
+                <?php endif; ?>
 
-	</main><!-- #main -->
+                <!-- Контент -->
+                <div class="entry-content" style="font-family:var(--font-serif); font-size:1.1rem; line-height:1.85;">
+                    <?php the_content(); ?>
+                </div>
 
-<?php
-get_sidebar();
-get_footer();
+                <!-- Теги -->
+                <?php if ( has_tag() ) : ?>
+                    <div class="flex flex--gap flex--wrap mt-xl">
+                        <?php the_tags( '', '', '' ); ?>
+                    </div>
+                <?php endif; ?>
+
+            </article>
+
+            <!-- Навигация по записям -->
+            <nav class="flex flex--between mt-2xl" style="border-top:1px solid rgba(0,0,0,.08); padding-top:var(--spacing-xl);">
+                <?php
+                $prev = get_previous_post();
+                $next = get_next_post();
+                ?>
+                <?php if ( $prev ) : ?>
+                    <a href="<?php echo esc_url( get_permalink( $prev ) ); ?>" class="btn btn--ghost btn--sm">
+                        ← <?php echo esc_html( get_the_title( $prev ) ); ?>
+                    </a>
+                <?php else : ?>
+                    <span></span>
+                <?php endif; ?>
+                <?php if ( $next ) : ?>
+                    <a href="<?php echo esc_url( get_permalink( $next ) ); ?>" class="btn btn--ghost btn--sm">
+                        <?php echo esc_html( get_the_title( $next ) ); ?> →
+                    </a>
+                <?php endif; ?>
+            </nav>
+
+            <?php if ( comments_open() || get_comments_number() ) : ?>
+                <hr class="divider">
+                <?php comments_template(); ?>
+            <?php endif; ?>
+
+        <?php endwhile; ?>
+
+    </div>
+</div>
+
+<?php get_footer(); ?>

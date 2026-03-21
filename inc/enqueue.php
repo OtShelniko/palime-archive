@@ -80,6 +80,15 @@ function palime_enqueue_assets() {
         );
     }
 
+    if ( is_page_template( 'page-blog.php' ) || is_page_template( 'page-news.php' ) ) {
+        wp_enqueue_style(
+            'palime-page-blog',
+            $uri . '/assets/css/pages/blog.css',
+            [ 'palime-utilities' ],
+            $ver
+        );
+    }
+
     if ( is_woocommerce() || is_cart() || is_checkout() ) {
         wp_enqueue_style(
             'palime-page-shop',

@@ -1,13 +1,7 @@
 <?php
 /**
- * The main template file
- *
- * This is the most generic template file in a WordPress theme
- * and one of the two required files for a theme (the other being style.css).
- * It is used to display a page when nothing more specific matches a query.
- * E.g., it puts together the home page when no home.php file exists.
- *
- * @link https://developer.wordpress.org/themes/basics/template-hierarchy/
+ * Palime Archive — index.php
+ * Fallback-шаблон: список записей (если нет более специфичного шаблона)
  *
  * @package Palime_Archive
  */
@@ -15,43 +9,73 @@
 get_header();
 ?>
 
-	<main id="primary" class="site-main">
+<div class="section">
+    <div class="container">
 
-		<?php
-		if ( have_posts() ) :
+        <?php if ( have_posts() ) : ?>
 
-			if ( is_home() && ! is_front_page() ) :
-				?>
-				<header>
-					<h1 class="page-title screen-reader-text"><?php single_post_title(); ?></h1>
-				</header>
-				<?php
-			endif;
+            <header class="mb-xl">
+                <?php if ( is_home() && ! is_front_page() ) : ?>
+                    <h1 class="text-display" style="font-family:var(--font-display); font-size:2rem;">
+                        <?php single_post_title(); ?>
+                    </h1>
+                <?php else : ?>
+                    <span class="text-mono text-xs text-muted text-upper" style="letter-spacing:.12em;">
+                        — Материалы
+                    </span>
+                <?php endif; ?>
+            </header>
 
-			/* Start the Loop */
-			while ( have_posts() ) :
-				the_post();
+            <div class="grid grid--cards">
+                <?php while ( have_posts() ) : the_post(); ?>
+                    <article class="card fade-in">
+                        <?php if ( has_post_thumbnail() ) : ?>
+                            <div class="card__image">
+                                <a href="<?php the_permalink(); ?>">
+                                    <?php the_post_thumbnail( 'card', [ 'alt' => get_the_title() ] ); ?>
+                                </a>
+                            </div>
+                        <?php endif; ?>
+                        <div class="card__body">
+                            <div class="card__meta">
+                                <span><?php echo esc_html( palime_get_date() ); ?></span>
+                            </div>
+                            <h2 class="card__title">
+                                <a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
+                            </h2>
+                            <?php if ( has_excerpt() ) : ?>
+                                <p class="card__excerpt"><?php the_excerpt(); ?></p>
+                            <?php endif; ?>
+                            <div class="card__footer">
+                                <a href="<?php the_permalink(); ?>" class="btn btn--ghost btn--sm">Читать →</a>
+                            </div>
+                        </div>
+                    </article>
+                <?php endwhile; ?>
+            </div>
 
-				/*
-				 * Include the Post-Type-specific template for the content.
-				 * If you want to override this in a child theme, then include a file
-				 * called content-___.php (where ___ is the Post Type name) and that will be used instead.
-				 */
-				get_template_part( 'template-parts/content', get_post_type() );
+            <div class="pagination mt-xl">
+                <?php
+                the_posts_pagination( [
+                    'prev_text' => '← Новее',
+                    'next_text' => 'Старше →',
+                    'class'     => 'pagination',
+                ] );
+                ?>
+            </div>
 
-			endwhile;
+        <?php else : ?>
 
-			the_posts_navigation();
+            <div class="text-center" style="padding: var(--spacing-2xl) 0;">
+                <p class="text-mono text-muted text-upper" style="letter-spacing:.1em;">
+                    — Записей не найдено —
+                </p>
+                <a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="btn btn--outline mt-lg">На главную</a>
+            </div>
 
-		else :
+        <?php endif; ?>
 
-			get_template_part( 'template-parts/content', 'none' );
+    </div>
+</div>
 
-		endif;
-		?>
-
-	</main><!-- #main -->
-
-<?php
-get_sidebar();
-get_footer();
+<?php get_footer(); ?>
