@@ -55,15 +55,25 @@ add_action( 'wp_ajax_nopriv_palime_filter_archive', 'palime_handle_filter_archiv
 function palime_handle_filter_archive() {
     check_ajax_referer( 'wp_rest', 'nonce' );
 
-    $section = sanitize_text_field( $_POST['section'] ?? '' );
-    $person  = sanitize_text_field( $_POST['person']  ?? '' );
-    $era     = sanitize_text_field( $_POST['era']     ?? '' );
-    $genre   = sanitize_text_field( $_POST['genre']   ?? '' );
-    $type    = sanitize_text_field( $_POST['type']    ?? '' );
-    $status  = sanitize_text_field( $_POST['status']  ?? '' );
-    $search  = sanitize_text_field( $_POST['search']  ?? '' );
-    $sort    = sanitize_text_field( $_POST['sort']    ?? 'date' );
-    $paged   = max( 1, (int) ( $_POST['paged'] ?? 1 ) );
+    // Поддерживаем как POST (filters.js), так и GET (page-blog/news inline JS)
+    $req = array_merge( $_GET, $_POST );
+
+    // Тип записи — только разрешённые значения
+    $allowed_post_types = [ 'article', 'news' ];
+    $post_type = sanitize_key( $req['post_type'] ?? 'article' );
+    if ( ! in_array( $post_type, $allowed_post_types, true ) ) {
+        $post_type = 'article';
+    }
+
+    $section = sanitize_text_field( $req['section'] ?? '' );
+    $person  = sanitize_text_field( $req['person']  ?? '' );
+    $era     = sanitize_text_field( $req['era']     ?? '' );
+    $genre   = sanitize_text_field( $req['genre']   ?? '' );
+    $type    = sanitize_text_field( $req['type']    ?? '' );
+    $status  = sanitize_text_field( $req['status']  ?? '' );
+    $search  = sanitize_text_field( $req['search']  ?? '' );
+    $sort    = sanitize_text_field( $req['sort']    ?? 'date' );
+    $paged   = max( 1, (int) ( $req['paged'] ?? 1 ) );
 
     // Сортировка
     $orderby = 'date';
@@ -72,13 +82,15 @@ function palime_handle_filter_archive() {
     if ( $sort === 'relevance' && $search ) $orderby = 'relevance';
 
     $args = [
-        'post_type'      => 'article',
-        'posts_per_page' => 12,
-        'paged'          => $paged,
-        'post_status'    => 'publish',
-        'orderby'        => $orderby,
-        'order'          => $order,
-        'tax_query'      => [ 'relation' => 'AND' ],
+        'post_type'              => $post_type,
+        'posts_per_page'         => 12,
+        'paged'                  => $paged,
+        'post_status'            => 'publish',
+        'orderby'                => $orderby,
+        'order'                  => $order,
+        'tax_query'              => [ 'relation' => 'AND' ],
+        'update_post_meta_cache' => false,
+        'update_post_term_cache' => false,
     ];
 
     if ( $search )  $args['s'] = $search;
@@ -100,6 +112,9 @@ function palime_handle_filter_archive() {
         'archived' => 'в архиве',
     ];
 
+    // Налоговые запросы требуют кеша терминов — включаем обратно
+    $args['update_post_term_cache'] = true;
+
     $query = new WP_Query( $args );
     $posts = [];
 
@@ -113,15 +128,19 @@ function palime_handle_filter_archive() {
             $section_slug = ( $s_terms && ! is_wp_error( $s_terms ) ) ? $s_terms[0]->slug : '';
             $section_name = ( $s_terms && ! is_wp_error( $s_terms ) ) ? $s_terms[0]->name : '';
 
-            // Тип материала
+            // Тип материала (только для статей)
             $t_terms    = get_the_terms( $post_id, 'article-type' );
             $type_slug  = ( $t_terms && ! is_wp_error( $t_terms ) ) ? $t_terms[0]->slug : '';
-            $type_label = isset( $type_labels[ $type_slug ] ) ? $type_labels[ $type_slug ] : ( ( $t_terms && ! is_wp_error( $t_terms ) ) ? $t_terms[0]->name : '' );
+            $type_label = isset( $type_labels[ $type_slug ] )
+                ? $type_labels[ $type_slug ]
+                : ( ( $t_terms && ! is_wp_error( $t_terms ) ) ? $t_terms[0]->name : '' );
 
             // Статус
             $st_terms     = get_the_terms( $post_id, 'status' );
             $status_slug  = ( $st_terms && ! is_wp_error( $st_terms ) ) ? $st_terms[0]->slug : '';
-            $status_label = isset( $status_labels[ $status_slug ] ) ? $status_labels[ $status_slug ] : ( ( $st_terms && ! is_wp_error( $st_terms ) ) ? $st_terms[0]->name : '' );
+            $status_label = isset( $status_labels[ $status_slug ] )
+                ? $status_labels[ $status_slug ]
+                : ( ( $st_terms && ! is_wp_error( $st_terms ) ) ? $st_terms[0]->name : '' );
 
             // ACF: время чтения и лид
             $reading_time = function_exists( 'get_field' ) ? (int) get_field( 'reading_time', $post_id ) : 0;
@@ -141,13 +160,13 @@ function palime_handle_filter_archive() {
                 }
             }
 
-            $posts[] = [
+            $post_data = [
                 'id'           => $post_id,
                 'title'        => get_the_title(),
                 'url'          => get_permalink(),
                 'lead'         => wp_trim_words( $lead, 18, '…' ),
-                'excerpt'      => get_the_excerpt(),
                 'date'         => get_the_date( 'd.m.Y' ),
+                'date_raw'     => get_the_date( 'Y-m-d H:i:s' ),
                 'section_slug' => $section_slug,
                 'section_name' => $section_name,
                 'type_slug'    => $type_slug,
@@ -157,6 +176,16 @@ function palime_handle_filter_archive() {
                 'reading_time' => $reading_time ?: '',
                 'persons'      => $persons,
             ];
+
+            // Дополнительные поля для новостей (ACF)
+            if ( $post_type === 'news' ) {
+                $post_data['is_urgent'] = function_exists( 'get_field' ) ? (bool) get_field( 'is_urgent',   $post_id ) : false;
+                $post_data['source']    = function_exists( 'get_field' ) ? (string) get_field( 'news_source', $post_id ) : '';
+                $post_data['editor']    = function_exists( 'get_field' ) ? (string) get_field( 'news_editor', $post_id ) : '';
+                $post_data['verified']  = function_exists( 'get_field' ) ? (bool) get_field( 'is_verified',  $post_id ) : false;
+            }
+
+            $posts[] = $post_data;
         }
         wp_reset_postdata();
     }

@@ -37,7 +37,7 @@ get_header();
                 <!-- Обложка -->
                 <?php if ( has_post_thumbnail() ) : ?>
                     <div class="mb-xl overflow-hidden" style="border-radius:var(--radius-md);">
-                        <?php the_post_thumbnail( 'large', [ 'style' => 'width:100%;height:auto;display:block;' ] ); ?>
+                        <?php the_post_thumbnail( 'large', [ 'style' => 'width:100%;height:auto;display:block;', 'alt' => esc_attr( get_the_title() ) ] ); ?>
                     </div>
                 <?php endif; ?>
 

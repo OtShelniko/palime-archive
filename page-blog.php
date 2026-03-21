@@ -53,12 +53,13 @@ if ( $current_sort === 'popular' ) {
 }
 
 $query = new WP_Query( [
-    'post_type'      => 'article',
-    'posts_per_page' => $per_page,
-    'paged'          => $current_page,
-    'orderby'        => $orderby,
-    'order'          => $order,
-    'tax_query'      => $tax_query ?: [],
+    'post_type'              => 'article',
+    'posts_per_page'         => $per_page,
+    'paged'                  => $current_page,
+    'orderby'                => $orderby,
+    'order'                  => $order,
+    'tax_query'              => $tax_query ?: [],
+    'update_post_meta_cache' => false,
 ] );
 
 $total_found = $query->found_posts;
@@ -198,7 +199,7 @@ $section_slugs = [
 
                         <div class="pa-blog-card__image">
                             <?php if ( has_post_thumbnail() ) : ?>
-                                <?php the_post_thumbnail( 'large' ); ?>
+                                <?php the_post_thumbnail( 'large', [ 'alt' => esc_attr( get_the_title() ) ] ); ?>
                             <?php else : ?>
                                 <div class="pa-blog-card__image-placeholder">Изображение</div>
                             <?php endif; ?>
@@ -273,8 +274,8 @@ $section_slugs = [
         filters.loading = true;
 
         var params = new URLSearchParams({
-            action:  'palime_filter_archive',
-            _wpnonce: nonce,
+            action:    'palime_filter_archive',
+            nonce:     nonce,
             post_type: 'article',
             section: filters.section,
             type:    filters.type,

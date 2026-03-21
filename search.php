@@ -32,7 +32,7 @@ get_header();
                 type="search"
                 class="form-input"
                 placeholder="Новый запрос…"
-                value="<?php echo get_search_query(); ?>"
+                value="<?php echo esc_attr( get_search_query() ); ?>"
                 name="s"
             >
             <button type="submit" class="btn btn--primary">→</button>

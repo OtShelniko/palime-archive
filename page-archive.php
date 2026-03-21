@@ -16,19 +16,23 @@ get_header();
 
 // ── Общий счётчик всех статей ─────────────────────────────
 $total_query = new WP_Query( [
-    'post_type'      => 'article',
-    'post_status'    => 'publish',
-    'posts_per_page' => 1,
+    'post_type'              => 'article',
+    'post_status'            => 'publish',
+    'posts_per_page'         => 1,
+    'update_post_meta_cache' => false,
+    'update_post_term_cache' => false,
 ] );
 $total_found = $total_query->found_posts;
 wp_reset_postdata();
 
 // ── Каталогизировано (статус VERIFIED) ───────────────────
 $verified_query = new WP_Query( [
-    'post_type'      => 'article',
-    'posts_per_page' => 1,
-    'post_status'    => 'publish',
-    'tax_query'      => [ [
+    'post_type'              => 'article',
+    'posts_per_page'         => 1,
+    'post_status'            => 'publish',
+    'update_post_meta_cache' => false,
+    'update_post_term_cache' => false,
+    'tax_query'              => [ [
         'taxonomy' => 'status',
         'field'    => 'slug',
         'terms'    => 'verified',
@@ -39,10 +43,12 @@ wp_reset_postdata();
 
 // ── Спорные (статус DISPUTED) ────────────────────────────
 $disputed_query = new WP_Query( [
-    'post_type'      => 'article',
-    'posts_per_page' => 1,
-    'post_status'    => 'publish',
-    'tax_query'      => [ [
+    'post_type'              => 'article',
+    'posts_per_page'         => 1,
+    'post_status'            => 'publish',
+    'update_post_meta_cache' => false,
+    'update_post_term_cache' => false,
+    'tax_query'              => [ [
         'taxonomy' => 'status',
         'field'    => 'slug',
         'terms'    => 'disputed',

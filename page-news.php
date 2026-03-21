@@ -39,11 +39,13 @@ if ( $current_sort === 'section' ) {
 }
 
 $query = new WP_Query( [
-    'post_type'      => 'news',
-    'posts_per_page' => 30,
-    'orderby'        => $orderby,
-    'order'          => $order,
-    'tax_query'      => $tax_query ?: [],
+    'post_type'              => 'news',
+    'posts_per_page'         => 30,
+    'orderby'                => $orderby,
+    'order'                  => $order,
+    'tax_query'              => $tax_query ?: [],
+    'no_found_rows'          => true,
+    'update_post_meta_cache' => false,
 ] );
 
 // Группируем по дате (Y-m-d)
@@ -304,7 +306,7 @@ $section_labels = [
 
         var params = new URLSearchParams({
             action:    'palime_filter_archive',
-            _wpnonce:  nonce,
+            nonce:     nonce,
             post_type: 'news',
             section:   currentSection,
             sort:      currentSort,
