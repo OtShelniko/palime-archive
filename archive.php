@@ -1,8 +1,7 @@
 <?php
 /**
- * The template for displaying archive pages
- *
- * @link https://developer.wordpress.org/themes/basics/template-hierarchy/
+ * Palime Archive — archive.php
+ * Базовый шаблон архивов (таксономии, даты, авторы)
  *
  * @package Palime_Archive
  */
@@ -10,42 +9,84 @@
 get_header();
 ?>
 
-	<main id="primary" class="site-main">
+<div class="section--sm" style="background:var(--color-second);">
+    <div class="container">
+        <span class="text-mono text-xs text-muted text-upper" style="letter-spacing:.12em;">— Архив —</span>
+        <h1 class="mt-sm" style="font-family:var(--font-display); font-size:2rem;">
+            <?php the_archive_title(); ?>
+        </h1>
+        <?php
+        $desc = get_the_archive_description();
+        if ( $desc ) : ?>
+            <p class="mt-md text-muted" style="font-family:var(--font-serif); max-width:600px; line-height:1.6;">
+                <?php echo wp_kses_post( $desc ); ?>
+            </p>
+        <?php endif; ?>
+    </div>
+</div>
 
-		<?php if ( have_posts() ) : ?>
+<div class="section">
+    <div class="container">
 
-			<header class="page-header">
-				<?php
-				the_archive_title( '<h1 class="page-title">', '</h1>' );
-				the_archive_description( '<div class="archive-description">', '</div>' );
-				?>
-			</header><!-- .page-header -->
+        <?php if ( have_posts() ) : ?>
 
-			<?php
-			/* Start the Loop */
-			while ( have_posts() ) :
-				the_post();
+            <div class="grid grid--cards">
+                <?php while ( have_posts() ) : the_post(); ?>
 
-				/*
-				 * Include the Post-Type-specific template for the content.
-				 * If you want to override this in a child theme, then include a file
-				 * called content-___.php (where ___ is the Post Type name) and that will be used instead.
-				 */
-				get_template_part( 'template-parts/content', get_post_type() );
+                    <?php
+                    $pt = get_post_type();
+                    if ( $pt === 'article' ) {
+                        get_template_part( 'template-parts/cards/card', 'article' );
+                    } elseif ( $pt === 'news' ) {
+                        get_template_part( 'template-parts/cards/card', 'news' );
+                    } else {
+                        ?>
+                        <article class="card fade-in">
+                            <?php if ( has_post_thumbnail() ) : ?>
+                                <div class="card__image">
+                                    <a href="<?php the_permalink(); ?>">
+                                        <?php the_post_thumbnail( 'card', [ 'alt' => get_the_title() ] ); ?>
+                                    </a>
+                                </div>
+                            <?php endif; ?>
+                            <div class="card__body">
+                                <div class="card__meta">
+                                    <span><?php echo esc_html( palime_get_date() ); ?></span>
+                                </div>
+                                <h2 class="card__title">
+                                    <a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
+                                </h2>
+                                <div class="card__footer">
+                                    <a href="<?php the_permalink(); ?>" class="btn btn--ghost btn--sm">Читать →</a>
+                                </div>
+                            </div>
+                        </article>
+                        <?php
+                    }
+                    ?>
 
-			endwhile;
+                <?php endwhile; ?>
+            </div>
 
-			the_posts_navigation();
+            <div class="pagination mt-xl">
+                <?php
+                the_posts_pagination( [
+                    'prev_text' => '← Новее',
+                    'next_text' => 'Старше →',
+                ] );
+                ?>
+            </div>
 
-		else :
+        <?php else : ?>
 
-			get_template_part( 'template-parts/content', 'none' );
+            <div class="text-center" style="padding:var(--spacing-2xl) 0;">
+                <p class="text-mono text-muted text-upper" style="letter-spacing:.1em;">— Материалов не найдено —</p>
+                <a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="btn btn--outline mt-lg">На главную</a>
+            </div>
 
-		endif;
-		?>
+        <?php endif; ?>
 
-	</main><!-- #main -->
+    </div>
+</div>
 
-<?php
-get_sidebar();
-get_footer();
+<?php get_footer(); ?>
