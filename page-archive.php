@@ -137,6 +137,25 @@ $current_month = $months_ru[ (int) date( 'n' ) ] . ' ' . date( 'Y' );
         <!-- Активные фильтры-пилюли -->
         <div class="pa-active-filters" id="pa-active-filters" aria-live="polite"></div>
 
+        <!-- РАЗДЕЛ — главный фильтр -->
+        <div class="pa-filter-group pa-filter-group--primary">
+            <span class="pa-filter-group__label">Раздел</span>
+            <div class="pa-filter-tags pa-filter-tags--section" data-filter-group="section">
+                <?php if ( $terms_section && ! is_wp_error( $terms_section ) ) :
+                    foreach ( $terms_section as $t ) :
+                        $css = $section_css[ $t->slug ] ?? '';
+                    ?>
+                    <button
+                        type="button"
+                        class="pa-filter-tag pa-filter-tag--lg <?php echo $css ? 'pa-filter-tag--' . esc_attr( $css ) : ''; ?>"
+                        data-filter="section"
+                        data-value="<?php echo esc_attr( $t->slug ); ?>"
+                        aria-pressed="false"
+                    ><?php echo esc_html( $t->name ); ?></button>
+                <?php endforeach; endif; ?>
+            </div>
+        </div>
+
         <!-- ПЕРСОНА / АВТОР -->
         <div class="pa-filter-group">
             <span class="pa-filter-group__label">Персона / Автор</span>
@@ -154,25 +173,6 @@ $current_month = $months_ru[ (int) date( 'n' ) ] . ' ' . date( 'Y' );
                      id="pa-person-suggestions" role="listbox"></div>
             </div>
             <span class="pa-filter-person__hint">Кафка, Тарковский, Малер…</span>
-        </div>
-
-        <!-- РАЗДЕЛ -->
-        <div class="pa-filter-group">
-            <span class="pa-filter-group__label">Раздел</span>
-            <div class="pa-filter-tags" data-filter-group="section">
-                <?php if ( $terms_section && ! is_wp_error( $terms_section ) ) :
-                    foreach ( $terms_section as $t ) :
-                        $css = $section_css[ $t->slug ] ?? '';
-                    ?>
-                    <button
-                        type="button"
-                        class="pa-filter-tag <?php echo $css ? 'pa-filter-tag--' . esc_attr( $css ) : ''; ?>"
-                        data-filter="section"
-                        data-value="<?php echo esc_attr( $t->slug ); ?>"
-                        aria-pressed="false"
-                    ><?php echo esc_html( $t->name ); ?></button>
-                <?php endforeach; endif; ?>
-            </div>
         </div>
 
         <!-- ТИП МАТЕРИАЛА -->
