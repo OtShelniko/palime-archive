@@ -71,7 +71,7 @@ while ( have_posts() ) : the_post();
                     history.back();
                 });
             }
-        } catch (e) {}
+        } catch (e) { /* referrer parsing failed — use default href */ }
     }
 }());
 </script>

@@ -36,6 +36,8 @@ function palime_register_post_types() {
     // ---------------------------------------------------------
     // НОВОСТИ
     // ---------------------------------------------------------
+    // has_archive отключён — страница /news/ управляется через page-news.php.
+    // Оставляем rewrite для одиночных URL: /news/{postname}/
     register_post_type( 'news', [
         'labels' => [
             'name'          => 'Новости',
@@ -47,7 +49,7 @@ function palime_register_post_types() {
         'public'        => true,
         'show_in_rest'  => true,
         'supports'      => [ 'title', 'editor', 'thumbnail', 'excerpt' ],
-        'has_archive'   => true,
+        'has_archive'   => false,
         'rewrite'       => [ 'slug' => 'news' ],
         'menu_icon'     => 'dashicons-megaphone',
         'menu_position' => 6,
@@ -118,6 +120,8 @@ function palime_register_post_types() {
     // ---------------------------------------------------------
     // ЖИВОЙ ИНДЕКС — лента последних материалов на главной
     // ---------------------------------------------------------
+    // Живой индекс используется только на главной (front-page.php).
+    // Отдельные страницы записей не нужны — отключаем publicly_queryable.
     register_post_type( 'live_entry', [
         'labels' => [
             'name'          => 'Живой индекс',
@@ -126,13 +130,14 @@ function palime_register_post_types() {
             'add_new_item'  => 'Новая запись',
             'edit_item'     => 'Редактировать запись',
         ],
-        'public'        => true,
-        'show_in_rest'  => true,
-        'supports'      => [ 'title' ],
-        'has_archive'   => false,
-        'rewrite'       => [ 'slug' => 'live' ],
-        'menu_icon'     => 'dashicons-rss',
-        'menu_position' => 10,
+        'public'              => true,
+        'publicly_queryable'  => false,
+        'show_in_rest'        => true,
+        'supports'            => [ 'title' ],
+        'has_archive'         => false,
+        'rewrite'             => false,
+        'menu_icon'           => 'dashicons-rss',
+        'menu_position'       => 10,
     ] );
 
     // ---------------------------------------------------------

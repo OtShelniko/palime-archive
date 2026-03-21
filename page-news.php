@@ -123,19 +123,6 @@ $section_labels = [
 
     <div class="container">
 
-        <?php /* ---- Вкладки БЛОГ / НОВОСТИ ---- */ ?>
-        <nav class="pa-blog-tabs" aria-label="Переключение разделов">
-            <a href="<?php echo esc_url( home_url( '/blog/' ) ); ?>"
-               class="pa-blog-tabs__link">
-                Блог
-            </a>
-            <a href="<?php echo esc_url( home_url( '/news/' ) ); ?>"
-               class="pa-blog-tabs__link is-active"
-               aria-current="page">
-                Новости
-            </a>
-        </nav>
-
         <?php /* ---- Герой: заголовок слева + фильтры разделов справа ---- */ ?>
         <div class="pa-news-hero">
             <div class="pa-news-hero__left">

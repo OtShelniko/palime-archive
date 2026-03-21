@@ -43,8 +43,8 @@ get_header();
             <a href="<?php echo esc_url( home_url( '/archive/' ) ); ?>" style="display:inline-flex; align-items:center; padding:10px 24px; background:#D91515; color:#fff; font-family:'IBM Plex Mono',monospace; font-size:0.8rem; letter-spacing:0.1em; text-transform:uppercase; border:1px solid #D91515; border-radius:4px; text-decoration:none; transition:all 0.15s ease;">
                 Открыть архив
             </a>
-            <a href="<?php echo esc_url( home_url( '/blog/' ) ); ?>" style="display:inline-flex; align-items:center; padding:10px 24px; background:transparent; color:#fff; font-family:'IBM Plex Mono',monospace; font-size:0.8rem; letter-spacing:0.1em; text-transform:uppercase; border:1px solid rgba(255,255,255,0.4); border-radius:4px; text-decoration:none; transition:all 0.15s ease;">
-                Читать журнал
+            <a href="<?php echo esc_url( home_url( '/archive/' ) ); ?>" style="display:inline-flex; align-items:center; padding:10px 24px; background:transparent; color:#fff; font-family:'IBM Plex Mono',monospace; font-size:0.8rem; letter-spacing:0.1em; text-transform:uppercase; border:1px solid rgba(255,255,255,0.4); border-radius:4px; text-decoration:none; transition:all 0.15s ease;">
+                Последние материалы
             </a>
         </div>
 
@@ -163,7 +163,7 @@ get_header();
 
 
 <!-- ============================================================
-     3. АРХИВ — НЕ БЛОГ
+     3. НЕ ЛЕНТА, А АРХИВ
      ============================================================ -->
 <section style="background:var(--color-bg); padding:80px 0; border-top:1px solid rgba(0,0,0,0.06);">
     <div class="container">
@@ -172,7 +172,7 @@ get_header();
             <!-- Левый блок: манифест -->
             <div>
                 <h2 style="font-family:'Trajan Pro 3',serif; font-size:clamp(1.8rem,3.5vw,2.8rem); letter-spacing:0.08em; line-height:1.1; text-transform:uppercase; margin-bottom:24px;">
-                    Архив —<br>не блог
+                    Не лента,<br>а архив
                 </h2>
                 <div style="font-family:'EB Garamond',Georgia,serif; font-size:1.05rem; line-height:1.8; opacity:0.85;">
                     <p>Мы не гонимся за трендами. Мы не публикуем пресс-релизы под видом критики. Мы не путаем маркетинг со смыслом.</p>
@@ -821,7 +821,7 @@ document.querySelectorAll('.pa-tab').forEach(function(btn) {
     #main > section:nth-child(2) .container > div:last-child {
         grid-template-columns: repeat(2, 1fr) !important;
     }
-    /* Архив не блог: одна колонка */
+    /* Не лента, а архив: одна колонка */
     #main > section:nth-child(3) .container > div {
         grid-template-columns: 1fr !important;
         gap: 40px !important;
