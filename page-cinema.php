@@ -4,7 +4,7 @@
  * Template Post Type: page
  *
  * Palime Archive — page-cinema.php
- * Страница раздела Кино (/cinema) — секции 1–4
+ * Страница раздела Кино (/cinema) — секции 1–8
  *
  * @package Palime_Archive
  */
@@ -108,6 +108,9 @@ $tax_query = [ [
     .section-hero-cinema { grid-template-columns: 1fr !important; }
     .cinema-cards-grid { grid-template-columns: 1fr !important; }
     .cinema-rating-hide-mobile { display: none !important; }
+    .cinema-monthly-grid { grid-template-columns: 1fr !important; }
+    .cinema-about-grid { grid-template-columns: 1fr !important; }
+    .cinema-shop-grid { grid-template-columns: 1fr !important; }
 }
 </style>
 
@@ -364,6 +367,341 @@ $tax_query = [ [
     </div>
 </section>
 <!-- /НОВОСТИ -->
+
+
+<!-- ====================================================
+     5. ЦИТАТА ДНЯ
+     ==================================================== -->
+<?php
+$today = current_time( 'Y-m-d' );
+$quote = new WP_Query( [
+    'post_type'              => 'quote_of_day',
+    'posts_per_page'         => 1,
+    'post_status'            => 'publish',
+    'tax_query'              => $tax_query,
+    'date_query'             => [ [
+        'year'  => date( 'Y', strtotime( $today ) ),
+        'month' => date( 'm', strtotime( $today ) ),
+        'day'   => date( 'd', strtotime( $today ) ),
+    ] ],
+    'update_post_meta_cache' => true,
+] );
+
+// Fallback: последняя цитата
+if ( ! $quote->have_posts() ) {
+    $quote = new WP_Query( [
+        'post_type'              => 'quote_of_day',
+        'posts_per_page'         => 1,
+        'post_status'            => 'publish',
+        'tax_query'              => $tax_query,
+        'orderby'                => 'date',
+        'order'                  => 'DESC',
+        'update_post_meta_cache' => true,
+    ] );
+}
+?>
+
+<section style="background:<?php echo esc_attr( $bg_dark ); ?>; padding:60px 0; color:#fff;">
+    <div style="max-width:700px; margin:0 auto; padding:0 var(--gutter); text-align:center;">
+
+        <?php if ( $quote->have_posts() ) : $quote->the_post();
+            $q_id     = get_the_ID();
+            $q_text   = function_exists( 'get_field' ) ? get_field( 'quote_text', $q_id ) : '';
+            $q_author = function_exists( 'get_field' ) ? get_field( 'quote_author', $q_id ) : '';
+            $q_work   = function_exists( 'get_field' ) ? get_field( 'quote_work', $q_id ) : '';
+            if ( ! $q_text ) $q_text = get_the_title();
+        ?>
+
+            <p style="font-family:var(--font-mono); font-size:11px; color:<?php echo esc_attr( $accent ); ?>; letter-spacing:.15em; text-transform:uppercase; margin-bottom:16px;">
+                ЦИТАТА ДНЯ · <?php echo esc_html( date( 'd.m.Y', strtotime( $today ) ) ); ?>
+            </p>
+
+            <div style="font-family:var(--font-display); font-size:6rem; color:<?php echo esc_attr( $accent ); ?>; opacity:0.3; line-height:1; margin-bottom:-20px;">
+                &ldquo;
+            </div>
+
+            <p style="font-family:var(--font-serif); font-size:1.4rem; color:#fff; line-height:1.7; font-style:italic; margin-bottom:24px;">
+                <?php echo esc_html( $q_text ); ?>
+            </p>
+
+            <?php if ( $q_author || $q_work ) : ?>
+                <p style="font-family:var(--font-mono); font-size:11px; opacity:.55; letter-spacing:.08em; margin-bottom:16px;">
+                    — <?php if ( $q_author ) echo esc_html( $q_author ); ?><?php if ( $q_author && $q_work ) echo ' · '; ?><?php if ( $q_work ) echo esc_html( $q_work ); ?>
+                </p>
+            <?php endif; ?>
+
+            <a href="<?php echo esc_url( get_permalink() ); ?>"
+               style="font-family:var(--font-mono); font-size:11px; color:<?php echo esc_attr( $accent ); ?>; text-decoration:none; letter-spacing:.1em; text-transform:uppercase;">
+                ЧИТАТЬ СТАТЬЮ →
+            </a>
+
+        <?php wp_reset_postdata(); else : ?>
+
+            <p style="font-family:var(--font-mono); font-size:11px; opacity:0.3; color:#fff; letter-spacing:.08em;">
+                ЦИТАТА ДНЯ · РЕДАКТОР ЗАПОЛНЯЕТ ЗАРАНЕЕ · СЕГОДНЯ ПУСТО
+            </p>
+
+        <?php endif; ?>
+
+    </div>
+</section>
+<!-- /ЦИТАТА ДНЯ -->
+
+
+<!-- ====================================================
+     6. ЛУЧШЕЕ ЗА МЕСЯЦ
+     ==================================================== -->
+<?php
+$monthly = new WP_Query( [
+    'post_type'              => 'monthly_best',
+    'posts_per_page'         => 1,
+    'post_status'            => 'publish',
+    'tax_query'              => $tax_query,
+    'update_post_meta_cache' => true,
+] );
+?>
+
+<section style="background:var(--color-bg); padding:80px 0;">
+    <div style="max-width:var(--container); margin:0 auto; padding:0 var(--gutter);">
+
+        <div style="margin-bottom:48px;">
+            <p style="font-family:var(--font-mono); font-size:11px; color:var(--color-text); opacity:.5; letter-spacing:.15em; text-transform:uppercase; margin-bottom:8px;">
+                <?php echo esc_html( strtoupper( date_i18n( 'F Y' ) ) ); ?>
+            </p>
+            <h2 style="font-family:var(--font-display); font-size:clamp(1.6rem,3vw,2.2rem); color:var(--color-text); margin:0;">
+                ЛУЧШЕЕ ЗА МЕСЯЦ
+            </h2>
+        </div>
+
+        <?php if ( $monthly->have_posts() ) : $monthly->the_post();
+            $monthly_cats = [
+                'monthly_films'     => 'ФИЛЬМЫ',
+                'monthly_series'    => 'СЕРИАЛЫ',
+                'monthly_animation' => 'АНИМАЦИЯ',
+            ];
+        ?>
+
+            <div class="cinema-monthly-grid" style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:24px;">
+                <?php foreach ( $monthly_cats as $field_key => $cat_label ) :
+                    $items = function_exists( 'get_field' ) ? get_field( $field_key ) : [];
+                ?>
+                    <div>
+                        <h3 style="font-family:var(--font-mono); font-size:11px; color:<?php echo esc_attr( $accent ); ?>; letter-spacing:.1em; text-transform:uppercase; margin-bottom:16px;">
+                            <?php echo esc_html( $cat_label ); ?>
+                        </h3>
+                        <?php if ( $items && is_array( $items ) ) : ?>
+                            <?php foreach ( $items as $idx => $entry ) :
+                                $entry_title = is_array( $entry ) ? ( $entry['title'] ?? $entry['name'] ?? $entry[0] ?? '' ) : $entry;
+                            ?>
+                                <div style="padding:12px 0; border-bottom:1px solid rgba(0,0,0,0.08); display:flex; align-items:baseline; gap:12px;">
+                                    <span style="font-family:var(--font-mono); font-size:10px; color:<?php echo esc_attr( $accent ); ?>;">
+                                        <?php echo esc_html( str_pad( $idx + 1, 2, '0', STR_PAD_LEFT ) ); ?>
+                                    </span>
+                                    <span style="font-family:var(--font-serif); font-size:.95rem;">
+                                        <?php echo esc_html( $entry_title ); ?>
+                                    </span>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php else : ?>
+                            <?php for ( $p = 1; $p <= 5; $p++ ) : ?>
+                                <div style="padding:12px 0; border-bottom:1px solid rgba(0,0,0,0.08); opacity:0.2; display:flex; align-items:baseline; gap:12px;">
+                                    <span style="font-family:var(--font-mono); font-size:10px; color:<?php echo esc_attr( $accent ); ?>;">
+                                        <?php echo esc_html( str_pad( $p, 2, '0', STR_PAD_LEFT ) ); ?>
+                                    </span>
+                                    <span style="font-family:var(--font-mono); font-size:12px;">——————————</span>
+                                </div>
+                            <?php endfor; ?>
+                        <?php endif; ?>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+
+        <?php wp_reset_postdata(); else : ?>
+
+            <div class="cinema-monthly-grid" style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:24px;">
+                <?php
+                $stub_labels = [ 'ФИЛЬМЫ', 'СЕРИАЛЫ', 'АНИМАЦИЯ' ];
+                foreach ( $stub_labels as $sl ) : ?>
+                    <div>
+                        <h3 style="font-family:var(--font-mono); font-size:11px; color:<?php echo esc_attr( $accent ); ?>; letter-spacing:.1em; margin-bottom:16px;">
+                            <?php echo esc_html( $sl ); ?>
+                        </h3>
+                        <?php for ( $p = 1; $p <= 5; $p++ ) : ?>
+                            <div style="padding:12px 0; border-bottom:1px solid rgba(0,0,0,0.08); opacity:0.2; display:flex; align-items:baseline; gap:12px;">
+                                <span style="font-family:var(--font-mono); font-size:10px; color:<?php echo esc_attr( $accent ); ?>;">
+                                    <?php echo esc_html( str_pad( $p, 2, '0', STR_PAD_LEFT ) ); ?>
+                                </span>
+                                <span style="font-family:var(--font-mono); font-size:12px;">——————————</span>
+                            </div>
+                        <?php endfor; ?>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+
+            <p style="font-family:var(--font-mono); font-size:10px; opacity:0.4; margin-top:24px; letter-spacing:.08em; color:var(--color-text);">
+                ИТОГИ МЕСЯЦА ФОРМИРУЮТСЯ
+            </p>
+
+        <?php endif; ?>
+
+    </div>
+</section>
+<!-- /ЛУЧШЕЕ ЗА МЕСЯЦ -->
+
+
+<!-- ====================================================
+     7. О ПРОЕКТЕ
+     ==================================================== -->
+<?php
+// Получаем последнюю статью для даты
+$last_article_q = new WP_Query( [
+    'post_type'      => 'article',
+    'posts_per_page' => 1,
+    'post_status'    => 'publish',
+    'tax_query'      => $tax_query,
+    'orderby'        => 'date',
+    'order'          => 'DESC',
+    'fields'         => 'ids',
+] );
+$last_article_id   = $last_article_q->have_posts() ? $last_article_q->posts[0] : 0;
+$last_article_date = $last_article_id ? get_the_date( 'd.m.Y', $last_article_id ) : '—';
+wp_reset_postdata();
+
+$article_count = wp_count_posts( 'article' );
+$article_total = isset( $article_count->publish ) ? $article_count->publish : 0;
+?>
+
+<section style="background:var(--color-second); padding:80px 0;">
+    <div style="max-width:var(--container); margin:0 auto; padding:0 var(--gutter);">
+
+        <div class="cinema-about-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:60px; align-items:start;">
+
+            <!-- Левая — манифест -->
+            <div>
+                <p style="font-family:var(--font-mono); font-size:11px; color:<?php echo esc_attr( $accent ); ?>; letter-spacing:.15em; text-transform:uppercase; margin-bottom:16px;">
+                    CINEMA · О РАЗДЕЛЕ
+                </p>
+                <h2 style="font-family:var(--font-display); font-size:clamp(1.6rem,3vw,2.2rem); color:var(--color-text); margin:0 0 24px;">
+                    О РАЗДЕЛЕ
+                </h2>
+                <p style="font-family:var(--font-serif); font-size:1.1rem; line-height:1.8; color:var(--color-text); max-width:520px;">
+                    Кино — не развлечение. Кино — это способ видеть мир. Мы разбираем фильмы как тексты, режиссёров как мыслителей, сцены как аргументы. Без рейтингов ради рейтингов. Только метод.
+                </p>
+            </div>
+
+            <!-- Правая — статус-блок -->
+            <div style="background:<?php echo esc_attr( $bg_dark ); ?>; padding:32px; font-family:var(--font-mono); color:#fff;">
+
+                <div style="display:grid; grid-template-columns:140px 1fr; padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.08); font-size:11px;">
+                    <span style="opacity:.5;">РАЗДЕЛ</span>
+                    <span>КИНО</span>
+                </div>
+                <div style="display:grid; grid-template-columns:140px 1fr; padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.08); font-size:11px;">
+                    <span style="opacity:.5;">СТАТУС</span>
+                    <span style="color:<?php echo esc_attr( $accent ); ?>;">АКТИВЕН</span>
+                </div>
+                <div style="display:grid; grid-template-columns:140px 1fr; padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.08); font-size:11px;">
+                    <span style="opacity:.5;">МАТЕРИАЛОВ</span>
+                    <span><?php echo esc_html( $article_total ); ?></span>
+                </div>
+                <div style="display:grid; grid-template-columns:140px 1fr; padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.08); font-size:11px;">
+                    <span style="opacity:.5;">ПОСЛЕДНЕЕ</span>
+                    <span><?php echo esc_html( $last_article_date ); ?></span>
+                </div>
+                <div style="display:grid; grid-template-columns:140px 1fr; padding:8px 0; font-size:11px;">
+                    <span style="opacity:.5;">АКЦЕНТ</span>
+                    <span style="color:<?php echo esc_attr( $accent ); ?>;"><?php echo esc_html( $accent ); ?></span>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</section>
+<!-- /О ПРОЕКТЕ -->
+
+
+<!-- ====================================================
+     8. ПРЕВЬЮ МАГАЗИНА
+     ==================================================== -->
+<?php
+$shop_item = null;
+$shop_img  = '';
+$shop_name = '';
+$shop_desc = '';
+$shop_price = '';
+
+if ( class_exists( 'WooCommerce' ) ) {
+    $sq = new WP_Query( [
+        'post_type'              => 'product',
+        'posts_per_page'         => 1,
+        'post_status'            => 'publish',
+        'update_post_meta_cache' => true,
+    ] );
+    if ( $sq->have_posts() ) {
+        $sq->the_post();
+        $shop_item  = get_post();
+        $shop_name  = get_the_title();
+        $shop_desc  = get_the_excerpt();
+        $shop_img   = get_the_post_thumbnail_url( null, 'full' );
+        $product    = function_exists( 'wc_get_product' ) ? wc_get_product( get_the_ID() ) : null;
+        $shop_price = $product ? $product->get_price() : '';
+        wp_reset_postdata();
+    }
+}
+?>
+
+<section style="background:#0A0A0A; padding:80px 0;">
+    <div style="max-width:var(--container); margin:0 auto; padding:0 var(--gutter);">
+
+        <?php if ( $shop_item ) : ?>
+            <div class="cinema-shop-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:2px;">
+
+                <!-- Фото товара -->
+                <div style="aspect-ratio:1/1; background:<?php echo $shop_img ? 'url(' . esc_url( $shop_img ) . ') center/cover no-repeat' : '#111'; ?>; display:flex; align-items:center; justify-content:center;">
+                    <?php if ( ! $shop_img ) : ?>
+                        <span style="font-family:var(--font-mono); font-size:11px; color:rgba(255,255,255,0.3); letter-spacing:.1em; text-transform:uppercase;">КОЛЛЕКЦИЯ ГОТОВИТСЯ</span>
+                    <?php endif; ?>
+                </div>
+
+                <!-- Описание товара -->
+                <div style="padding:40px; background:#111; color:#fff; display:flex; flex-direction:column; justify-content:center;">
+                    <p style="font-family:var(--font-mono); font-size:10px; color:rgba(255,255,255,.5); letter-spacing:.15em; text-transform:uppercase; margin-bottom:16px;">
+                        ТЕКУЩИЙ ДРОП · ТИРАЖ ОГРАНИЧЕН
+                    </p>
+                    <h2 style="font-family:var(--font-display); font-size:clamp(1.4rem,2.5vw,2rem); color:#fff; margin:0 0 16px;">
+                        <?php echo esc_html( $shop_name ); ?>
+                    </h2>
+                    <?php if ( $shop_desc ) : ?>
+                        <p style="font-family:var(--font-serif); font-size:.95rem; opacity:0.7; line-height:1.6; margin-bottom:20px;">
+                            <?php echo esc_html( $shop_desc ); ?>
+                        </p>
+                    <?php endif; ?>
+                    <?php if ( $shop_price ) : ?>
+                        <p style="font-family:var(--font-mono); font-size:1.2rem; color:#D91515; margin-bottom:24px;">
+                            <?php echo esc_html( $shop_price ); ?> ₽
+                        </p>
+                    <?php endif; ?>
+                    <div>
+                        <a href="<?php echo esc_url( home_url( '/shop/' ) ); ?>"
+                           style="display:inline-block; padding:12px 28px; background:#D91515; color:#fff; font-family:var(--font-mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase; text-decoration:none; transition:var(--transition);">
+                            В МАГАЗИН →
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        <?php else : ?>
+            <div style="text-align:center; padding:60px; color:rgba(255,255,255,0.3); font-family:var(--font-mono); font-size:12px; letter-spacing:.08em;">
+                КОЛЛЕКЦИЯ ГОТОВИТСЯ К ЗАПУСКУ ·
+                <a href="<?php echo esc_url( home_url( '/shop/' ) ); ?>" style="color:#D91515; text-decoration:none;">В МАГАЗИН →</a>
+            </div>
+        <?php endif; ?>
+
+    </div>
+</section>
+<!-- /ПРЕВЬЮ МАГАЗИНА -->
 
 
 <!-- JS: переключение вкладок -->
