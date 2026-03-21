@@ -13,7 +13,6 @@
 <?php
 $current_section = palime_get_current_section();
 $is_home         = is_front_page() || ( is_home() && ! is_front_page() );
-$is_blog         = is_page( 'blog' );
 $is_news         = is_post_type_archive( 'news' ) || is_singular( 'news' ) || is_page( 'news' );
 $is_shop         = function_exists( 'is_woocommerce' ) && is_woocommerce();
 $is_about        = is_page( 'about' ) || is_page( 'o-nas' );
@@ -80,13 +79,6 @@ $shop_url        = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_perm
                             </a>
                         </li>
                     </ul>
-                </li>
-
-                <li class="pa-nav__item">
-                    <a href="<?php echo esc_url( home_url( '/blog/' ) ); ?>"
-                       class="pa-nav__link <?php echo $is_blog ? 'is-active' : ''; ?>">
-                        БЛОГ
-                    </a>
                 </li>
 
                 <li class="pa-nav__item">
@@ -158,7 +150,6 @@ $shop_url        = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_perm
             <li><a href="<?php echo esc_url( home_url( '/literature/' ) ); ?>">Литература</a></li>
             <li><a href="<?php echo esc_url( home_url( '/music/' ) ); ?>">Музыка</a></li>
             <li><a href="<?php echo esc_url( home_url( '/art/' ) ); ?>">ИЗО</a></li>
-            <li><a href="<?php echo esc_url( home_url( '/blog/' ) ); ?>">Блог</a></li>
             <li><a href="<?php echo esc_url( home_url( '/news/' ) ); ?>">Новости</a></li>
             <li><a href="<?php echo esc_url( home_url( '/archive/' ) ); ?>">Архив</a></li>
             <li><a href="<?php echo esc_url( $shop_url ); ?>">Магазин</a></li>

@@ -24,8 +24,8 @@
         <div class="pa-footer__col">
             <h4 class="pa-footer__col-title">АРХИВ</h4>
             <ul class="pa-footer__links">
-                <li><a href="<?php echo esc_url( home_url( '/blog/' ) ); ?>" class="pa-footer__link">Все статьи</a></li>
-                <li><a href="<?php echo esc_url( home_url( '/blog/?type=selection' ) ); ?>" class="pa-footer__link">Подборки</a></li>
+                <li><a href="<?php echo esc_url( home_url( '/archive/' ) ); ?>" class="pa-footer__link">Все статьи</a></li>
+                <li><a href="<?php echo esc_url( home_url( '/archive/?type=selection' ) ); ?>" class="pa-footer__link">Подборки</a></li>
                 <li><a href="<?php echo esc_url( function_exists( 'palime_get_rankings_archive_url' ) ? palime_get_rankings_archive_url() : home_url( '/rankings/' ) ); ?>" class="pa-footer__link">Рейтинги</a></li>
                 <li><a href="<?php echo esc_url( home_url( '/news/' ) ); ?>" class="pa-footer__link">Новости</a></li>
                 <li><a href="<?php echo esc_url( home_url( '/archive/' ) ); ?>" class="pa-footer__link">Поиск</a></li>

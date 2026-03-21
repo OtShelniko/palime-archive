@@ -69,6 +69,24 @@ add_filter( 'post_type_link', function ( $url, $post ) {
 
 
 // =========================================================
+// LEGACY REDIRECT: /blog/ → /archive/ (301)
+// Страница «Блог» убрана из навигации. Сохраняем GET-параметры.
+// =========================================================
+
+add_action( 'template_redirect', function () {
+    if ( is_page( 'blog' ) ) {
+        $query_string = $_SERVER['QUERY_STRING'] ?? '';
+        $target       = home_url( '/archive/' );
+        if ( $query_string ) {
+            $target .= '?' . $query_string;
+        }
+        wp_redirect( $target, 301 );
+        exit;
+    }
+} );
+
+
+// =========================================================
 // ACF JSON — автосохранение и загрузка полей
 // =========================================================
 

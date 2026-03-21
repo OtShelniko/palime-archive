@@ -82,19 +82,6 @@ $section_slugs = [
 
     <div class="container">
 
-        <?php /* ---- Вкладки БЛОГ / НОВОСТИ ---- */ ?>
-        <nav class="pa-blog-tabs" aria-label="Переключение разделов">
-            <a href="<?php echo esc_url( home_url( '/blog/' ) ); ?>"
-               class="pa-blog-tabs__link is-active"
-               aria-current="page">
-                Блог
-            </a>
-            <a href="<?php echo esc_url( home_url( '/news/' ) ); ?>"
-               class="pa-blog-tabs__link">
-                Новости
-            </a>
-        </nav>
-
         <?php /* ---- Фильтры ---- */ ?>
         <div class="pa-blog-filters" id="pa-blog-filters">
             <div class="pa-blog-filters__inner">
@@ -137,7 +124,7 @@ $section_slugs = [
 
         <?php /* ---- Герой / Заголовок ---- */ ?>
         <div class="pa-blog-hero">
-            <p class="pa-blog-hero__label">Блог</p>
+            <p class="pa-blog-hero__label">Архив</p>
             <h1 class="pa-blog-hero__title">Статьи</h1>
             <p class="pa-blog-hero__subtitle">
                 Авторы<span>·</span>Произведения<span>·</span>Подборки
