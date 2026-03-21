@@ -250,11 +250,41 @@
     color: #fff;
 }
 
+/* Главный фильтр — раздел */
+.pa-filter-group--primary {
+    margin-bottom: 26px;
+    padding-bottom: 26px;
+    border-bottom: 2px solid rgba(0,0,0,.12);
+}
+
+.pa-filter-group--primary .pa-filter-group__label {
+    font-size: .65rem;
+    letter-spacing: .22em;
+    color: rgba(0,0,0,.5);
+    margin-bottom: 12px;
+}
+
+.pa-filter-tags--section {
+    gap: 6px;
+}
+
+.pa-filter-tag--lg {
+    padding: 7px 14px;
+    font-size: .68rem;
+    letter-spacing: .1em;
+}
+
 /* Для тегов с акцентом раздела */
 .pa-filter-tag--cinema.is-active  { background: #4DB7FF; border-color: #4DB7FF; color: #000; }
 .pa-filter-tag--lit.is-active     { background: #4A3428; border-color: #4A3428; color: #fff; }
 .pa-filter-tag--music.is-active   { background: #FF4FA3; border-color: #FF4FA3; color: #fff; }
 .pa-filter-tag--art.is-active     { background: #C6A25A; border-color: #C6A25A; color: #000; }
+
+/* Hover-цвета для разделов */
+.pa-filter-tag--cinema:hover  { border-color: #4DB7FF; color: #4DB7FF; }
+.pa-filter-tag--lit:hover     { border-color: #4A3428; color: #4A3428; }
+.pa-filter-tag--music:hover   { border-color: #FF4FA3; color: #FF4FA3; }
+.pa-filter-tag--art:hover     { border-color: #C6A25A; color: #C6A25A; }
 
 /* Вторичные фильтры: редакторские метки, эпоха */
 .pa-filter-details {
