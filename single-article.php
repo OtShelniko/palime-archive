@@ -51,6 +51,31 @@ while ( have_posts() ) : the_post();
 <!-- ====================================================
      HERO / ОБЛОЖКА СТАТЬИ
      ==================================================== -->
+<!-- Кнопка назад: если same-origin referrer → history.back(), иначе → /archive/?section={slug} -->
+<div class="mb-lg container" style="padding-top:var(--spacing-lg);">
+    <a href="<?php echo esc_url( home_url( '/archive/?section=' . $section_slug ) ); ?>"
+       class="btn btn--ghost btn--sm pa-back-btn"
+       id="pa-article-back">
+        ← Назад в архив
+    </a>
+</div>
+<script>
+(function () {
+    var btn = document.getElementById('pa-article-back');
+    if (btn && document.referrer) {
+        try {
+            var ref = new URL(document.referrer);
+            if (ref.origin === location.origin) {
+                btn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    history.back();
+                });
+            }
+        } catch (e) {}
+    }
+}());
+</script>
+
 <div class="article-hero" style="position:relative; background:var(--color-text); color:#fff; min-height:50vh; display:flex; align-items:flex-end;">
 
     <?php if ( has_post_thumbnail() ) : ?>
@@ -71,10 +96,10 @@ while ( have_posts() ) : the_post();
             <?php endif; ?>
 
             <?php
-            // Раздел
+            // Раздел → /{section}/
             if ( $section_terms && ! is_wp_error( $section_terms ) ) :
                 foreach ( $section_terms as $st ) : ?>
-                    <a href="<?php echo esc_url( get_term_link( $st ) ); ?>" class="tag" style="border-color:var(--accent); color:var(--accent);">
+                    <a href="<?php echo esc_url( home_url( '/' . $st->slug . '/' ) ); ?>" class="tag" style="border-color:var(--accent); color:var(--accent);">
                         <?php echo esc_html( $st->name ); ?>
                     </a>
                 <?php endforeach;
@@ -146,7 +171,7 @@ while ( have_posts() ) : the_post();
                         <p class="text-mono text-xs text-muted text-upper mb-sm" style="letter-spacing:.1em;">Персоны в материале</p>
                         <div class="flex flex--gap flex--wrap">
                             <?php foreach ( $person_terms as $person ) : ?>
-                                <a href="<?php echo esc_url( get_term_link( $person ) ); ?>" class="tag">
+                                <a href="<?php echo esc_url( home_url( '/archive/?person=' . $person->slug ) ); ?>" class="tag">
                                     <?php echo esc_html( $person->name ); ?>
                                 </a>
                             <?php endforeach; ?>
@@ -301,7 +326,7 @@ if ( $more_posts->have_posts() ) : ?>
             <h2 class="text-display" style="font-family:var(--font-display); font-size:1.5rem;">
                 Ещё из <?php echo $section_slug ? esc_html( $section_terms[0]->name ) : 'архива'; ?>
             </h2>
-            <a href="<?php echo esc_url( get_post_type_archive_link( 'article' ) ); ?>" class="btn btn--outline btn--sm">
+            <a href="<?php echo esc_url( home_url( '/archive/' ) ); ?>" class="btn btn--outline btn--sm">
                 Весь архив →
             </a>
         </div>

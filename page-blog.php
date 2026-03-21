@@ -84,12 +84,12 @@ $section_slugs = [
 
         <?php /* ---- Вкладки БЛОГ / НОВОСТИ ---- */ ?>
         <nav class="pa-blog-tabs" aria-label="Переключение разделов">
-            <a href="<?php echo esc_url( get_permalink( get_page_by_path( 'blog' ) ) ); ?>"
+            <a href="<?php echo esc_url( home_url( '/blog/' ) ); ?>"
                class="pa-blog-tabs__link is-active"
                aria-current="page">
                 Блог
             </a>
-            <a href="<?php echo esc_url( get_permalink( get_page_by_path( 'news' ) ) ); ?>"
+            <a href="<?php echo esc_url( home_url( '/news/' ) ); ?>"
                class="pa-blog-tabs__link">
                 Новости
             </a>

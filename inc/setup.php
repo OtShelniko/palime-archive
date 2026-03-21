@@ -41,6 +41,31 @@ add_action( 'after_setup_theme', 'palime_setup' );
 
 
 // =========================================================
+// КАСТОМНЫЕ PERMALINK ДЛЯ СТАТЕЙ (routing spec v1.1)
+// URL: /{section}/{postname}/
+// После деплоя: Настройки → Постоянные ссылки → Сохранить
+// =========================================================
+
+add_action( 'init', function () {
+    add_rewrite_tag( '%section%', '([^/]+)' );
+    add_permastruct( 'article', '%section%/%postname%/', [ 'with_front' => false ] );
+} );
+
+add_filter( 'post_type_link', function ( $url, $post ) {
+    if ( $post->post_type !== 'article' ) {
+        return $url;
+    }
+    $terms = get_the_terms( $post->ID, 'section' );
+    if ( $terms && ! is_wp_error( $terms ) ) {
+        $section = $terms[0]->slug;
+    } else {
+        $section = 'archive'; // безопасный фолбэк
+    }
+    return str_replace( '%section%', $section, $url );
+}, 10, 2 );
+
+
+// =========================================================
 // ACF JSON — автосохранение и загрузка полей
 // =========================================================
 

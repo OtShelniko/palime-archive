@@ -110,14 +110,24 @@ $shop_url        = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_perm
             </ul>
         </nav>
 
+        <!-- ── ПОИСК ── -->
+        <form class="pa-header__search" action="<?php echo esc_url( home_url( '/archive/' ) ); ?>" method="get" role="search">
+            <input type="search" name="q" placeholder="Поиск…" aria-label="Поиск по архиву"
+                   class="pa-header__search-input"
+                   style="background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.15); color:#fff; font-family:var(--font-mono); font-size:.68rem; padding:5px 12px; width:140px; border-radius:2px;">
+        </form>
+
         <!-- ── ПРАВАЯ ЧАСТЬ ── -->
         <div class="pa-header__actions">
             <?php if ( is_user_logged_in() ) : ?>
                 <a href="<?php echo esc_url( home_url( '/profile/' ) ); ?>" class="pa-btn-profile">
                     ПРОФИЛЬ
                 </a>
+                <a href="<?php echo esc_url( wp_logout_url( home_url( '/' ) ) ); ?>" class="pa-btn-profile" style="opacity:.5;">
+                    ВЫЙТИ
+                </a>
             <?php else : ?>
-                <a href="<?php echo esc_url( wp_login_url() ); ?>" class="pa-btn-profile">
+                <a href="<?php echo esc_url( wp_login_url( get_permalink() ) ); ?>" class="pa-btn-profile">
                     ВОЙТИ
                 </a>
             <?php endif; ?>
@@ -144,8 +154,9 @@ $shop_url        = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_perm
             <li><a href="<?php echo esc_url( home_url( '/about/' ) ); ?>">О нас</a></li>
             <?php if ( is_user_logged_in() ) : ?>
                 <li><a href="<?php echo esc_url( home_url( '/profile/' ) ); ?>">Профиль</a></li>
+                <li><a href="<?php echo esc_url( wp_logout_url( home_url( '/' ) ) ); ?>">Выйти</a></li>
             <?php else : ?>
-                <li><a href="<?php echo esc_url( wp_login_url() ); ?>">Войти</a></li>
+                <li><a href="<?php echo esc_url( wp_login_url( get_permalink() ) ); ?>">Войти</a></li>
             <?php endif; ?>
         </ul>
     </div>

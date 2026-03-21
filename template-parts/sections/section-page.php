@@ -71,7 +71,7 @@ if ( $section_slug ) {
 
         <!-- Кнопки -->
         <div class="flex flex--gap flex--wrap">
-            <a href="<?php echo esc_url( get_post_type_archive_link( 'article' ) . '?section=' . $section_slug ); ?>"
+            <a href="<?php echo esc_url( home_url( '/archive/?section=' . $section_slug ) ); ?>"
                class="btn btn--primary"
                style="background:<?php echo esc_attr( $accent_color ); ?>; border-color:<?php echo esc_attr( $accent_color ); ?>;">
                 Открыть каталог
@@ -99,7 +99,7 @@ if ( $section_slug ) {
                 <span class="text-mono text-xs text-muted text-upper" style="letter-spacing:.12em;">— Свежие материалы —</span>
                 <h2 class="mt-sm" style="font-family:var(--font-display); font-size:1.8rem;">Последние статьи</h2>
             </div>
-            <a href="<?php echo esc_url( get_post_type_archive_link( 'article' ) ); ?>"
+            <a href="<?php echo esc_url( home_url( '/archive/?section=' . $section_slug ) ); ?>"
                class="btn btn--outline btn--sm hide-mobile">
                 Весь архив →
             </a>
@@ -133,7 +133,7 @@ if ( $section_slug ) {
         <?php endif; ?>
 
         <div class="mt-xl show-mobile">
-            <a href="<?php echo esc_url( get_post_type_archive_link( 'article' ) ); ?>" class="btn btn--outline">
+            <a href="<?php echo esc_url( home_url( '/archive/?section=' . $section_slug ) ); ?>" class="btn btn--outline">
                 Весь архив →
             </a>
         </div>
@@ -263,7 +263,7 @@ if ( $section_slug ) {
                     <?php echo esc_html( $section_name ); ?> · Лента
                 </h2>
             </div>
-            <a href="<?php echo esc_url( get_post_type_archive_link( 'news' ) . '?section=' . $section_slug ); ?>"
+            <a href="<?php echo esc_url( home_url( '/news/?section=' . $section_slug ) ); ?>"
                class="btn btn--outline btn--sm hide-mobile">
                 Все новости →
             </a>
