@@ -21,7 +21,7 @@ while ( have_posts() ) : the_post();
 
         <!-- Хлебные крошки / назад -->
         <div class="mb-lg">
-            <a href="<?php echo esc_url( get_post_type_archive_link( 'news' ) ); ?>" class="btn btn--ghost btn--sm">
+            <a href="<?php echo esc_url( home_url( '/news/' ) ); ?>" class="btn btn--ghost btn--sm">
                 ← Новости
             </a>
         </div>
@@ -32,9 +32,10 @@ while ( have_posts() ) : the_post();
             <div class="flex flex--gap flex--wrap mb-lg">
                 <span class="tag tag--filled">Новость</span>
                 <?php
+                // Раздел → /news/?section={slug}
                 if ( $section_terms && ! is_wp_error( $section_terms ) ) :
                     foreach ( $section_terms as $st ) : ?>
-                        <a href="<?php echo esc_url( get_term_link( $st ) ); ?>" class="tag">
+                        <a href="<?php echo esc_url( home_url( '/news/?section=' . $st->slug ) ); ?>" class="tag">
                             <?php echo esc_html( $st->name ); ?>
                         </a>
                     <?php endforeach;
@@ -133,7 +134,7 @@ if ( $recent_news->have_posts() ) : ?>
         </ul>
 
         <div class="mt-xl">
-            <a href="<?php echo esc_url( get_post_type_archive_link( 'news' ) ); ?>" class="btn btn--outline">
+            <a href="<?php echo esc_url( home_url( '/news/' ) ); ?>" class="btn btn--outline">
                 Все новости →
             </a>
         </div>

@@ -82,7 +82,7 @@ $section_slug  = ( $section_terms && ! is_wp_error( $section_terms ) ) ? $sectio
         if ( $person_terms && ! is_wp_error( $person_terms ) ) : ?>
             <div class="flex flex--gap flex--wrap" style="gap:4px;">
                 <?php foreach ( array_slice( $person_terms, 0, 3 ) as $person ) : ?>
-                    <a href="<?php echo esc_url( get_term_link( $person ) ); ?>" class="tag" style="font-size:.65rem; padding:2px 8px;">
+                    <a href="<?php echo esc_url( home_url( '/archive/?person=' . $person->slug ) ); ?>" class="tag" style="font-size:.65rem; padding:2px 8px;">
                         <?php echo esc_html( $person->name ); ?>
                     </a>
                 <?php endforeach; ?>

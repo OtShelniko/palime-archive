@@ -103,16 +103,18 @@ $current_month = $months_ru[ (int) date( 'n' ) ] . ' ' . date( 'Y' );
             </div>
         </div>
 
-        <!-- Правая часть: поиск -->
+        <!-- Правая часть: поиск (?q=) -->
         <div class="pa-archive-hero__search">
             <span class="pa-archive-hero__search-label">Текстовый поиск</span>
             <input
                 type="search"
+                name="q"
                 id="pa-archive-search"
                 class="pa-archive-hero__search-input"
                 placeholder="Тарковский, Кафка, модернизм…"
                 autocomplete="off"
                 aria-label="Поиск по архиву"
+                value="<?php echo esc_attr( sanitize_text_field( $_GET['q'] ?? '' ) ); ?>"
             >
         </div>
 
