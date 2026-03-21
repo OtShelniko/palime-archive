@@ -64,6 +64,7 @@ $terms_theme    = get_terms( [ 'taxonomy' => 'theme',          'hide_empty' => t
 $terms_era      = get_terms( [ 'taxonomy' => 'era',            'hide_empty' => true ] );
 $terms_editorial = get_terms( [ 'taxonomy' => 'editorial-flag', 'hide_empty' => true ] );
 $terms_status   = get_terms( [ 'taxonomy' => 'status',         'hide_empty' => true ] );
+$terms_genre    = get_terms( [ 'taxonomy' => 'genre',          'hide_empty' => true ] );
 
 // Имена разделов для CSS-класса бейджа
 $section_css = [
@@ -240,6 +241,44 @@ $current_month = $months_ru[ (int) date( 'n' ) ] . ' ' . date( 'Y' );
             </details>
             <?php endif; ?>
         </div>
+        <?php endif; ?>
+
+        <!-- ЖАНР (расширенный фильтр) -->
+        <?php if ( $terms_genre && ! is_wp_error( $terms_genre ) ) :
+            usort( $terms_genre, function( $a, $b ) { return $b->count - $a->count; } );
+            $genre_visible = array_slice( $terms_genre, 0, 8 );
+            $genre_rest    = array_slice( $terms_genre, 8 );
+        ?>
+        <details class="pa-filter-details">
+            <summary class="pa-filter-details__summary">Жанр</summary>
+            <div class="pa-filter-tags pa-filter-tags--genre" data-filter-group="genre">
+                <?php foreach ( $genre_visible as $t ) : ?>
+                    <button
+                        type="button"
+                        class="pa-filter-tag"
+                        data-filter="genre"
+                        data-value="<?php echo esc_attr( $t->slug ); ?>"
+                        aria-pressed="false"
+                    ><?php echo esc_html( $t->name ); ?></button>
+                <?php endforeach; ?>
+            </div>
+            <?php if ( $genre_rest ) : ?>
+            <details class="pa-filter-details pa-filter-details--inline">
+                <summary class="pa-filter-details__summary">Ещё <?php echo count( $genre_rest ); ?></summary>
+                <div class="pa-filter-tags pa-filter-tags--nested" data-filter-group="genre">
+                    <?php foreach ( $genre_rest as $t ) : ?>
+                        <button
+                            type="button"
+                            class="pa-filter-tag"
+                            data-filter="genre"
+                            data-value="<?php echo esc_attr( $t->slug ); ?>"
+                            aria-pressed="false"
+                        ><?php echo esc_html( $t->name ); ?></button>
+                    <?php endforeach; ?>
+                </div>
+            </details>
+            <?php endif; ?>
+        </details>
         <?php endif; ?>
 
         <!-- РЕДАКТОРСКИЕ МЕТКИ (вторичный блок) -->

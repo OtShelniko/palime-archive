@@ -71,6 +71,7 @@ function palime_handle_filter_archive() {
     $type            = sanitize_text_field( $req['type'] ?? '' );
     $status          = sanitize_text_field( $req['status'] ?? '' );
     $theme           = sanitize_text_field( $req['theme'] ?? '' );
+    $genre           = sanitize_text_field( $req['genre'] ?? '' );
     $editorial_flag  = sanitize_text_field( $req['editorial_flag'] ?? '' );
     $search          = sanitize_text_field( $req['search'] ?? $req['q'] ?? '' );
     $sort            = sanitize_text_field( $req['sort'] ?? 'date' );
@@ -123,6 +124,9 @@ function palime_handle_filter_archive() {
         }
         if ( $editorial_flag ) {
             $tax_query[] = [ 'taxonomy' => 'editorial-flag', 'field' => 'slug', 'terms' => $editorial_flag ];
+        }
+        if ( $genre ) {
+            $tax_query[] = [ 'taxonomy' => 'genre', 'field' => 'slug', 'terms' => $genre ];
         }
         if ( $era ) {
             $tax_query[] = [ 'taxonomy' => 'era', 'field' => 'slug', 'terms' => $era ];

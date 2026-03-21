@@ -19,6 +19,7 @@
             person:          '',
             era:             '',
             theme:           '',
+            genre:           '',
             editorial_flag:  '',
             type:            '',
             status:          '',
