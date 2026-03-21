@@ -17,10 +17,24 @@ function palime_register_taxonomies() {
     ] );
 
     register_taxonomy( 'article-type', [ 'article' ], [
-        'label'        => 'Тип статьи',
-        'hierarchical' => false,
-        'show_in_rest' => true,
-        'rewrite'      => [ 'slug' => 'type' ],
+        'labels'            => [
+            'name'              => 'Типы статей',
+            'singular_name'     => 'Тип статьи',
+            'search_items'      => 'Найти тип',
+            'all_items'         => 'Все типы',
+            'parent_item'       => 'Родительский тип',
+            'parent_item_colon' => 'Родительский тип:',
+            'edit_item'         => 'Изменить тип',
+            'update_item'       => 'Обновить тип',
+            'add_new_item'      => 'Добавить тип',
+            'new_item_name'     => 'Название типа',
+            'menu_name'         => 'Тип статьи',
+        ],
+        'hierarchical'      => true,
+        'show_ui'           => true,
+        'show_in_rest'      => true,
+        'show_admin_column' => true,
+        'rewrite'           => [ 'slug' => 'type' ],
     ] );
 
     // Темы / мотивы (смысловые оси) — не путать с monthly-theme (выпуск/магазин).
@@ -38,7 +52,8 @@ function palime_register_taxonomies() {
             'menu_name'     => 'Темы / мотивы',
         ],
         'description'       => 'Смысловые оси материала (власть, память, война…). Отдельно от жанра и от темы месяца.',
-        'hierarchical'      => false,
+        'hierarchical'      => true,
+        'show_ui'           => true,
         'show_in_rest'      => true,
         'show_admin_column' => true,
         'rewrite'           => [ 'slug' => 'theme' ],
@@ -59,7 +74,8 @@ function palime_register_taxonomies() {
             'menu_name'     => 'Редакторские метки',
         ],
         'description'       => 'Подборки редакции: канон, essential, спорное и т.д. Статус проверки материала — в таксономии «Статус».',
-        'hierarchical'      => false,
+        'hierarchical'      => true,
+        'show_ui'           => true,
         'show_in_rest'      => true,
         'show_admin_column' => true,
         'rest_base'         => 'palime-editorial-flag',
@@ -90,10 +106,24 @@ function palime_register_taxonomies() {
     ] );
 
     register_taxonomy( 'era', $post_types_art, [
-        'label'        => 'Эпоха',
-        'hierarchical' => false,
-        'show_in_rest' => true,
-        'rewrite'      => [ 'slug' => 'era' ],
+        'labels'            => [
+            'name'              => 'Эпохи',
+            'singular_name'     => 'Эпоха',
+            'search_items'      => 'Найти эпоху',
+            'all_items'         => 'Все эпохи',
+            'parent_item'       => 'Родительская эпоха',
+            'parent_item_colon' => 'Родительская эпоха:',
+            'edit_item'         => 'Изменить эпоху',
+            'update_item'       => 'Обновить эпоху',
+            'add_new_item'      => 'Добавить эпоху',
+            'new_item_name'     => 'Название эпохи',
+            'menu_name'         => 'Эпоха',
+        ],
+        'hierarchical'      => true,
+        'show_ui'           => true,
+        'show_in_rest'      => true,
+        'show_admin_column' => true,
+        'rewrite'           => [ 'slug' => 'era' ],
     ] );
 
     register_taxonomy( 'genre', [ 'article' ], [
