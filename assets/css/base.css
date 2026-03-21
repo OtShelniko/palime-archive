@@ -34,6 +34,10 @@ a {
     transition: color var(--transition);
 }
 
+a:visited {
+    color: inherit;
+}
+
 a:hover {
     color: var(--accent);
 }

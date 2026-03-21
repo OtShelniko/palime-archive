@@ -15,9 +15,14 @@ $current_section = palime_get_current_section();
 $is_home         = is_front_page() || ( is_home() && ! is_front_page() );
 $is_blog         = is_page( 'blog' );
 $is_news         = is_post_type_archive( 'news' ) || is_singular( 'news' ) || is_page( 'news' );
+$is_archive      = is_page( 'archive' );
 $is_shop         = function_exists( 'is_woocommerce' ) && is_woocommerce();
 $is_about        = is_page( 'about' ) || is_page( 'o-nas' );
 $shop_url        = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'shop' ) : home_url( '/shop/' );
+
+// Логотип: белый на тёмных разделах (cinema, music, art), тёмный — на остальных
+$dark_sections = [ 'cinema', 'music', 'art' ];
+$logo_file     = in_array( $current_section, $dark_sections, true ) ? 'logo-pa-white.svg' : 'logo-pa-dark.svg';
 ?>
 
 <header class="pa-header">
@@ -25,8 +30,12 @@ $shop_url        = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_perm
 
         <!-- ── ЛОГОТИП ── -->
         <a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="pa-logo" aria-label="Palime Archive — на главную">
-            <span class="pa-logo__badge">PA</span>
-            <span class="pa-logo__name">PALIME&nbsp;ARCHIVE</span>
+            <img
+                src="<?php echo esc_url( get_template_directory_uri() . '/assets/img/' . $logo_file ); ?>"
+                height="28"
+                alt="Palime Archive"
+                width="auto"
+            >
         </a>
 
         <!-- ── ДЕСКТОПНАЯ НАВИГАЦИЯ ── -->
@@ -94,6 +103,13 @@ $shop_url        = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_perm
                 </li>
 
                 <li class="pa-nav__item">
+                    <a href="<?php echo esc_url( home_url( '/archive/' ) ); ?>"
+                       class="pa-nav__link <?php echo $is_archive ? 'is-active' : ''; ?>">
+                        АРХИВ
+                    </a>
+                </li>
+
+                <li class="pa-nav__item">
                     <a href="<?php echo esc_url( $shop_url ); ?>"
                        class="pa-nav__link <?php echo $is_shop ? 'is-active' : ''; ?>">
                         МАГАЗИН
@@ -112,6 +128,21 @@ $shop_url        = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_perm
 
         <!-- ── ПРАВАЯ ЧАСТЬ ── -->
         <div class="pa-header__actions">
+
+            <!-- Кнопка поиска -->
+            <button
+                class="pa-search-toggle"
+                id="pa-search-toggle"
+                aria-label="Открыть поиск"
+                aria-expanded="false"
+                aria-controls="pa-search-bar"
+            >
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                    <circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.3"/>
+                    <path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+                </svg>
+            </button>
+
             <?php if ( is_user_logged_in() ) : ?>
                 <a href="<?php echo esc_url( home_url( '/profile/' ) ); ?>" class="pa-btn-profile">
                     ПРОФИЛЬ
@@ -130,6 +161,38 @@ $shop_url        = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_perm
 
     </div><!-- /.pa-header__inner -->
 
+    <!-- ── СТРОКА ПОИСКА ── -->
+    <div class="pa-search-bar" id="pa-search-bar" aria-hidden="true">
+        <form
+            role="search"
+            method="get"
+            action="<?php echo esc_url( home_url( '/' ) ); ?>"
+            class="pa-search-bar__form"
+        >
+            <label for="pa-search-input" class="sr-only">Поиск по архиву</label>
+            <input
+                type="search"
+                id="pa-search-input"
+                class="pa-search-bar__input"
+                name="s"
+                placeholder="Поиск по архиву…"
+                value="<?php echo esc_attr( get_search_query() ); ?>"
+                autocomplete="off"
+            >
+            <button type="submit" class="pa-search-bar__submit" aria-label="Найти">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                    <circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.3"/>
+                    <path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+                </svg>
+            </button>
+            <button type="button" class="pa-search-bar__close" id="pa-search-close" aria-label="Закрыть поиск">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                    <path d="M1 1l12 12M13 1L1 13" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+                </svg>
+            </button>
+        </form>
+    </div>
+
     <!-- ── МОБИЛЬНОЕ МЕНЮ ── -->
     <div class="pa-mobile-menu" id="pa-mobile-menu" aria-hidden="true" role="dialog" aria-label="Мобильное меню">
         <ul role="list">
@@ -140,6 +203,7 @@ $shop_url        = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_perm
             <li><a href="<?php echo esc_url( home_url( '/art/' ) ); ?>">ИЗО</a></li>
             <li><a href="<?php echo esc_url( home_url( '/blog/' ) ); ?>">Блог</a></li>
             <li><a href="<?php echo esc_url( home_url( '/news/' ) ); ?>">Новости</a></li>
+            <li><a href="<?php echo esc_url( home_url( '/archive/' ) ); ?>">Архив</a></li>
             <li><a href="<?php echo esc_url( $shop_url ); ?>">Магазин</a></li>
             <li><a href="<?php echo esc_url( home_url( '/about/' ) ); ?>">О нас</a></li>
             <?php if ( is_user_logged_in() ) : ?>
@@ -181,32 +245,15 @@ $shop_url        = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_perm
 .pa-logo {
     display: flex;
     align-items: center;
-    gap: 10px;
     text-decoration: none;
-    color: #fff;
     flex-shrink: 0;
+    line-height: 0;
 }
 
-.pa-logo__badge {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 28px;
+.pa-logo img {
     height: 28px;
-    border: 1px solid rgba(255,255,255,.35);
-    font-family: var(--font-mono);
-    font-size: .65rem;
-    letter-spacing: .04em;
-    flex-shrink: 0;
-}
-
-.pa-logo__name {
-    font-family: var(--font-mono);
-    font-size: .72rem;
-    letter-spacing: .16em;
-    text-transform: uppercase;
-    white-space: nowrap;
-    opacity: .9;
+    width: auto;
+    display: block;
 }
 
 /* Навигация */
@@ -233,7 +280,7 @@ $shop_url        = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_perm
     display: flex;
     align-items: center;
     gap: 6px;
-    padding: 0 16px;
+    padding: 0 14px;
     height: 48px;
     font-family: var(--font-mono);
     font-size: .7rem;
@@ -249,6 +296,10 @@ $shop_url        = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_perm
     line-height: 1;
 }
 
+.pa-nav__link:visited {
+    color: rgba(255,255,255,.55);
+}
+
 .pa-nav__link:hover,
 .pa-nav__link.is-active {
     color: #fff;
@@ -260,7 +311,7 @@ $shop_url        = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_perm
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background: var(--color-ui);
+    background: #D91515;
     flex-shrink: 0;
 }
 
@@ -284,7 +335,7 @@ $shop_url        = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_perm
     min-width: 160px;
     background: #111;
     border: 1px solid rgba(255,255,255,.08);
-    border-top: 2px solid var(--color-ui);
+    border-top: 2px solid #D91515;
     list-style: none;
     margin: 0;
     padding: 4px 0;
@@ -307,6 +358,10 @@ $shop_url        = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_perm
     transition: color .12s, background .12s;
 }
 
+.pa-dropdown__link:visited {
+    color: rgba(255,255,255,.5);
+}
+
 .pa-dropdown__link:hover,
 .pa-dropdown__link.is-active {
     color: #fff;
@@ -314,10 +369,10 @@ $shop_url        = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_perm
 }
 
 .pa-dropdown__link.is-active {
-    color: var(--color-ui);
+    color: #D91515;
 }
 
-/* Кнопка профиля */
+/* Правая часть */
 .pa-header__actions {
     display: flex;
     align-items: center;
@@ -325,6 +380,87 @@ $shop_url        = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_perm
     flex-shrink: 0;
 }
 
+/* Кнопка поиска */
+.pa-search-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    color: rgba(255,255,255,.55);
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: color .15s;
+    padding: 0;
+}
+
+.pa-search-toggle:hover,
+.pa-search-toggle[aria-expanded="true"] {
+    color: #fff;
+}
+
+/* Строка поиска */
+.pa-search-bar {
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height .25s ease, border-color .25s;
+    border-top: 0px solid rgba(255,255,255,.06);
+    background: #0A0A0A;
+}
+
+.pa-search-bar[aria-hidden="false"] {
+    max-height: 56px;
+    border-top-width: 1px;
+}
+
+.pa-search-bar__form {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    max-width: var(--container);
+    margin: 0 auto;
+    padding: 0 var(--gutter);
+    height: 56px;
+}
+
+.pa-search-bar__input {
+    flex: 1;
+    height: 100%;
+    background: none;
+    border: none;
+    outline: none;
+    color: #fff;
+    font-family: var(--font-mono);
+    font-size: .85rem;
+    letter-spacing: .04em;
+    caret-color: #D91515;
+}
+
+.pa-search-bar__input::placeholder {
+    color: rgba(255,255,255,.25);
+}
+
+.pa-search-bar__submit,
+.pa-search-bar__close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: rgba(255,255,255,.45);
+    transition: color .12s;
+    padding: 0;
+    flex-shrink: 0;
+}
+
+.pa-search-bar__submit:hover { color: #fff; }
+.pa-search-bar__close:hover  { color: #fff; }
+
+/* Кнопка профиля */
 .pa-btn-profile {
     padding: 6px 16px;
     font-family: var(--font-mono);
@@ -336,6 +472,10 @@ $shop_url        = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_perm
     text-decoration: none;
     transition: background .15s, border-color .15s;
     white-space: nowrap;
+}
+
+.pa-btn-profile:visited {
+    color: #fff;
 }
 
 .pa-btn-profile:hover {
@@ -401,6 +541,10 @@ $shop_url        = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_perm
     transition: color .12s;
 }
 
+.pa-mobile-menu a:visited {
+    color: rgba(255,255,255,.6);
+}
+
 .pa-mobile-menu a:hover {
     color: #fff;
 }
@@ -409,7 +553,6 @@ $shop_url        = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_perm
 @media (max-width: 900px) {
     .pa-nav { display: none; }
     .pa-burger { display: flex; }
-    .pa-logo__name { display: none; }
 }
 
 @media (max-width: 480px) {
@@ -419,12 +562,12 @@ $shop_url        = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_perm
 
 <script>
 (function () {
-    // Дропдаун «Главная»
+    // ── Дропдаун «Главная» ─────────────────────────────────
     var dropItem = document.querySelector('.pa-nav__item--has-drop');
     var dropBtn  = dropItem ? dropItem.querySelector('.pa-nav__link--drop') : null;
 
     if (dropBtn) {
-        dropBtn.addEventListener('click', function (e) {
+        dropBtn.addEventListener('click', function () {
             var open = dropItem.classList.toggle('is-open');
             dropBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
         });
@@ -445,18 +588,54 @@ $shop_url        = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_perm
         });
     }
 
-    // Бургер
-    var burger = document.getElementById('pa-burger');
+    // ── Бургер ─────────────────────────────────────────────
+    var burger     = document.getElementById('pa-burger');
     var mobileMenu = document.getElementById('pa-mobile-menu');
 
     if (burger && mobileMenu) {
         burger.addEventListener('click', function () {
             var open = mobileMenu.getAttribute('aria-hidden') === 'true';
             mobileMenu.setAttribute('aria-hidden', open ? 'false' : 'true');
-            burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+            burger.setAttribute('aria-expanded',   open ? 'true'  : 'false');
             document.body.style.overflow = open ? 'hidden' : '';
         });
     }
+
+    // ── Поиск ──────────────────────────────────────────────
+    var searchToggle = document.getElementById('pa-search-toggle');
+    var searchBar    = document.getElementById('pa-search-bar');
+    var searchClose  = document.getElementById('pa-search-close');
+    var searchInput  = document.getElementById('pa-search-input');
+
+    function openSearch() {
+        searchBar.setAttribute('aria-hidden', 'false');
+        searchToggle.setAttribute('aria-expanded', 'true');
+        // Фокус после анимации
+        setTimeout(function () { if (searchInput) searchInput.focus(); }, 50);
+    }
+
+    function closeSearch() {
+        searchBar.setAttribute('aria-hidden', 'true');
+        searchToggle.setAttribute('aria-expanded', 'false');
+        searchToggle.focus();
+    }
+
+    if (searchToggle && searchBar) {
+        searchToggle.addEventListener('click', function () {
+            var isOpen = searchBar.getAttribute('aria-hidden') === 'false';
+            isOpen ? closeSearch() : openSearch();
+        });
+    }
+
+    if (searchClose) {
+        searchClose.addEventListener('click', closeSearch);
+    }
+
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && searchBar && searchBar.getAttribute('aria-hidden') === 'false') {
+            closeSearch();
+        }
+    });
 })();
 </script>
 

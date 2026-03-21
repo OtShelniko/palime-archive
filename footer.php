@@ -7,8 +7,13 @@
 
         <!-- Колонка 1: бренд -->
         <div class="pa-footer__brand">
-            <a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="pa-footer__wordmark" aria-label="Palime Archive">
-                PALIME ARCHIVE
+            <a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="pa-footer__logo" aria-label="Palime Archive — на главную">
+                <img
+                    src="<?php echo esc_url( get_template_directory_uri() . '/assets/img/logo-pa-white.svg' ); ?>"
+                    height="28"
+                    alt="Palime Archive"
+                    width="auto"
+                >
             </a>
             <p class="pa-footer__desc">
                 Независимый культурный архив. Кино,<br>
@@ -28,7 +33,6 @@
                 <li><a href="<?php echo esc_url( home_url( '/articles/?type=selection' ) ); ?>" class="pa-footer__link">Подборки</a></li>
                 <li><a href="<?php echo esc_url( get_post_type_archive_link( 'ranking' ) ); ?>" class="pa-footer__link">Рейтинги</a></li>
                 <li><a href="<?php echo esc_url( home_url( '/news/' ) ); ?>" class="pa-footer__link">Новости</a></li>
-                <li><a href="<?php echo esc_url( home_url( '/visual-art/' ) ); ?>" class="pa-footer__link">Visual Art</a></li>
                 <li><a href="<?php echo esc_url( home_url( '/archive/' ) ); ?>" class="pa-footer__link">Поиск</a></li>
             </ul>
         </div>
@@ -41,23 +45,16 @@
                 <li><a href="<?php echo esc_url( home_url( '/literature/' ) ); ?>" class="pa-footer__link">Литература</a></li>
                 <li><a href="<?php echo esc_url( home_url( '/music/' ) ); ?>" class="pa-footer__link">Музыка</a></li>
                 <li><a href="<?php echo esc_url( home_url( '/art/' ) ); ?>" class="pa-footer__link">ИЗО</a></li>
-                <li><a href="<?php echo esc_url( home_url( '/artifacts/' ) ); ?>" class="pa-footer__link pa-footer__link--accent">Артефакты</a></li>
-                <li><a href="<?php echo esc_url( home_url( '/map/' ) ); ?>" class="pa-footer__link">The Map</a></li>
             </ul>
         </div>
 
-        <!-- Колонка 4: Информация + Правовое -->
+        <!-- Колонка 4: Информация -->
         <div class="pa-footer__col">
             <h4 class="pa-footer__col-title">ИНФОРМАЦИЯ</h4>
             <ul class="pa-footer__links">
                 <li><a href="<?php echo esc_url( home_url( '/about/' ) ); ?>" class="pa-footer__link">О проекте</a></li>
                 <li><a href="<?php echo esc_url( home_url( '/editorial/' ) ); ?>" class="pa-footer__link">Редакция</a></li>
                 <li><a href="<?php echo esc_url( home_url( '/contact/' ) ); ?>" class="pa-footer__link">Написать нам</a></li>
-                <?php
-                $help_url = get_option( 'palime_help_url' );
-                if ( $help_url ) : ?>
-                    <li><a href="<?php echo esc_url( $help_url ); ?>" class="pa-footer__link">Помочь нам</a></li>
-                <?php endif; ?>
             </ul>
 
             <h4 class="pa-footer__col-title pa-footer__col-title--sub">ПРАВОВОЕ</h4>
@@ -65,7 +62,6 @@
                 <li><a href="<?php echo esc_url( home_url( '/privacy-policy/' ) ); ?>" class="pa-footer__link">Политика</a></li>
                 <li><a href="<?php echo esc_url( home_url( '/terms/' ) ); ?>" class="pa-footer__link">Условия</a></li>
                 <li><a href="<?php echo esc_url( home_url( '/copyright/' ) ); ?>" class="pa-footer__link">Авторское право</a></li>
-                <li><a href="<?php echo esc_url( home_url( '/licenses/' ) ); ?>" class="pa-footer__link">Лицензии</a></li>
             </ul>
         </div>
 
@@ -75,7 +71,7 @@
     <!-- ── НИЖНЯЯ ПОЛОСА ── -->
     <div class="pa-footer__bottom">
         <p class="pa-footer__copy">
-            © <?php echo date( 'Y' ); ?> PALIME ARCHIVE &middot; ВСЕ ПРАВА ЗАЩИЩЕНЫ
+            © <?php echo esc_html( date( 'Y' ) ); ?> PALIME ARCHIVE &middot; ВСЕ ПРАВА ЗАЩИЩЕНЫ
         </p>
         <div class="pa-footer__lang">
             <a href="<?php echo esc_url( home_url( '/?lang=vk' ) ); ?>" class="pa-footer__lang-link">ВКЛ.</a>
@@ -92,14 +88,29 @@
 
 <style>
 /* =========================================================
-   PA FOOTER
+   PA FOOTER — акцент всегда #D91515
    ========================================================= */
 
 .pa-footer {
+    --accent: #D91515;
     background: #0A0A0A;
     color: #fff;
     border-top: 1px solid rgba(255,255,255,.06);
     font-family: var(--font-mono);
+}
+
+/* Логотип */
+.pa-footer__logo {
+    display: inline-block;
+    line-height: 0;
+    margin-bottom: 20px;
+    text-decoration: none;
+}
+
+.pa-footer__logo img {
+    height: 28px;
+    width: auto;
+    display: block;
 }
 
 /* Основная сетка: 1 широкая + 3 колонки */
@@ -113,19 +124,6 @@
 }
 
 /* Бренд */
-.pa-footer__wordmark {
-    display: block;
-    font-family: var(--font-mono);
-    font-size: clamp(1.1rem, 2vw, 1.55rem);
-    font-weight: 700;
-    letter-spacing: .12em;
-    text-transform: uppercase;
-    color: #fff;
-    text-decoration: none;
-    line-height: 1;
-    margin-bottom: 20px;
-}
-
 .pa-footer__desc {
     font-size: .72rem;
     line-height: 1.75;
@@ -186,17 +184,12 @@
     transition: color .12s;
 }
 
+.pa-footer__link:visited {
+    color: rgba(255,255,255,.45);
+}
+
 .pa-footer__link:hover {
     color: #fff;
-}
-
-/* Акцентная ссылка (красная, как «Артефакты» на макете) */
-.pa-footer__link--accent {
-    color: var(--color-ui);
-}
-
-.pa-footer__link--accent:hover {
-    color: #ff4444;
 }
 
 /* Нижняя полоса */
@@ -231,6 +224,10 @@
     color: rgba(255,255,255,.25);
     text-decoration: none;
     transition: color .12s;
+}
+
+.pa-footer__lang-link:visited {
+    color: rgba(255,255,255,.25);
 }
 
 .pa-footer__lang-link:hover {
