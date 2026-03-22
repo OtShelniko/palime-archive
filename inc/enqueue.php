@@ -171,6 +171,7 @@ function palime_enqueue_assets() {
     wp_localize_script( 'palime-main', 'palimeData', [
         'ajaxUrl'   => admin_url( 'admin-ajax.php' ),
         'restUrl'   => esc_url_raw( rest_url( 'wp/v2/' ) ),
+        'restBase'  => esc_url_raw( rest_url( '/' ) ),
         'nonce'     => wp_create_nonce( 'wp_rest' ),
         'voteNonce' => wp_create_nonce( 'palime_vote_nonce' ),
         'userId'    => get_current_user_id(),

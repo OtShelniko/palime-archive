@@ -120,7 +120,7 @@ function palime_handle_filter_archive() {
             $tax_query[] = [ 'taxonomy' => 'article-type', 'field' => 'slug', 'terms' => $type ];
         }
         if ( $theme ) {
-            $tax_query[] = [ 'taxonomy' => 'theme', 'field' => 'slug', 'terms' => $theme ];
+            $tax_query[] = [ 'taxonomy' => 'theme', 'field' => 'slug', 'terms' => $theme, 'include_children' => false ];
         }
         if ( $editorial_flag ) {
             $tax_query[] = [ 'taxonomy' => 'editorial-flag', 'field' => 'slug', 'terms' => $editorial_flag ];
