@@ -749,6 +749,86 @@
     border-left-color: var(--accent);
 }
 
+/* === ЗАКАЗЫ === */
+.profile-orders {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    background: rgba(0,0,0,0.06);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+}
+
+.profile-orders__head,
+.profile-orders__row {
+    display: grid;
+    grid-template-columns: 5rem 6rem 1fr 5rem 5.5rem;
+    gap: var(--spacing-md);
+    padding: var(--spacing-sm) var(--spacing-md);
+    align-items: center;
+    background: var(--color-bg);
+}
+
+.profile-orders__head {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.4;
+}
+
+.profile-orders__row {
+    background: var(--color-second);
+}
+
+.profile-orders__id {
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    font-weight: 600;
+}
+
+.profile-orders__date {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    opacity: 0.5;
+}
+
+.profile-orders__status {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+}
+
+.profile-orders__status--completed { color: #1a7a1a; }
+.profile-orders__status--processing { color: #b8860b; }
+.profile-orders__status--on-hold { color: #b8860b; }
+.profile-orders__status--cancelled,
+.profile-orders__status--refunded,
+.profile-orders__status--failed { opacity: 0.4; }
+
+.profile-orders__total {
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    text-align: right;
+}
+
+.profile-orders__link {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--color-text);
+    opacity: 0.35;
+    transition: opacity var(--transition);
+    text-align: right;
+}
+
+.profile-orders__link:hover {
+    opacity: 0.8;
+    color: var(--accent);
+}
+
 /* === ПУСТЫЕ СОСТОЯНИЯ === */
 .profile-empty {
     font-family: var(--font-mono);
@@ -773,6 +853,18 @@
 
     .achievements-grid {
         grid-template-columns: 1fr;
+    }
+
+    .profile-orders__head { display: none; }
+
+    .profile-orders__row {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto auto;
+        gap: var(--spacing-xs) var(--spacing-md);
+    }
+
+    .profile-orders__link {
+        text-align: left;
     }
 }
 

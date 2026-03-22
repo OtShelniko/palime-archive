@@ -96,6 +96,40 @@ add_action( 'woocommerce_order_status_completed', function( $order_id ) {
 } );
 
 // =========================================================
+// ЕДИНЫЙ КАБИНЕТ: /my-account/ → /profile/
+// =========================================================
+// Базовая страница WC «Мой аккаунт» редиректит на кастомный профиль Palime.
+// Сохраняем рабочие WC endpoints: view-order, order-received, order-pay.
+
+add_action( 'template_redirect', function() {
+    if ( ! function_exists( 'is_account_page' ) || ! is_account_page() ) {
+        return;
+    }
+
+    // Не трогаем endpoint-ы, которые использует WooCommerce для заказов
+    global $wp;
+    $keep_endpoints = [ 'view-order', 'order-pay', 'order-received' ];
+    foreach ( $keep_endpoints as $ep ) {
+        if ( isset( $wp->query_vars[ $ep ] ) ) {
+            return;
+        }
+    }
+
+    // Гости — на логин, залогиненные — на профиль Palime
+    if ( ! is_user_logged_in() ) {
+        wp_safe_redirect( wp_login_url( home_url( '/profile/' ) ) );
+    } else {
+        wp_safe_redirect( home_url( '/profile/' ), 301 );
+    }
+    exit;
+} );
+
+// Подменяем URL «Мой аккаунт» для WC-писем и внутренних ссылок WooCommerce
+add_filter( 'woocommerce_get_myaccount_page_permalink', function() {
+    return home_url( '/profile/' );
+} );
+
+// =========================================================
 // ШАБЛОНЫ
 // =========================================================
 
