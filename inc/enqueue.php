@@ -53,12 +53,12 @@ function palime_enqueue_assets() {
     );
 
     // Стили конкретных страниц — подключаем только там где нужно
-    if ( is_front_page() ) {
+    if ( is_front_page() || is_home() ) {
         wp_enqueue_style(
             'palime-page-home',
             $uri . '/assets/css/pages/home.css',
             [ 'palime-utilities' ],
-            $ver
+            $ver . '.2'
         );
     }
 
@@ -98,7 +98,7 @@ function palime_enqueue_assets() {
         );
     }
 
-    if ( is_woocommerce() || is_cart() || is_checkout() ) {
+    if ( function_exists( 'is_woocommerce' ) && ( is_woocommerce() || is_cart() || is_checkout() ) ) {
         wp_enqueue_style(
             'palime-page-shop',
             $uri . '/assets/css/pages/shop.css',
