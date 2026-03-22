@@ -101,8 +101,8 @@
                     return;
                 }
 
-                const restUrl = window.Palime && window.Palime.data ? window.Palime.data.restUrl : '/wp-json/';
-                fetch(restUrl + 'palime/v1/persons?search=' + encodeURIComponent(q))
+                const restBase = (typeof palimeData !== 'undefined') ? palimeData.restBase : '/wp-json/';
+                fetch(restBase + 'palime/v1/persons?search=' + encodeURIComponent(q))
                     .then(function(r) { return r.json(); })
                     .then(function(data) {
                         suggestions.innerHTML = '';
@@ -145,8 +145,8 @@
                     }
 
                     // Resolve typed name to slug via REST before applying filter
-                    var restUrl = window.Palime && window.Palime.data ? window.Palime.data.restUrl : '/wp-json/';
-                    fetch(restUrl + 'palime/v1/persons?search=' + encodeURIComponent(q))
+                    var restBase = (typeof palimeData !== 'undefined') ? palimeData.restBase : '/wp-json/';
+                    fetch(restBase + 'palime/v1/persons?search=' + encodeURIComponent(q))
                         .then(function(r) { return r.json(); })
                         .then(function(data) {
                             suggestions.classList.remove('is-open');
@@ -319,8 +319,8 @@
                 this.grid.setAttribute('aria-busy', 'true');
             }
 
-            var ajaxUrl = (window.Palime && window.Palime.data) ? window.Palime.data.ajaxUrl : '/wp-admin/admin-ajax.php';
-            var nonce   = (window.Palime && window.Palime.data) ? window.Palime.data.nonce   : '';
+            var ajaxUrl = (typeof palimeData !== 'undefined') ? palimeData.ajaxUrl : '/wp-admin/admin-ajax.php';
+            var nonce   = (typeof palimeData !== 'undefined') ? palimeData.nonce   : '';
 
             var params = new URLSearchParams({
                 action:           'palime_filter_archive',
