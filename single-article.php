@@ -18,7 +18,8 @@ get_header();
 
 while ( have_posts() ) : the_post();
 
-    $post_id      = get_the_ID();
+    $post_id       = get_the_ID();
+    $required_lvl  = palime_get_required_level( $post_id );
     $section_terms = get_the_terms( $post_id, 'section' );
     $section_slug  = ( $section_terms && ! is_wp_error( $section_terms ) ) ? $section_terms[0]->slug : '';
 
@@ -76,7 +77,7 @@ while ( have_posts() ) : the_post();
 }());
 </script>
 
-<div class="article-hero" style="position:relative; background:var(--color-text); color:#fff; min-height:50vh; display:flex; align-items:flex-end;">
+<div class="article-hero" data-article-id="<?php echo (int) $post_id; ?>" style="position:relative; background:var(--color-text); color:#fff; min-height:50vh; display:flex; align-items:flex-end;">
 
     <?php if ( has_post_thumbnail() ) : ?>
         <div style="position:absolute; inset:0; overflow:hidden;">
@@ -247,6 +248,12 @@ while ( have_posts() ) : the_post();
                             <tr style="border-bottom:1px solid rgba(0,0,0,.06);">
                                 <td style="padding:6px 0; opacity:.5;">Статус</td>
                                 <td style="padding:6px 0; text-align:right; color:var(--accent);"><?php echo esc_html( $status_label ); ?></td>
+                            </tr>
+                        <?php endif; ?>
+                        <?php if ( $required_lvl > 0 ) : ?>
+                            <tr style="border-bottom:1px solid rgba(0,0,0,.06);">
+                                <td style="padding:6px 0; opacity:.5;">Доступ</td>
+                                <td style="padding:6px 0; text-align:right; color:var(--accent);"><?php echo esc_html( palime_get_level_name_by_number( $required_lvl ) ); ?>+</td>
                             </tr>
                         <?php endif; ?>
                         <tr>

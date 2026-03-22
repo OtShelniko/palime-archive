@@ -25,6 +25,7 @@ require_once get_template_directory() . '/inc/woocommerce.php';
 require_once get_template_directory() . '/inc/auth.php';
 require_once get_template_directory() . '/inc/user-profile.php';
 require_once get_template_directory() . '/inc/user-points.php';
+require_once get_template_directory() . '/inc/rewards.php';
 
 // API и AJAX
 require_once get_template_directory() . '/inc/ajax.php';
