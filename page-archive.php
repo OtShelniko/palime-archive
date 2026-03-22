@@ -109,7 +109,7 @@ $current_month = $months_ru[ (int) date( 'n' ) ] . ' ' . date( 'Y' );
         <div class="pa-archive-hero__search">
             <span class="pa-archive-hero__search-label">Текстовый поиск</span>
             <input
-                type="search"
+                type="text"
                 name="q"
                 id="pa-archive-search"
                 class="pa-archive-hero__search-input"
