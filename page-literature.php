@@ -19,8 +19,7 @@ get_header();
 
 $section_slug = 'lit';
 $hero_url     = '';
-// hero-{slug}.jpg — канон; hero-literature.jpg — совместимость со старым именем файла.
-foreach ( [ '/assets/img/hero-' . $section_slug . '.jpg', '/assets/img/hero-literature.jpg' ] as $hero_rel ) {
+foreach ( [ '/assets/img/hero-' . $section_slug . '.jpg', '/assets/img/hero-literature.jpg', '/assets/img/section-' . $section_slug . '.jpg' ] as $hero_rel ) {
 	$hero_abs = get_template_directory() . $hero_rel;
 	if ( is_readable( $hero_abs ) ) {
 		$hero_url = get_template_directory_uri() . $hero_rel;

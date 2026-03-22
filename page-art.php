@@ -18,9 +18,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 get_header();
 
 $section_slug = 'art';
-$hero_rel     = '/assets/img/hero-' . $section_slug . '.jpg';
-$hero_abs     = get_template_directory() . $hero_rel;
-$hero_url     = is_readable( $hero_abs ) ? get_template_directory_uri() . $hero_rel : '';
+$hero_url     = '';
+foreach ( [ '/assets/img/hero-' . $section_slug . '.jpg', '/assets/img/section-' . $section_slug . '.jpg' ] as $hero_rel ) {
+	$hero_abs = get_template_directory() . $hero_rel;
+	if ( is_readable( $hero_abs ) ) {
+		$hero_url = get_template_directory_uri() . $hero_rel;
+		break;
+	}
+}
 
 get_template_part(
 	'template-parts/sections/section-page',
