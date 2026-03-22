@@ -80,6 +80,15 @@ function palime_enqueue_assets() {
         );
     }
 
+    if ( is_page_template( 'page-auth.php' ) ) {
+        wp_enqueue_style(
+            'palime-page-auth',
+            $uri . '/assets/css/pages/auth.css',
+            [ 'palime-utilities' ],
+            $ver
+        );
+    }
+
     if ( is_page_template( 'page-blog.php' ) || is_page_template( 'page-news.php' ) ) {
         wp_enqueue_style(
             'palime-page-blog',
@@ -172,6 +181,17 @@ function palime_enqueue_assets() {
         );
     }
 
+    // auth.js — логика страницы авторизации
+    if ( is_page_template( 'page-auth.php' ) ) {
+        wp_enqueue_script(
+            'palime-auth',
+            $uri . '/assets/js/auth.js',
+            [ 'palime-main' ],
+            $ver,
+            true
+        );
+    }
+
     // tracker.js — трекинг чтения и сессий
     if ( is_singular( 'article' ) && is_user_logged_in() ) {
         wp_enqueue_script(
@@ -193,6 +213,7 @@ function palime_enqueue_assets() {
         'restBase'  => esc_url_raw( rest_url( '/' ) ),
         'nonce'     => wp_create_nonce( 'wp_rest' ),
         'voteNonce' => wp_create_nonce( 'palime_vote_nonce' ),
+        'authNonce' => wp_create_nonce( 'palime_auth_nonce' ),
         'userId'    => get_current_user_id(),
     ] );
 }
