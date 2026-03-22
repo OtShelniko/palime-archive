@@ -19,7 +19,7 @@ get_header();
 
 // Данные для живого индекса
 $live = new WP_Query( [
-    'post_type'              => [ 'article', 'news' ],
+    'post_type'              => 'article',
     'posts_per_page'         => 10,
     'post_status'            => 'publish',
     'orderby'                => 'date',
@@ -38,11 +38,8 @@ if ( $live->have_posts() ) {
         $s_terms = get_the_terms( $pid, 'section' );
         $medium  = ( $s_terms && ! is_wp_error( $s_terms ) ) ? $s_terms[0]->name : '—';
 
-        $form = 'Новость';
-        if ( get_post_type( $pid ) === 'article' ) {
-            $at   = get_the_terms( $pid, 'article-type' );
-            $form = ( $at && ! is_wp_error( $at ) ) ? $at[0]->name : 'Статья';
-        }
+        $at   = get_the_terms( $pid, 'article-type' );
+        $form = ( $at && ! is_wp_error( $at ) ) ? $at[0]->name : 'Статья';
 
         $min = function_exists( 'get_field' ) ? get_field( 'reading_time', $pid ) : '';
 
@@ -69,7 +66,7 @@ while ( count( $rows ) < 10 ) {
     ];
 }
 
-$total_count = (int) wp_count_posts( 'article' )->publish + (int) wp_count_posts( 'news' )->publish;
+$total_count = (int) wp_count_posts( 'article' )->publish;
 
 // Секционные цвета
 $section_colors = [
@@ -281,7 +278,7 @@ $section_colors = [
         <div class="pa-live__tabs">
             <button class="pa-live-tab is-active" data-tab="newest">Новейшие</button>
             <button class="pa-live-tab" data-tab="popular">Популярные</button>
-            <button class="pa-live-tab" data-tab="today">Обновлено сегодня</button>
+            <button class="pa-live-tab" data-tab="best">Лучшее</button>
             <button class="pa-live-tab" data-tab="editor">Выбор редактора</button>
         </div>
 
@@ -648,12 +645,65 @@ if ( class_exists( 'WooCommerce' ) ) {
 
 <!-- JS: вкладки живого индекса -->
 <script>
-document.querySelectorAll('.pa-live-tab').forEach(function(btn) {
-    btn.addEventListener('click', function() {
-        document.querySelectorAll('.pa-live-tab').forEach(function(b) { b.classList.remove('is-active'); });
-        btn.classList.add('is-active');
+(function() {
+    var tabs  = document.querySelectorAll('.pa-live-tab');
+    var tbody = document.querySelector('.pa-live__table tbody');
+    if (!tabs.length || !tbody) return;
+
+    function escHtml(s) {
+        var d = document.createElement('div');
+        d.textContent = s;
+        return d.innerHTML;
+    }
+
+    function renderRows(rows) {
+        var html = '';
+        rows.forEach(function(row) {
+            var isReal = row.url !== '#';
+            html += '<tr class="pa-live-row ' + (!isReal ? 'pa-live-row--empty' : '') + '">';
+            html += '<td>' + escHtml(row.id) + '</td>';
+            html += '<td>';
+            if (isReal) {
+                html += '<a href="' + escHtml(row.url) + '">' + escHtml(row.title) + '</a>';
+            } else {
+                html += escHtml(row.title);
+            }
+            html += '</td>';
+            html += '<td class="hide-mobile">' + escHtml(row.medium) + '</td>';
+            html += '<td class="hide-mobile">' + escHtml(row.form) + '</td>';
+            html += '<td class="hide-mobile">' + escHtml(row.min) + '</td>';
+            html += '<td>';
+            if (isReal) {
+                html += '<a href="' + escHtml(row.url) + '" class="pa-live__arrow">→</a>';
+            }
+            html += '</td></tr>';
+        });
+        tbody.innerHTML = html;
+    }
+
+    function loadTab(tab) {
+        var fd = new FormData();
+        fd.append('action', 'palime_live_index');
+        fd.append('nonce', palimeData.nonce);
+        fd.append('tab', tab);
+
+        fetch(palimeData.ajaxUrl, { method: 'POST', body: fd })
+            .then(function(r) { return r.json(); })
+            .then(function(res) {
+                if (res.success && res.data.rows) {
+                    renderRows(res.data.rows);
+                }
+            });
+    }
+
+    tabs.forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            tabs.forEach(function(b) { b.classList.remove('is-active'); });
+            btn.classList.add('is-active');
+            loadTab(btn.getAttribute('data-tab'));
+        });
     });
-});
+})();
 </script>
 
 <?php get_footer(); ?>

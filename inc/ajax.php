@@ -237,6 +237,98 @@ function palime_handle_filter_archive() {
 }
 
 // ---------------------------------------------------------
+// ЖИВОЙ ИНДЕКС — ФИЛЬТРАЦИЯ ВКЛАДОК
+// ---------------------------------------------------------
+
+add_action( 'wp_ajax_palime_live_index',        'palime_handle_live_index' );
+add_action( 'wp_ajax_nopriv_palime_live_index', 'palime_handle_live_index' );
+
+function palime_handle_live_index() {
+    check_ajax_referer( 'wp_rest', 'nonce' );
+
+    $tab = sanitize_key( $_POST['tab'] ?? 'newest' );
+
+    $args = [
+        'post_type'              => 'article',
+        'posts_per_page'         => 10,
+        'post_status'            => 'publish',
+        'no_found_rows'          => true,
+        'update_post_meta_cache' => false,
+        'update_post_term_cache' => true,
+    ];
+
+    switch ( $tab ) {
+        case 'popular':
+            $args['orderby']  = 'comment_count';
+            $args['order']    = 'DESC';
+            break;
+
+        case 'best':
+            $args['meta_key'] = 'palime_likes';
+            $args['orderby']  = 'meta_value_num';
+            $args['order']    = 'DESC';
+            break;
+
+        case 'editor':
+            $args['orderby'] = 'date';
+            $args['order']   = 'DESC';
+            $args['tax_query'] = [ [
+                'taxonomy' => 'post_tag',
+                'field'    => 'slug',
+                'terms'    => 'editors-choice',
+            ] ];
+            break;
+
+        default: // newest
+            $args['orderby'] = 'date';
+            $args['order']   = 'DESC';
+            break;
+    }
+
+    $query = new WP_Query( $args );
+    $rows  = [];
+
+    if ( $query->have_posts() ) {
+        while ( $query->have_posts() ) {
+            $query->the_post();
+            $pid = get_the_ID();
+
+            $s_terms = get_the_terms( $pid, 'section' );
+            $medium  = ( $s_terms && ! is_wp_error( $s_terms ) ) ? $s_terms[0]->name : '—';
+
+            $at   = get_the_terms( $pid, 'article-type' );
+            $form = ( $at && ! is_wp_error( $at ) ) ? $at[0]->name : 'Статья';
+
+            $min = function_exists( 'get_field' ) ? get_field( 'reading_time', $pid ) : '';
+
+            $rows[] = [
+                'id'     => 'PA-' . get_the_date( 'Y' ) . '-' . str_pad( $pid, 3, '0', STR_PAD_LEFT ),
+                'title'  => get_the_title(),
+                'url'    => get_permalink(),
+                'medium' => $medium,
+                'form'   => $form,
+                'min'    => $min ? $min : '—',
+            ];
+        }
+        wp_reset_postdata();
+    }
+
+    // Добиваем до 10 строк placeholder-ами
+    while ( count( $rows ) < 10 ) {
+        $rows[] = [
+            'id'     => 'PA-——-———',
+            'title'  => '———————————————',
+            'url'    => '#',
+            'medium' => '——————',
+            'form'   => '————',
+            'min'    => '——',
+        ];
+    }
+
+    wp_send_json_success( [ 'rows' => $rows ] );
+}
+
+// ---------------------------------------------------------
 // ПОДПИСКА НА РАССЫЛКУ (Unisender)
 // ---------------------------------------------------------
 
