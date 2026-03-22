@@ -94,10 +94,7 @@
    ============================================================ */
 .pa-hero {
     display: grid;
-    grid-template-columns: 3fr 1fr;
-    min-height: auto;
-    max-height: 520px;
-    overflow: hidden;
+    grid-template-columns: 1.4fr 1fr;
 }
 
 /* --- Левая колонка --- */
@@ -110,12 +107,12 @@
 }
 
 .pa-hero__inner {
-    padding: 48px 60px;
-    max-width: 700px;
+    padding: 40px 48px;
+    max-width: 640px;
 }
 
 .pa-hero__terminal {
-    margin-bottom: 24px;
+    margin-bottom: 16px;
 }
 
 .pa-hero__meta-line {
@@ -133,26 +130,26 @@
 
 .pa-hero__title {
     font-family: var(--font-display);
-    font-size: clamp(3.2rem, 8vw, 7rem);
-    line-height: 1;
+    font-size: clamp(2.8rem, 5vw, 4.5rem);
+    line-height: 1.05;
     letter-spacing: 0.04em;
     text-transform: uppercase;
     color: #fff;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
 }
 
 .pa-hero__slash {
     font-family: var(--font-mono);
-    font-size: clamp(1.4rem, 3vw, 2.2rem);
+    font-size: clamp(1.2rem, 2.5vw, 1.8rem);
     color: var(--accent-main);
     letter-spacing: 0.15em;
-    margin-bottom: 24px;
+    margin-bottom: 16px;
 }
 
 /* Блок статуса — терминальный стиль */
 .pa-hero__status {
-    margin-bottom: 24px;
-    padding: 12px 0;
+    margin-bottom: 16px;
+    padding: 8px 0;
     border-top: 1px solid rgba(255,255,255,0.06);
     border-bottom: 1px solid rgba(255,255,255,0.06);
 }
@@ -175,18 +172,18 @@
 
 .pa-hero__desc {
     font-family: var(--font-serif);
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     line-height: 1.6;
     color: rgba(255,255,255,0.7);
-    margin-bottom: 24px;
-    max-width: 460px;
+    margin-bottom: 16px;
+    max-width: 400px;
 }
 
 .pa-hero__actions {
     display: flex;
-    gap: 16px;
+    gap: 12px;
     flex-wrap: wrap;
-    margin-bottom: 24px;
+    margin-bottom: 16px;
 }
 
 .pa-hero__btn {
@@ -229,11 +226,11 @@
 /* Футер доступа */
 .pa-hero__access {
     font-family: var(--font-mono);
-    font-size: 10px;
+    font-size: 9px;
     letter-spacing: 0.08em;
     color: rgba(255,255,255,0.2);
-    line-height: 1.8;
-    margin-bottom: 24px;
+    line-height: 1.6;
+    margin-bottom: 12px;
 }
 
 .pa-hero__access--warn {
@@ -254,6 +251,7 @@
     position: relative;
     overflow: hidden;
     background: #0A0A0A;
+    min-height: 400px;
 }
 
 .pa-hero__image {
@@ -1309,11 +1307,10 @@
 @media (max-width: 1024px) {
     .pa-hero {
         grid-template-columns: 1fr;
-        min-height: auto;
-        max-height: none;
     }
 
     .pa-hero__right {
+        min-height: 250px;
         max-height: 300px;
     }
 
