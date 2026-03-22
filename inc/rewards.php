@@ -103,6 +103,25 @@ function palime_filter_gated_content( $content ) {
 }
 
 /**
+ * Трекинг открытия закрытого материала (для достижения «За закрытой дверью»).
+ */
+add_action( 'template_redirect', function() {
+    if ( ! is_singular( [ 'article', 'news' ] ) || ! is_user_logged_in() ) return;
+
+    $post_id  = get_queried_object_id();
+    $required = palime_get_required_level( $post_id );
+
+    if ( $required <= 0 ) return;
+    if ( ! palime_user_can_access_post( $post_id ) ) return;
+
+    $user_id = get_current_user_id();
+    if ( ! get_user_meta( $user_id, 'palime_opened_gated', true ) ) {
+        update_user_meta( $user_id, 'palime_opened_gated', current_time( 'mysql' ) );
+        palime_check_achievements( $user_id );
+    }
+} );
+
+/**
  * Скрываем комментарии на закрытых материалах.
  */
 add_filter( 'comments_open', function( $open, $post_id ) {

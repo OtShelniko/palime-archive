@@ -300,11 +300,12 @@ get_header();
                         <?php foreach ( $log as $entry ) :
                             $category = $entry['category'] ?? 'base';
                         ?>
-                            <div class="points-log__item points-log__item--<?php echo esc_attr( $category ); ?>">
+                            <?php $is_negative = ( (int) $entry['amount'] ) < 0; ?>
+                            <div class="points-log__item points-log__item--<?php echo esc_attr( $category ); ?> <?php echo $is_negative ? 'points-log__item--negative' : ''; ?>">
                                 <span class="points-log__category-dot"></span>
                                 <span><?php echo esc_html( $entry['reason'] ?: 'Действие' ); ?></span>
                                 <span class="points-log__date"><?php echo esc_html( palime_format_date_short( $entry['date'] ) ); ?></span>
-                                <span class="points-log__amount">+<?php echo (int) $entry['amount']; ?></span>
+                                <span class="points-log__amount"><?php echo $is_negative ? '' : '+'; ?><?php echo (int) $entry['amount']; ?></span>
                             </div>
                         <?php endforeach; ?>
                     </div>
