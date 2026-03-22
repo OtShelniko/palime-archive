@@ -30,6 +30,13 @@ add_filter( 'login_redirect', function( $redirect_to, $request, $user ) {
 }, 10, 3 );
 
 /**
+ * Редирект после WordPress-регистрации — на /profile.
+ */
+add_filter( 'registration_redirect', function() {
+    return home_url( '/profile/' );
+} );
+
+/**
  * Получить данные профиля пользователя для отображения.
  *
  * @param int $user_id
