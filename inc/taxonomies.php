@@ -10,10 +10,24 @@ function palime_register_taxonomies() {
     $post_types_art = [ 'article', 'dossier' ];
 
     register_taxonomy( 'section', array_merge( $post_types_all, [ 'route' ] ), [
-        'label'        => 'Раздел',
-        'hierarchical' => false,
-        'show_in_rest' => true,
-        'rewrite'      => [ 'slug' => 'section' ],
+        'labels'            => [
+            'name'              => 'Разделы',
+            'singular_name'     => 'Раздел',
+            'search_items'      => 'Найти раздел',
+            'all_items'         => 'Все разделы',
+            'edit_item'         => 'Редактировать раздел',
+            'update_item'       => 'Обновить раздел',
+            'add_new_item'      => 'Добавить раздел',
+            'new_item_name'     => 'Новое название раздела',
+            'menu_name'         => 'Разделы',
+        ],
+        'hierarchical'      => false,
+        'public'            => true,
+        'show_ui'           => true,
+        'show_in_rest'      => true,
+        'show_admin_column' => true,
+        'show_tagcloud'     => false,
+        'rewrite'           => false,
     ] );
 
     register_taxonomy( 'article-type', [ 'article' ], [

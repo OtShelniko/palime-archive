@@ -155,10 +155,7 @@ $current_month = $months_ru[ (int) date( 'n' ) ] . ' ' . date( 'Y' );
                     ><?php echo esc_html( $t->name ); ?></button>
                 <?php endforeach;
                 else : ?>
-                    <button type="button" class="pa-filter-tag pa-filter-tag--lg pa-filter-tag--cinema" data-filter="section" data-value="cinema" aria-pressed="false">Кино</button>
-                    <button type="button" class="pa-filter-tag pa-filter-tag--lg pa-filter-tag--lit" data-filter="section" data-value="lit" aria-pressed="false">Литература</button>
-                    <button type="button" class="pa-filter-tag pa-filter-tag--lg pa-filter-tag--music" data-filter="section" data-value="music" aria-pressed="false">Музыка</button>
-                    <button type="button" class="pa-filter-tag pa-filter-tag--lg pa-filter-tag--art" data-filter="section" data-value="art" aria-pressed="false">Искусство</button>
+                    <p class="pa-filter-group__empty">Разделы не найдены. Создайте термины section в админке: cinema, lit, music, art.</p>
                 <?php endif; ?>
             </div>
         </div>
