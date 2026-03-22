@@ -94,19 +94,55 @@
             const suggestions = document.querySelector('#pa-person-suggestions');
             if (!input || !suggestions) return;
 
-            const search = this._debounce((q) => {
+            var self = this;
+
+            function getRestBase() {
+                return (typeof palimeData !== 'undefined' && palimeData.restBase) ? palimeData.restBase : '/wp-json/';
+            }
+
+            /** Resolve typed name → slug via REST, then apply filter */
+            function resolveAndApply(q) {
+                if (!q) return;
+                // Already resolved — skip
+                if (self.state.person && input.value === input.dataset.resolvedName) return;
+
+                fetch(getRestBase() + 'palime/v1/persons?search=' + encodeURIComponent(q))
+                    .then(function(r) { return r.json(); })
+                    .then(function(data) {
+                        suggestions.classList.remove('is-open');
+                        if (data && data.length) {
+                            self.state.person = data[0].slug;
+                            input.value = data[0].name;
+                            input.dataset.resolvedName = data[0].name;
+                            self.state.page = 1;
+                            self.updateActiveTags();
+                            self.fetch();
+                        }
+                    })
+                    .catch(function() { suggestions.classList.remove('is-open'); });
+            }
+
+            const search = this._debounce(function(q) {
                 if (q.length < 2) {
                     suggestions.classList.remove('is-open');
                     suggestions.innerHTML = '';
                     return;
                 }
 
-                const restBase = (typeof palimeData !== 'undefined' && palimeData.restBase) ? palimeData.restBase : '/wp-json/';
-                fetch(restBase + 'palime/v1/persons?search=' + encodeURIComponent(q))
+                fetch(getRestBase() + 'palime/v1/persons?search=' + encodeURIComponent(q))
                     .then(function(r) { return r.json(); })
                     .then(function(data) {
                         suggestions.innerHTML = '';
-                        if (!data || !data.length) { suggestions.classList.remove('is-open'); return; }
+                        if (!data || !data.length) {
+                            // Show "no results" so user knows the search ran
+                            var empty = document.createElement('div');
+                            empty.className = 'pa-filter-person__suggestion';
+                            empty.textContent = 'Не найдено';
+                            empty.style.opacity = '.4';
+                            suggestions.appendChild(empty);
+                            suggestions.classList.add('is-open');
+                            return;
+                        }
 
                         data.forEach(function(person) {
                             var item = document.createElement('div');
@@ -114,13 +150,13 @@
                             item.textContent = person.name;
                             item.setAttribute('role', 'option');
                             item.addEventListener('click', function() {
-                                PalimeFilters.state.person = person.slug;
-                                PalimeFilters.state.page   = 1;
+                                self.state.person = person.slug;
+                                self.state.page   = 1;
                                 input.value = person.name;
                                 input.dataset.resolvedName = person.name;
                                 suggestions.classList.remove('is-open');
-                                PalimeFilters.updateActiveTags();
-                                PalimeFilters.fetch();
+                                self.updateActiveTags();
+                                self.fetch();
                             });
                             suggestions.appendChild(item);
                         });
@@ -130,39 +166,39 @@
                     .catch(function() { suggestions.classList.remove('is-open'); });
             }, 300);
 
-            input.addEventListener('input', function() { search(input.value); });
+            input.addEventListener('input', function() {
+                // Clear resolved state when user edits text
+                if (input.value !== input.dataset.resolvedName) {
+                    input.dataset.resolvedName = '';
+                }
+                search(input.value);
+            });
 
             input.addEventListener('keydown', function(e) {
                 if (e.key === 'Enter') {
                     e.preventDefault();
-                    var q = input.value.trim();
-                    if (!q) return;
-
-                    // If person was already resolved via autocomplete click, just apply
-                    if (PalimeFilters.state.person && input.value === input.dataset.resolvedName) {
-                        suggestions.classList.remove('is-open');
-                        return;
-                    }
-
-                    // Resolve typed name to slug via REST before applying filter
-                    var restBase = (typeof palimeData !== 'undefined' && palimeData.restBase) ? palimeData.restBase : '/wp-json/';
-                    fetch(restBase + 'palime/v1/persons?search=' + encodeURIComponent(q))
-                        .then(function(r) { return r.json(); })
-                        .then(function(data) {
-                            suggestions.classList.remove('is-open');
-                            if (data && data.length) {
-                                PalimeFilters.state.person = data[0].slug;
-                                input.value = data[0].name;
-                                input.dataset.resolvedName = data[0].name;
-                                PalimeFilters.state.page = 1;
-                                PalimeFilters.updateActiveTags();
-                                PalimeFilters.fetch();
-                            }
-                            // No match — do nothing, let user refine their input
-                        })
-                        .catch(function() { suggestions.classList.remove('is-open'); });
+                    resolveAndApply(input.value.trim());
                 }
                 if (e.key === 'Escape') suggestions.classList.remove('is-open');
+            });
+
+            // Blur: resolve and apply if user typed something but didn't pick from list
+            input.addEventListener('blur', function() {
+                // Small delay so click on suggestion can fire first
+                setTimeout(function() {
+                    var q = input.value.trim();
+                    if (q && q !== input.dataset.resolvedName) {
+                        resolveAndApply(q);
+                    }
+                    // If input was cleared, remove person filter
+                    if (!q && self.state.person) {
+                        self.state.person = '';
+                        input.dataset.resolvedName = '';
+                        self.state.page = 1;
+                        self.updateActiveTags();
+                        self.fetch();
+                    }
+                }, 200);
             });
 
             document.addEventListener('click', function(e) {
