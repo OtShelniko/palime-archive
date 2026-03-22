@@ -193,6 +193,7 @@ function palime_enqueue_assets() {
         'restBase'  => esc_url_raw( rest_url( '/' ) ),
         'nonce'     => wp_create_nonce( 'wp_rest' ),
         'voteNonce' => wp_create_nonce( 'palime_vote_nonce' ),
+        'authNonce' => wp_create_nonce( 'palime_auth_nonce' ),
         'userId'    => get_current_user_id(),
     ] );
 }

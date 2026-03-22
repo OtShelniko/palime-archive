@@ -31,11 +31,29 @@ define( 'PALIME_XP_STREAK_3',      20 );
 define( 'PALIME_XP_STREAK_7',      50 );
 define( 'PALIME_XP_STREAK_30',    150 );
 
+// Онбординг
+define( 'PALIME_XP_WELCOME',       5 );   // Регистрация аккаунта — 1 раз
+
 // Дневной лимит базовых очков (чтобы не фармили)
 define( 'PALIME_DAILY_BASE_CAP',   30 );
 
 // Антиспам комментариев: минимальный интервал в секундах
 define( 'PALIME_COMMENT_COOLDOWN', 300 ); // 5 минут
+
+
+// =========================================================
+// WELCOME XP — начисляем при регистрации (любой способ)
+// =========================================================
+// Telegram-регистрация начисляет PALIME_XP_TELEGRAM отдельно в auth.php,
+// здесь ловим WP/WC регистрации через хук user_register.
+
+add_action( 'user_register', function( $user_id ) {
+    // Telegram-юзеры получают XP в auth.php, не дублируем
+    if ( get_user_meta( $user_id, 'telegram_id', true ) ) {
+        return;
+    }
+    palime_add_points( $user_id, PALIME_XP_WELCOME, 'Регистрация аккаунта', 'social' );
+} );
 
 
 // =========================================================
