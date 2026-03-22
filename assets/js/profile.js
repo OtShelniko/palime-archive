@@ -15,9 +15,10 @@
 
         init() {
             this.bindTabs();
-            this.loadProfileData();
             this.animateProgress();
             this.bindLogout();
+            this.bindSettingsForm();
+            this.bindRemoveSaved();
         },
 
         // =========================================================
@@ -40,66 +41,6 @@
                         ?.classList.add('active');
                 });
             });
-
-            // Открыть первый таб по умолчанию
-            navItems[0]?.click();
-        },
-
-        // =========================================================
-        // ЗАГРУЗКА ДАННЫХ ПРОФИЛЯ
-        // =========================================================
-
-        loadProfileData() {
-            if (!Palime.data.userId) return;
-
-            fetch(`${Palime.data.restUrl}palime/v1/profile`, {
-                headers: {
-                    'X-WP-Nonce': Palime.data.nonce,
-                }
-            })
-                .then(r => r.json())
-                .then(data => {
-                    this.renderPoints(data.points, data.level, data.progress);
-                    this.renderLog(data.log);
-                })
-                .catch(err => console.error('Profile load error:', err));
-        },
-
-        renderPoints(points, level, progress) {
-            // Очки
-            const pointsEl = document.querySelector('.profile-level__points');
-            if (pointsEl) pointsEl.textContent = points;
-
-            // Бейдж уровня
-            const badge = document.querySelector('.profile-level__badge');
-            if (badge) badge.textContent = level?.name || '';
-
-            // Прогресс-бар
-            const fill = document.querySelector('.profile-progress__fill');
-            if (fill && progress) {
-                fill.dataset.percent = progress.percent;
-            }
-
-            // Лейбл прогресса
-            const progressLabel = document.querySelector('.profile-progress__label');
-            if (progressLabel && progress?.next_name) {
-                progressLabel.textContent = `До уровня ${progress.next_name}: ${progress.next_min - progress.current} очков`;
-            } else if (progressLabel) {
-                progressLabel.textContent = 'Максимальный уровень';
-            }
-        },
-
-        renderLog(log) {
-            const container = document.querySelector('.points-log');
-            if (!container || !log?.length) return;
-
-            container.innerHTML = log.map(entry => `
-                <div class="points-log__item">
-                    <span>${this.esc(entry.reason || 'Действие')}</span>
-                    <span class="points-log__date">${this.formatDate(entry.date)}</span>
-                    <span class="points-log__amount">${entry.amount}</span>
-                </div>
-            `).join('');
         },
 
         // =========================================================
@@ -122,6 +63,73 @@
         },
 
         // =========================================================
+        // ФОРМА НАСТРОЕК
+        // =========================================================
+
+        bindSettingsForm() {
+            const form = document.getElementById('profile-settings-form');
+            if (!form) return;
+
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                const formData = new FormData(form);
+                const data = {
+                    display_name: formData.get('display_name'),
+                };
+
+                fetch(`${palimeData.restBase}palime/v1/profile/update`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-WP-Nonce': palimeData.nonce,
+                    },
+                    body: JSON.stringify(data),
+                })
+                    .then(r => r.json())
+                    .then(res => {
+                        if (res.success) {
+                            this.showNotice(form, 'Сохранено');
+                        }
+                    })
+                    .catch(() => {
+                        this.showNotice(form, 'Ошибка сохранения', true);
+                    });
+            });
+        },
+
+        // =========================================================
+        // УДАЛЕНИЕ СОХРАНЁННЫХ СТАТЕЙ
+        // =========================================================
+
+        bindRemoveSaved() {
+            document.querySelectorAll('.saved-article__remove').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const articleId = btn.dataset.articleId;
+                    if (!articleId) return;
+
+                    const body = new FormData();
+                    body.append('action', 'palime_toggle_save');
+                    body.append('nonce', palimeData.nonce);
+                    body.append('article_id', articleId);
+
+                    fetch(palimeData.ajaxUrl, { method: 'POST', body })
+                        .then(r => r.json())
+                        .then(res => {
+                            if (res.success) {
+                                const item = btn.closest('.saved-article');
+                                if (item) {
+                                    item.style.opacity = '0';
+                                    item.style.transition = 'opacity 0.3s ease';
+                                    setTimeout(() => item.remove(), 300);
+                                }
+                            }
+                        });
+                });
+            });
+        },
+
+        // =========================================================
         // ВЫХОД
         // =========================================================
 
@@ -139,16 +147,15 @@
         // УТИЛИТЫ
         // =========================================================
 
-        esc(str) {
-            const d = document.createElement('div');
-            d.textContent = str || '';
-            return d.innerHTML;
-        },
+        showNotice(container, message, isError) {
+            const existing = container.querySelector('.profile-notice');
+            if (existing) existing.remove();
 
-        formatDate(mysqlDate) {
-            if (!mysqlDate) return '';
-            const d = new Date(mysqlDate.replace(' ', 'T'));
-            return d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' });
+            const el = document.createElement('div');
+            el.className = 'profile-notice' + (isError ? ' profile-notice--error' : '');
+            el.textContent = message;
+            container.appendChild(el);
+            setTimeout(() => el.remove(), 3000);
         },
     };
 

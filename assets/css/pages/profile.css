@@ -1,12 +1,19 @@
 /* Palime Archive — pages/profile.css */
 
-/* === ЛЕЙАУТ ПРОФИЛЯ === */
-.profile-layout {
+/* === СТРАНИЦА ПРОФИЛЯ === */
+.profile-page {
+    background: var(--color-bg);
+    min-height: 80vh;
+}
+
+.profile-page__container {
     display: grid;
     grid-template-columns: 300px 1fr;
     gap: var(--spacing-xl);
     align-items: start;
-    padding: var(--spacing-xl) 0;
+    max-width: var(--container);
+    margin: 0 auto;
+    padding: var(--spacing-xl) var(--gutter);
 }
 
 /* === САЙДБАР ПРОФИЛЯ === */
@@ -34,6 +41,13 @@
     font-family: var(--font-display);
     font-size: 1.3rem;
     margin-bottom: var(--spacing-xs);
+}
+
+.profile-email {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    opacity: 0.45;
+    margin-bottom: var(--spacing-md);
 }
 
 /* === УРОВЕНЬ И ОЧКИ === */
@@ -99,6 +113,32 @@
     text-align: right;
 }
 
+/* === СЕРИЯ (STREAK) === */
+.profile-streak {
+    display: flex;
+    align-items: baseline;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md);
+    background: var(--color-second);
+    border-left: 3px solid var(--accent);
+    margin-bottom: var(--spacing-lg);
+}
+
+.profile-streak__count {
+    font-family: var(--font-mono);
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: var(--accent);
+}
+
+.profile-streak__label {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    opacity: 0.6;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
 /* === НАВИГАЦИЯ ПРОФИЛЯ === */
 .profile-nav {
     margin-top: var(--spacing-lg);
@@ -126,6 +166,24 @@
     color: var(--accent);
 }
 
+/* Кнопка выхода */
+.profile-logout {
+    display: block;
+    margin-top: var(--spacing-lg);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-text);
+    opacity: 0.35;
+    text-decoration: none;
+    transition: opacity var(--transition);
+}
+
+.profile-logout:hover {
+    opacity: 0.7;
+}
+
 /* === КОНТЕНТ ПРОФИЛЯ === */
 .profile-content__section {
     display: none;
@@ -144,6 +202,170 @@
     margin-bottom: var(--spacing-lg);
     padding-bottom: var(--spacing-sm);
     border-bottom: 1px solid rgba(0,0,0,0.08);
+}
+
+.profile-content__subtitle {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.4;
+    margin: var(--spacing-xl) 0 var(--spacing-md);
+}
+
+/* === СТАТИСТИКА === */
+.profile-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-xl);
+}
+
+.profile-stats__card {
+    padding: var(--spacing-lg) var(--spacing-md);
+    background: var(--color-second);
+    text-align: center;
+}
+
+.profile-stats__value {
+    font-family: var(--font-mono);
+    font-size: 1.5rem;
+    font-weight: 400;
+    margin-bottom: var(--spacing-xs);
+}
+
+.profile-stats__label {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    opacity: 0.5;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+/* === КАРТА УРОВНЕЙ === */
+.profile-levels-map {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.level-card {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md) var(--spacing-lg);
+    background: var(--color-second);
+    border-left: 3px solid transparent;
+    transition: all var(--transition);
+}
+
+.level-card--current {
+    border-left-color: var(--accent);
+    background: rgba(217, 21, 21, 0.04);
+}
+
+.level-card--locked {
+    opacity: 0.4;
+}
+
+.level-card__num {
+    font-family: var(--font-mono);
+    font-size: 1.2rem;
+    opacity: 0.3;
+    width: 30px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.level-card--current .level-card__num {
+    color: var(--accent);
+    opacity: 1;
+}
+
+.level-card__name {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 2px;
+}
+
+.level-card__perks {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    opacity: 0.5;
+    margin-bottom: 2px;
+}
+
+.level-card__min {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    opacity: 0.35;
+}
+
+/* === ДОСТИЖЕНИЯ === */
+.achievements-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-md);
+}
+
+.achievement-card {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md) var(--spacing-lg);
+    background: var(--color-second);
+    border: 1px solid rgba(0,0,0,0.04);
+    transition: all var(--transition);
+}
+
+.achievement-card--locked {
+    opacity: 0.35;
+}
+
+.achievement-card--unlocked {
+    border-color: var(--accent);
+    background: rgba(217, 21, 21, 0.03);
+}
+
+.achievement-card__icon {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    font-weight: 400;
+    background: rgba(0,0,0,0.06);
+    flex-shrink: 0;
+}
+
+.achievement-card--unlocked .achievement-card__icon {
+    background: var(--accent);
+    color: #fff;
+}
+
+.achievement-card__name {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    letter-spacing: 0.04em;
+    margin-bottom: 2px;
+}
+
+.achievement-card__desc {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    opacity: 0.5;
+}
+
+.achievement-card__status {
+    margin-left: auto;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--accent);
+    white-space: nowrap;
 }
 
 /* === ЛОГ ОЧКОВ === */
@@ -183,15 +405,176 @@
 .saved-articles {
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-md);
+    gap: var(--spacing-sm);
 }
 
-@media (max-width: 768px) {
-    .profile-layout {
+.saved-article {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: var(--color-second);
+    border-radius: var(--radius-sm);
+    transition: opacity 0.3s ease;
+}
+
+.saved-article__title {
+    flex: 1;
+    font-size: 0.875rem;
+    color: var(--color-text);
+    text-decoration: none;
+}
+
+.saved-article__title:hover {
+    color: var(--accent);
+}
+
+.saved-article__date {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    opacity: 0.4;
+    white-space: nowrap;
+}
+
+.saved-article__remove {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-text);
+    opacity: 0.35;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px 8px;
+    transition: opacity var(--transition);
+}
+
+.saved-article__remove:hover {
+    opacity: 0.8;
+    color: var(--accent);
+}
+
+/* === НАСТРОЙКИ === */
+.profile-settings {
+    max-width: 480px;
+}
+
+.profile-settings__field {
+    margin-bottom: var(--spacing-lg);
+}
+
+.profile-settings__label {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.5;
+    margin-bottom: var(--spacing-sm);
+}
+
+.profile-settings__input {
+    display: block;
+    width: 100%;
+    padding: 10px 14px;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    background: var(--color-second);
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: var(--radius-sm);
+    color: var(--color-text);
+    transition: border-color var(--transition);
+}
+
+.profile-settings__input:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+.profile-settings__input[readonly] {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.profile-settings__hint {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    opacity: 0.35;
+    margin-top: var(--spacing-xs);
+}
+
+.profile-settings__connected {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--accent);
+}
+
+.profile-settings__save {
+    display: inline-block;
+    padding: 10px 32px;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #fff;
+    background: var(--accent);
+    border: none;
+    cursor: pointer;
+    transition: opacity var(--transition);
+}
+
+.profile-settings__save:hover {
+    opacity: 0.85;
+}
+
+/* === УВЕДОМЛЕНИЯ === */
+.profile-notice {
+    margin-top: var(--spacing-md);
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    background: rgba(0, 160, 0, 0.08);
+    color: #1a7a1a;
+    border-left: 3px solid #1a7a1a;
+}
+
+.profile-notice--error {
+    background: rgba(217, 21, 21, 0.08);
+    color: var(--accent);
+    border-left-color: var(--accent);
+}
+
+/* === ПУСТЫЕ СОСТОЯНИЯ === */
+.profile-empty {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    opacity: 0.4;
+    padding: var(--spacing-xl) 0;
+}
+
+/* === АДАПТИВ === */
+@media (max-width: 900px) {
+    .profile-page__container {
         grid-template-columns: 1fr;
     }
 
     .profile-sidebar {
         position: static;
+    }
+
+    .profile-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .achievements-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .profile-stats {
+        grid-template-columns: 1fr;
     }
 }
