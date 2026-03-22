@@ -60,6 +60,7 @@ $monthly_cats   = is_array( $cfg['monthly_cats'] ) ? $cfg['monthly_cats'] : [];
 $hero_image_url         = $cfg['hero_image_url'];
 $hero_button_text_color = isset( $cfg['hero_button_text_color'] ) && is_string( $cfg['hero_button_text_color'] ) ? $cfg['hero_button_text_color'] : '';
 $hero_btn_fg            = $hero_button_text_color !== '' ? $hero_button_text_color : '#ffffff';
+$hero_has_media         = false;
 
 $tax_query_section = [];
 if ( $section_slug ) {
@@ -125,6 +126,8 @@ if ( ! $hero_thumb_url && $section_slug ) {
 	}
 }
 
+$hero_has_media = (bool) $hero_thumb_url;
+
 ?>
 
 <!-- 1. Заставка -->
@@ -135,22 +138,22 @@ if ( ! $hero_thumb_url && $section_slug ) {
 
 	<div class="section-page__hero-text" style="position:relative;z-index:1;padding:var(--spacing-2xl) var(--gutter);display:flex;flex-direction:column;justify-content:center;">
 		<?php if ( $status_line ) : ?>
-			<p class="text-mono text-xs mb-lg" style="opacity:.45;letter-spacing:.18em;text-transform:uppercase;">
+			<p class="section-page__hero-meta text-mono text-xs mb-lg" style="opacity:.45;letter-spacing:.18em;text-transform:uppercase;">
 				<?php echo esc_html( $status_line ); ?>
 			</p>
 		<?php endif; ?>
 
 		<h1 id="section-page-title-<?php echo esc_attr( $section_slug ? $section_slug : 'default' ); ?>"
-			class="text-display"
+			class="section-page__hero-title text-display"
 			style="font-family:var(--font-display);font-size:clamp(2.5rem,7vw,5rem);line-height:1;color:<?php echo esc_attr( $accent_color ); ?>;margin-bottom:var(--spacing-md);">
 			<?php echo esc_html( strtoupper( $section_name ) ); ?>
 		</h1>
 
-		<p class="mb-xl" style="font-family:var(--font-serif);font-size:clamp(1rem,2vw,1.35rem);opacity:.78;max-width:36rem;line-height:1.55;">
+		<p class="section-page__hero-slogan mb-xl" style="font-family:var(--font-serif);font-size:clamp(1rem,2vw,1.35rem);opacity:.78;max-width:36rem;line-height:1.55;">
 			<?php echo esc_html( $section_slogan ); ?>
 		</p>
 
-		<div class="flex flex--gap flex--wrap mb-lg">
+		<div class="section-page__hero-actions flex flex--gap flex--wrap mb-lg">
 			<a href="<?php echo esc_url( $archive_url ); ?>"
 				class="btn btn--primary"
 				style="<?php echo esc_attr( 'background:' . $accent_color . ';border-color:' . $accent_color . ';color:' . $hero_btn_fg ); ?>;">
@@ -164,17 +167,22 @@ if ( ! $hero_thumb_url && $section_slug ) {
 		</div>
 	</div>
 
-	<div class="section-page__hero-visual hide-mobile" style="position:relative;min-height:280px;">
+	<div class="section-page__hero-visual<?php echo $hero_has_media ? ' section-page__hero-visual--media' : ' section-page__hero-visual--empty'; ?> hide-mobile" style="position:relative;min-height:280px;">
+		<div class="section-page__hero-visual-inner">
 		<?php if ( $hero_thumb_url ) : ?>
 			<div class="section-page__hero-img" style="height:100%;min-height:320px;background-image:url(<?php echo esc_url( $hero_thumb_url ); ?>);background-size:cover;background-position:center;border-left:1px solid rgba(255,255,255,.08);"></div>
 		<?php else : ?>
 			<div class="section-page__hero-placeholder flex" style="height:100%;min-height:320px;align-items:center;justify-content:center;flex-direction:column;gap:var(--spacing-md);border-left:1px solid rgba(255,255,255,.08);background:rgba(0,0,0,.25);">
-				<span class="text-mono text-xs" style="opacity:.35;letter-spacing:.2em;text-transform:uppercase;">
+				<span class="section-page__hero-placeholder-meta text-mono text-xs" style="opacity:.35;letter-spacing:.2em;text-transform:uppercase;">
 					<?php esc_html_e( 'Hero · изображение раздела', 'palime-archive' ); ?>
 				</span>
-				<span style="font-size:2rem;opacity:.4;" aria-hidden="true">◼</span>
+				<span class="section-page__hero-placeholder-mark" style="font-size:2rem;opacity:.4;" aria-hidden="true">◼</span>
+				<span class="section-page__hero-placeholder-name text-display" aria-hidden="true">
+					<?php echo esc_html( strtoupper( $section_name ) ); ?>
+				</span>
 			</div>
 		<?php endif; ?>
+		</div>
 	</div>
 </section>
 
@@ -184,8 +192,8 @@ if ( ! $hero_thumb_url && $section_slug ) {
 	<div class="container">
 		<div class="flex flex--between mb-xl flex--wrap" style="gap:var(--spacing-md);">
 			<div>
-				<span class="text-mono text-xs text-muted text-upper" style="letter-spacing:.12em;">— <?php esc_html_e( 'Свежие материалы', 'palime-archive' ); ?> —</span>
-				<h2 class="mt-sm" style="font-family:var(--font-display);font-size:clamp(1.35rem,3vw,1.85rem);">
+				<span class="section-page__eyebrow text-mono text-xs text-muted text-upper" style="letter-spacing:.12em;">— <?php esc_html_e( 'Свежие материалы', 'palime-archive' ); ?> —</span>
+				<h2 class="section-page__heading mt-sm" style="font-family:var(--font-display);font-size:clamp(1.35rem,3vw,1.85rem);">
 					<?php esc_html_e( 'Последние статьи', 'palime-archive' ); ?>
 				</h2>
 			</div>
@@ -209,7 +217,7 @@ if ( ! $hero_thumb_url && $section_slug ) {
 		?>
 
 		<?php if ( $fresh_query->have_posts() ) : ?>
-			<div class="grid grid--cards">
+			<div class="grid grid--cards section-page__fresh-grid<?php echo 1 === (int) $fresh_query->post_count ? ' section-page__fresh-grid--single' : ''; ?>">
 				<?php
 				while ( $fresh_query->have_posts() ) :
 					$fresh_query->the_post();
@@ -221,14 +229,14 @@ if ( ! $hero_thumb_url && $section_slug ) {
 		<?php else : ?>
 			<div class="grid grid--cards section-page__stub-cards" style="opacity:.35;">
 				<?php for ( $s = 0; $s < 3; $s++ ) : ?>
-					<article class="card" style="padding:var(--spacing-lg);border:1px dashed rgba(0,0,0,.2);">
-						<p class="text-mono text-xs mb-sm"><?php echo esc_html( sprintf( '%02d', $s + 1 ) ); ?></p>
-						<h3 class="text-serif" style="font-size:1rem;">—</h3>
-						<p class="text-mono text-xs text-muted mt-md"><?php esc_html_e( 'Материалы появятся здесь', 'palime-archive' ); ?></p>
+					<article class="card section-page__stub-card" style="padding:var(--spacing-lg);border:1px dashed rgba(0,0,0,.2);">
+						<p class="section-page__stub-index text-mono text-xs mb-sm"><?php echo esc_html( sprintf( '%02d', $s + 1 ) ); ?></p>
+						<h3 class="section-page__stub-title text-serif" style="font-size:1rem;">—</h3>
+						<p class="section-page__stub-copy text-mono text-xs text-muted mt-md"><?php esc_html_e( 'Материалы появятся здесь', 'palime-archive' ); ?></p>
 					</article>
 				<?php endfor; ?>
 			</div>
-			<p class="text-muted text-mono text-xs mt-md" style="letter-spacing:.08em;">
+			<p class="text-muted text-mono text-xs mt-md section-page__stub-caption" style="letter-spacing:.08em;">
 				<?php esc_html_e( '— Материалы появятся здесь —', 'palime-archive' ); ?>
 			</p>
 		<?php endif; ?>
@@ -246,16 +254,16 @@ if ( ! $hero_thumb_url && $section_slug ) {
 <section class="section section-page__ratings" id="ratings" style="background:var(--color-second);">
 	<div class="container">
 		<div class="mb-xl">
-			<span class="text-mono text-xs text-muted text-upper" style="letter-spacing:.12em;">— <?php esc_html_e( 'Рейтинги', 'palime-archive' ); ?> —</span>
-			<h2 class="mt-sm" style="font-family:var(--font-display);font-size:clamp(1.35rem,3vw,1.85rem);">
+			<span class="section-page__eyebrow text-mono text-xs text-muted text-upper" style="letter-spacing:.12em;">— <?php esc_html_e( 'Рейтинги', 'palime-archive' ); ?> —</span>
+			<h2 class="section-page__heading mt-sm" style="font-family:var(--font-display);font-size:clamp(1.35rem,3vw,1.85rem);">
 				<?php echo esc_html( $section_name ); ?> · <?php esc_html_e( 'Топ', 'palime-archive' ); ?>
 			</h2>
-			<p class="text-mono text-xs text-muted mt-xs"><?php esc_html_e( 'Некоторые записи остаются спорными', 'palime-archive' ); ?></p>
+			<p class="section-page__section-note text-mono text-xs text-muted mt-xs"><?php esc_html_e( 'Некоторые записи остаются спорными', 'palime-archive' ); ?></p>
 		</div>
 
 		<div class="grid grid--2">
-			<div>
-				<h3 class="text-mono text-xs text-upper mb-lg" style="letter-spacing:.12em;color:var(--accent);">
+			<div class="section-page__ratings-column">
+				<h3 class="section-page__column-title text-mono text-xs text-upper mb-lg" style="letter-spacing:.12em;color:var(--accent);">
 					<?php echo esc_html( $rating_authors ); ?>
 				</h3>
 				<?php
@@ -285,9 +293,9 @@ if ( ! $hero_thumb_url && $section_slug ) {
 							?>
 							<ol class="section-page__ranking-list" style="list-style:none;display:flex;flex-direction:column;gap:var(--spacing-sm);">
 								<?php foreach ( $items as $i => $item ) : ?>
-									<li class="flex flex--gap" style="padding:var(--spacing-sm) 0;border-bottom:1px solid rgba(0,0,0,.06);">
-										<span class="text-mono" style="color:var(--accent);min-width:1.5rem;font-size:.8rem;"><?php echo esc_html( str_pad( (string) ( $i + 1 ), 2, '0', STR_PAD_LEFT ) ); ?></span>
-										<span class="text-serif">
+									<li class="section-page__ranking-item flex flex--gap" style="padding:var(--spacing-sm) 0;border-bottom:1px solid rgba(0,0,0,.06);">
+										<span class="section-page__ranking-index text-mono" style="color:var(--accent);min-width:1.5rem;font-size:.8rem;"><?php echo esc_html( str_pad( (string) ( $i + 1 ), 2, '0', STR_PAD_LEFT ) ); ?></span>
+										<span class="section-page__ranking-name text-serif">
 											<?php echo esc_html( is_array( $item ) ? ( $item['name'] ?? $item[0] ?? '' ) : $item ); ?>
 										</span>
 									</li>
@@ -296,7 +304,7 @@ if ( ! $hero_thumb_url && $section_slug ) {
 							<?php
 						else :
 							?>
-							<p class="text-muted text-mono text-xs"><?php esc_html_e( '— Рейтинг формируется —', 'palime-archive' ); ?></p>
+							<p class="text-muted text-mono text-xs section-page__stub-caption"><?php esc_html_e( '— Рейтинг формируется —', 'palime-archive' ); ?></p>
 							<?php
 						endif;
 					endwhile;
@@ -305,17 +313,17 @@ if ( ! $hero_thumb_url && $section_slug ) {
 					?>
 					<ul class="section-page__stub-ranking text-mono text-xs" style="opacity:.3;list-style:none;">
 						<?php for ( $r = 1; $r <= 5; $r++ ) : ?>
-							<li style="padding:.5rem 0;border-bottom:1px solid rgba(0,0,0,.06);">—</li>
+							<li class="section-page__stub-ranking-item" style="padding:.5rem 0;border-bottom:1px solid rgba(0,0,0,.06);">—</li>
 						<?php endfor; ?>
 					</ul>
-					<p class="text-muted text-mono text-xs mt-sm"><?php esc_html_e( '— Рейтинг формируется —', 'palime-archive' ); ?></p>
+					<p class="text-muted text-mono text-xs mt-sm section-page__stub-caption"><?php esc_html_e( '— Рейтинг формируется —', 'palime-archive' ); ?></p>
 					<?php
 				endif;
 				?>
 			</div>
 
-			<div>
-				<h3 class="text-mono text-xs text-upper mb-lg" style="letter-spacing:.12em;color:var(--accent);">
+			<div class="section-page__ratings-column">
+				<h3 class="section-page__column-title text-mono text-xs text-upper mb-lg" style="letter-spacing:.12em;color:var(--accent);">
 					<?php echo esc_html( $rating_works ); ?>
 				</h3>
 				<?php
@@ -345,9 +353,9 @@ if ( ! $hero_thumb_url && $section_slug ) {
 							?>
 							<ol class="section-page__ranking-list" style="list-style:none;display:flex;flex-direction:column;gap:var(--spacing-sm);">
 								<?php foreach ( $items as $i => $item ) : ?>
-									<li class="flex flex--gap" style="padding:var(--spacing-sm) 0;border-bottom:1px solid rgba(0,0,0,.06);">
-										<span class="text-mono" style="color:var(--accent);min-width:1.5rem;font-size:.8rem;"><?php echo esc_html( str_pad( (string) ( $i + 1 ), 2, '0', STR_PAD_LEFT ) ); ?></span>
-										<span class="text-serif">
+									<li class="section-page__ranking-item flex flex--gap" style="padding:var(--spacing-sm) 0;border-bottom:1px solid rgba(0,0,0,.06);">
+										<span class="section-page__ranking-index text-mono" style="color:var(--accent);min-width:1.5rem;font-size:.8rem;"><?php echo esc_html( str_pad( (string) ( $i + 1 ), 2, '0', STR_PAD_LEFT ) ); ?></span>
+										<span class="section-page__ranking-name text-serif">
 											<?php echo esc_html( is_array( $item ) ? ( $item['name'] ?? $item[0] ?? '' ) : $item ); ?>
 										</span>
 									</li>
@@ -356,7 +364,7 @@ if ( ! $hero_thumb_url && $section_slug ) {
 							<?php
 						else :
 							?>
-							<p class="text-muted text-mono text-xs"><?php esc_html_e( '— Рейтинг формируется —', 'palime-archive' ); ?></p>
+							<p class="text-muted text-mono text-xs section-page__stub-caption"><?php esc_html_e( '— Рейтинг формируется —', 'palime-archive' ); ?></p>
 							<?php
 						endif;
 					endwhile;
@@ -365,10 +373,10 @@ if ( ! $hero_thumb_url && $section_slug ) {
 					?>
 					<ul class="section-page__stub-ranking text-mono text-xs" style="opacity:.3;list-style:none;">
 						<?php for ( $r = 1; $r <= 5; $r++ ) : ?>
-							<li style="padding:.5rem 0;border-bottom:1px solid rgba(0,0,0,.06);">—</li>
+							<li class="section-page__stub-ranking-item" style="padding:.5rem 0;border-bottom:1px solid rgba(0,0,0,.06);">—</li>
 						<?php endfor; ?>
 					</ul>
-					<p class="text-muted text-mono text-xs mt-sm"><?php esc_html_e( '— Рейтинг формируется —', 'palime-archive' ); ?></p>
+					<p class="text-muted text-mono text-xs mt-sm section-page__stub-caption"><?php esc_html_e( '— Рейтинг формируется —', 'palime-archive' ); ?></p>
 					<?php
 				endif;
 				?>
@@ -383,8 +391,8 @@ if ( ! $hero_thumb_url && $section_slug ) {
 	<div class="container">
 		<div class="flex flex--between mb-xl flex--wrap" style="gap:var(--spacing-md);">
 			<div>
-				<span class="text-mono text-xs text-muted text-upper" style="letter-spacing:.12em;">— <?php esc_html_e( 'Новости', 'palime-archive' ); ?> —</span>
-				<h2 class="mt-sm" style="font-family:var(--font-display);font-size:clamp(1.35rem,3vw,1.85rem);">
+				<span class="section-page__eyebrow text-mono text-xs text-muted text-upper" style="letter-spacing:.12em;">— <?php esc_html_e( 'Новости', 'palime-archive' ); ?> —</span>
+				<h2 class="section-page__heading mt-sm" style="font-family:var(--font-display);font-size:clamp(1.35rem,3vw,1.85rem);">
 					<?php echo esc_html( $section_name ); ?> · <?php esc_html_e( 'Лента', 'palime-archive' ); ?>
 				</h2>
 			</div>
@@ -470,21 +478,21 @@ if ( ! $quote_query->have_posts() ) {
 			wp_reset_postdata();
 			?>
 
-			<p class="text-mono text-xs mb-lg" style="opacity:.4;letter-spacing:.2em;text-transform:uppercase;">
+			<p class="section-page__quote-eyebrow text-mono text-xs mb-lg" style="opacity:.4;letter-spacing:.2em;text-transform:uppercase;">
 				<?php esc_html_e( '— Цитата дня —', 'palime-archive' ); ?>
 			</p>
 
-			<blockquote class="text-serif" style="font-size:clamp(1.15rem,2.5vw,1.85rem);line-height:1.55;max-width:48rem;margin:0 auto;font-style:italic;">
+			<blockquote class="section-page__quote-text text-serif" style="font-size:clamp(1.15rem,2.5vw,1.85rem);line-height:1.55;max-width:48rem;margin:0 auto;font-style:italic;">
 				&laquo;<?php echo esc_html( $q_text ); ?>&raquo;
 			</blockquote>
 
 			<?php if ( $q_author || $q_work ) : ?>
-				<div class="mt-lg text-mono text-xs" style="opacity:.55;letter-spacing:.08em;">
+				<div class="section-page__quote-meta mt-lg text-mono text-xs" style="opacity:.55;letter-spacing:.08em;">
 					<?php if ( $q_author ) : ?>
-						<p style="margin:0 0 .25em;">Автор: <?php echo esc_html( $q_author ); ?></p>
+						<p class="section-page__quote-meta-line" style="margin:0 0 .25em;">Автор: <?php echo esc_html( $q_author ); ?></p>
 					<?php endif; ?>
 					<?php if ( $q_work ) : ?>
-						<p style="margin:0;">Из произведения: &laquo;<?php echo esc_html( $q_work ); ?>&raquo;</p>
+						<p class="section-page__quote-meta-line" style="margin:0;">Из произведения: &laquo;<?php echo esc_html( $q_work ); ?>&raquo;</p>
 					<?php endif; ?>
 				</div>
 			<?php endif; ?>
@@ -528,8 +536,8 @@ $monthly_query = new WP_Query(
 <section class="section section-page__monthly section--accent">
 	<div class="container">
 		<div class="mb-xl">
-			<span class="text-mono text-xs text-muted text-upper" style="letter-spacing:.12em;">— <?php esc_html_e( 'Итог', 'palime-archive' ); ?> —</span>
-			<h2 class="mt-sm" style="font-family:var(--font-display);font-size:clamp(1.35rem,3vw,1.85rem);">
+			<span class="section-page__eyebrow text-mono text-xs text-muted text-upper" style="letter-spacing:.12em;">— <?php esc_html_e( 'Итог', 'palime-archive' ); ?> —</span>
+			<h2 class="section-page__heading mt-sm" style="font-family:var(--font-display);font-size:clamp(1.35rem,3vw,1.85rem);">
 				<?php esc_html_e( 'Лучшее за месяц', 'palime-archive' ); ?>
 			</h2>
 		</div>
@@ -546,29 +554,29 @@ $monthly_query = new WP_Query(
 						<?php
 						$cat_items = function_exists( 'get_field' ) ? get_field( 'monthly_' . sanitize_key( (string) $cat_key ), $monthly_post_id ) : [];
 						?>
-						<div class="card" style="padding:var(--spacing-lg);">
-							<h3 class="text-mono text-xs text-upper mb-lg" style="letter-spacing:.1em;color:var(--accent);">
+						<div class="card section-page__monthly-card" style="padding:var(--spacing-lg);">
+							<h3 class="section-page__column-title text-mono text-xs text-upper mb-lg" style="letter-spacing:.1em;color:var(--accent);">
 								<?php echo esc_html( $cat_label ); ?>
 							</h3>
 							<?php if ( $cat_items ) : ?>
-								<ol style="list-style:none;display:flex;flex-direction:column;gap:var(--spacing-sm);">
+								<ol class="section-page__monthly-list" style="list-style:none;display:flex;flex-direction:column;gap:var(--spacing-sm);">
 									<?php foreach ( $cat_items as $i => $entry ) : ?>
-										<li class="flex flex--gap" style="padding-bottom:var(--spacing-xs);border-bottom:1px solid rgba(0,0,0,.05);">
-											<span class="text-mono text-xs" style="color:var(--accent);min-width:1.25rem;"><?php echo esc_html( str_pad( (string) ( $i + 1 ), 2, '0', STR_PAD_LEFT ) ); ?></span>
-											<span class="text-serif" style="font-size:.95rem;line-height:1.4;">
+										<li class="section-page__monthly-item flex flex--gap" style="padding-bottom:var(--spacing-xs);border-bottom:1px solid rgba(0,0,0,.05);">
+											<span class="section-page__ranking-index text-mono text-xs" style="color:var(--accent);min-width:1.25rem;"><?php echo esc_html( str_pad( (string) ( $i + 1 ), 2, '0', STR_PAD_LEFT ) ); ?></span>
+											<span class="section-page__monthly-copy text-serif" style="font-size:.95rem;line-height:1.4;">
 												<?php echo esc_html( is_array( $entry ) ? ( $entry['title'] ?? $entry[0] ?? '' ) : $entry ); ?>
 											</span>
 										</li>
 									<?php endforeach; ?>
 								</ol>
 							<?php else : ?>
-								<p class="text-muted text-mono text-xs"><?php esc_html_e( '— Пусто —', 'palime-archive' ); ?></p>
+								<p class="text-muted text-mono text-xs section-page__monthly-empty"><?php esc_html_e( '— Пусто —', 'palime-archive' ); ?></p>
 							<?php endif; ?>
 						</div>
 					<?php endforeach; ?>
 				</div>
 			<?php else : ?>
-				<p class="text-muted text-mono text-xs"><?php esc_html_e( '— Задайте monthly_cats в $args страницы раздела —', 'palime-archive' ); ?></p>
+				<p class="text-muted text-mono text-xs section-page__stub-caption"><?php esc_html_e( '— Задайте monthly_cats в $args страницы раздела —', 'palime-archive' ); ?></p>
 			<?php endif; ?>
 
 			<?php wp_reset_postdata(); ?>
@@ -588,7 +596,7 @@ $monthly_query = new WP_Query(
 	<div class="container">
 		<div class="grid grid--sidebar">
 			<div>
-				<span class="text-mono text-xs text-muted text-upper mb-lg" style="letter-spacing:.12em;display:block;">— <?php esc_html_e( 'О разделе', 'palime-archive' ); ?> —</span>
+				<span class="section-page__eyebrow text-mono text-xs text-muted text-upper mb-lg" style="letter-spacing:.12em;display:block;">— <?php esc_html_e( 'О разделе', 'palime-archive' ); ?> —</span>
 				<?php if ( $section_about ) : ?>
 					<div class="section-page__about-body text-serif" style="font-size:1.1rem;line-height:1.75;max-width:40rem;">
 						<?php echo wp_kses_post( $section_about ); ?>
@@ -599,8 +607,8 @@ $monthly_query = new WP_Query(
 					</p>
 				<?php endif; ?>
 			</div>
-			<div style="align-self:center;text-align:center;">
-				<p class="text-display" style="font-family:var(--font-display);font-size:clamp(2rem,4vw,3.5rem);line-height:1.1;color:var(--accent);">
+			<div class="section-page__about-side" style="align-self:center;text-align:center;">
+				<p class="section-page__about-word text-display" style="font-family:var(--font-display);font-size:clamp(2rem,4vw,3.5rem);line-height:1.1;color:var(--accent);">
 					<?php echo esc_html( strtoupper( $section_name ) ); ?>
 				</p>
 			</div>
