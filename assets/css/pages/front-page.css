@@ -95,7 +95,7 @@
 .pa-hero {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    min-height: 100vh;
+    min-height: auto;
 }
 
 /* --- Левая колонка --- */
@@ -108,7 +108,7 @@
 }
 
 .pa-hero__inner {
-    padding: 60px;
+    padding: 48px 60px;
     max-width: 640px;
 }
 
@@ -131,7 +131,7 @@
 
 .pa-hero__title {
     font-family: var(--font-display);
-    font-size: clamp(2.2rem, 5.5vw, 4.5rem);
+    font-size: clamp(3rem, 7vw, 6rem);
     line-height: 1.05;
     letter-spacing: 0.06em;
     text-transform: uppercase;
@@ -252,7 +252,8 @@
     position: relative;
     overflow: hidden;
     background: #0A0A0A;
-    min-height: 100vh;
+    min-height: auto;
+    max-height: 600px;
 }
 
 .pa-hero__image {

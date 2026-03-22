@@ -672,7 +672,7 @@
     left: 0;
     width: 0;
     height: 1px;
-    background: var(--accent);
+    background: var(--accent-main);
     transition: width var(--transition);
 }
 
@@ -683,7 +683,7 @@
 
 .nav__link:hover,
 .nav__link.active {
-    color: var(--accent);
+    color: var(--accent-main);
 }
 
 /* Бургер-меню (мобайл) */
