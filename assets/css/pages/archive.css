@@ -25,7 +25,10 @@
 }
 
 /* Левая часть: число + лейбл */
-.pa-archive-hero__left {}
+.pa-archive-hero__left {
+    min-width: 0;
+    overflow: hidden;
+}
 
 .pa-archive-hero__count {
     display: flex;
@@ -78,6 +81,8 @@
     min-width: 260px;
     max-width: 340px;
     flex-shrink: 0;
+    position: relative;
+    z-index: 2;
 }
 
 .pa-archive-hero__search-label {
@@ -169,14 +174,23 @@
 }
 
 .pa-filter-person__input {
+    -webkit-appearance: none;
+    appearance: none;
     width: 100%;
     padding: 8px 10px;
     background: var(--color-text);
     border: none;
+    border-radius: 0;
     font-family: var(--font-mono);
     font-size: .72rem;
     color: rgba(255,255,255,.8);
     outline: none;
+    cursor: text;
+}
+
+.pa-filter-person__input:focus {
+    outline: 1px solid rgba(255,255,255,.3);
+    outline-offset: 0;
 }
 
 .pa-filter-person__input::placeholder {
