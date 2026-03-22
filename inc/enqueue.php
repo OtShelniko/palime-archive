@@ -223,6 +223,10 @@ add_filter( 'style_loader_src',  'palime_remove_version_query', 10, 2 );
 add_filter( 'script_loader_src', 'palime_remove_version_query', 10, 2 );
 
 function palime_remove_version_query( $src ) {
+    // Не трогаем файлы нашей темы — им нужен filemtime для сброса кеша
+    if ( strpos( $src, get_template_directory_uri() ) !== false ) {
+        return $src;
+    }
     if ( strpos( $src, '?ver=' ) ) {
         $src = remove_query_arg( 'ver', $src );
     }

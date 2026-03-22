@@ -32,7 +32,7 @@
 
 .pa-section__title {
     font-family: var(--font-display);
-    font-size: clamp(1.6rem, 3vw, 2.4rem);
+    font-size: clamp(1.8rem, 3.5vw, 2.8rem);
     letter-spacing: 0.1em;
     text-transform: uppercase;
     margin-bottom: 8px;
@@ -94,8 +94,10 @@
    ============================================================ */
 .pa-hero {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 3fr 1fr;
     min-height: auto;
+    max-height: 520px;
+    overflow: hidden;
 }
 
 /* --- Левая колонка --- */
@@ -109,11 +111,11 @@
 
 .pa-hero__inner {
     padding: 48px 60px;
-    max-width: 640px;
+    max-width: 700px;
 }
 
 .pa-hero__terminal {
-    margin-bottom: 40px;
+    margin-bottom: 24px;
 }
 
 .pa-hero__meta-line {
@@ -131,12 +133,12 @@
 
 .pa-hero__title {
     font-family: var(--font-display);
-    font-size: clamp(3rem, 7vw, 6rem);
-    line-height: 1.05;
-    letter-spacing: 0.06em;
+    font-size: clamp(3.2rem, 8vw, 7rem);
+    line-height: 1;
+    letter-spacing: 0.04em;
     text-transform: uppercase;
     color: #fff;
-    margin-bottom: 16px;
+    margin-bottom: 12px;
 }
 
 .pa-hero__slash {
@@ -173,10 +175,10 @@
 
 .pa-hero__desc {
     font-family: var(--font-serif);
-    font-size: 1rem;
-    line-height: 1.7;
+    font-size: 0.95rem;
+    line-height: 1.6;
     color: rgba(255,255,255,0.7);
-    margin-bottom: 40px;
+    margin-bottom: 24px;
     max-width: 460px;
 }
 
@@ -184,7 +186,7 @@
     display: flex;
     gap: 16px;
     flex-wrap: wrap;
-    margin-bottom: 40px;
+    margin-bottom: 24px;
 }
 
 .pa-hero__btn {
@@ -252,8 +254,6 @@
     position: relative;
     overflow: hidden;
     background: #0A0A0A;
-    min-height: auto;
-    max-height: 600px;
 }
 
 .pa-hero__image {
@@ -346,12 +346,13 @@
     border-top: 3px solid var(--card-accent);
     text-decoration: none;
     color: inherit;
-    transition: transform var(--transition), box-shadow var(--transition);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background: #fff;
 }
 
 .pa-medium-card:hover {
-    transform: translateY(-3px);
-    box-shadow: var(--shadow-md);
+    transform: translateY(-6px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.15);
 }
 
 .pa-medium-card__image {
@@ -360,16 +361,30 @@
     overflow: hidden;
 }
 
+.pa-medium-card__image::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 50%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 1;
+}
+
+.pa-medium-card:hover .pa-medium-card__image::after {
+    opacity: 1;
+}
+
 .pa-medium-card__image img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
-    transition: transform 0.3s ease;
+    transition: transform 0.5s ease;
 }
 
 .pa-medium-card:hover .pa-medium-card__image img {
-    transform: scale(1.03);
+    transform: scale(1.08);
 }
 
 .pa-medium-card__accent {
@@ -379,10 +394,11 @@
     width: 4px;
     height: 100%;
     background: var(--card-accent);
+    z-index: 2;
 }
 
 .pa-medium-card__body {
-    padding: 20px 0;
+    padding: 20px 16px;
 }
 
 .pa-medium-card__code {
@@ -445,17 +461,17 @@
 
 .pa-manifest__title {
     font-family: var(--font-display);
-    font-size: clamp(1.8rem, 3.5vw, 2.8rem);
-    letter-spacing: 0.08em;
-    line-height: 1.1;
+    font-size: clamp(2.2rem, 4.5vw, 3.6rem);
+    letter-spacing: 0.06em;
+    line-height: 1.05;
     text-transform: uppercase;
     margin-bottom: 24px;
 }
 
 .pa-manifest__body {
     font-family: var(--font-serif);
-    font-size: 1.05rem;
-    line-height: 1.8;
+    font-size: 1.1rem;
+    line-height: 1.85;
     opacity: 0.85;
 }
 
@@ -478,6 +494,11 @@
 
 .pa-index-table tr {
     border-bottom: 1px solid rgba(0,0,0,0.08);
+    transition: background 0.2s ease;
+}
+
+.pa-index-table tr:hover {
+    background: rgba(0,0,0,0.02);
 }
 
 .pa-index-table td {
@@ -539,16 +560,17 @@
 }
 
 .pa-live__dot {
-    width: 6px;
-    height: 6px;
+    width: 8px;
+    height: 8px;
     border-radius: 50%;
     background: var(--accent-main);
-    animation: pulse 1.5s ease infinite;
+    box-shadow: 0 0 8px var(--accent-main), 0 0 16px rgba(217,21,21,0.3);
+    animation: pulse 2s ease infinite;
 }
 
 @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50%      { opacity: 0.3; }
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%      { opacity: 0.4; transform: scale(0.8); }
 }
 
 .pa-live__count {
@@ -614,9 +636,9 @@
 }
 
 .pa-live-tab.is-active {
-    background: rgba(255,255,255,0.08);
+    background: var(--accent-main);
     color: #fff;
-    border-color: rgba(255,255,255,0.25);
+    border-color: var(--accent-main);
 }
 
 /* Таблица */
@@ -646,8 +668,12 @@
     border-bottom: 1px solid rgba(255,255,255,0.06);
 }
 
+.pa-live-row {
+    transition: background 0.2s ease;
+}
+
 .pa-live-row:hover {
-    background: rgba(255,255,255,0.03);
+    background: rgba(217,21,21,0.06);
 }
 
 .pa-live-row a {
@@ -688,7 +714,19 @@
 
 .pa-editorial__featured {
     background: var(--color-second);
-    padding: 32px;
+    padding: 40px;
+    position: relative;
+    overflow: hidden;
+}
+
+.pa-editorial__featured::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 4px;
+    height: 100%;
+    background: var(--accent-main);
 }
 
 .pa-editorial__issue {
@@ -769,11 +807,14 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    transition: background var(--transition);
+    transition: all 0.25s ease;
+    border-left: 2px solid transparent;
 }
 
 .pa-editorial__card:hover {
     background: rgba(0,0,0,0.04);
+    border-left-color: var(--accent-main);
+    transform: translateX(4px);
 }
 
 .pa-editorial__card--empty {
@@ -827,6 +868,12 @@
     align-items: center;
     padding: 14px 0;
     border-bottom: 1px solid rgba(0,0,0,0.08);
+    transition: padding-left 0.2s ease, background 0.2s ease;
+}
+
+.pa-news-row:hover {
+    padding-left: 8px;
+    background: rgba(0,0,0,0.02);
 }
 
 .pa-news-row--empty {
@@ -874,8 +921,21 @@
    ============================================================ */
 .pa-about {
     text-align: center;
-    max-width: 600px;
+    max-width: 700px;
     margin: 0 auto;
+    position: relative;
+}
+
+.pa-about::before {
+    content: '//';
+    position: absolute;
+    top: -24px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--font-mono);
+    font-size: 2rem;
+    color: var(--accent-main);
+    opacity: 0.3;
 }
 
 .pa-about .pa-section__title {
@@ -884,15 +944,15 @@
 
 .pa-about__text {
     font-family: var(--font-serif);
-    font-size: 1.05rem;
-    line-height: 1.8;
+    font-size: 1.15rem;
+    line-height: 1.85;
     opacity: 0.85;
     margin-bottom: 32px;
 }
 
 .pa-about__btn {
     display: inline-block;
-    padding: 10px 24px;
+    padding: 12px 32px;
     font-family: var(--font-mono);
     font-size: 11px;
     letter-spacing: 0.1em;
@@ -900,12 +960,13 @@
     color: #0A0A0A;
     border: 1px solid #0A0A0A;
     text-decoration: none;
-    transition: all var(--transition);
+    transition: all 0.25s ease;
 }
 
 .pa-about__btn:hover {
-    background: #0A0A0A;
+    background: var(--accent-main);
     color: #fff;
+    border-color: var(--accent-main);
 }
 
 
@@ -992,6 +1053,12 @@
 .pa-product {
     background: #111;
     position: relative;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.pa-product:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
 }
 
 .pa-product__badge {
@@ -1120,13 +1187,32 @@
 
 .pa-join__card {
     border: 1px solid rgba(255,255,255,0.15);
-    padding: 24px;
+    padding: 28px;
     text-align: center;
-    transition: border-color var(--transition);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.pa-join__card::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--accent-main);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
 }
 
 .pa-join__card:hover {
     border-color: rgba(255,255,255,0.35);
+    transform: translateY(-4px);
+}
+
+.pa-join__card:hover::after {
+    transform: scaleX(1);
 }
 
 .pa-join__card-name {
@@ -1224,10 +1310,11 @@
     .pa-hero {
         grid-template-columns: 1fr;
         min-height: auto;
+        max-height: none;
     }
 
     .pa-hero__right {
-        min-height: 50vh;
+        max-height: 300px;
     }
 
     .pa-medium-grid {

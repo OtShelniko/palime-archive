@@ -68,14 +68,14 @@
     font-size: 0.7rem;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    border: 1px solid var(--accent);
+    border: 1px solid var(--accent-main);
     border-radius: 2px;
-    color: var(--accent);
+    color: var(--accent-main);
     transition: all var(--transition);
 }
 
 .tag:hover {
-    background: var(--accent);
+    background: var(--accent-main);
     color: #fff;
 }
 
