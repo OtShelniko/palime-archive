@@ -17,7 +17,7 @@ get_header();
 // ------------------------------------------------------------------
 $current_section = sanitize_key( $_GET['section'] ?? '' );
 $current_type    = sanitize_key( $_GET['type'] ?? '' );
-$current_sort    = in_array( $_GET['sort'] ?? '', [ 'new', 'popular', 'section' ], true )
+$current_sort    = in_array( $_GET['sort'] ?? '', [ 'new', 'popular' ], true )
                    ? sanitize_key( $_GET['sort'] )
                    : 'new';
 $current_page    = max( 1, (int) ( $_GET['paged'] ?? 1 ) );
@@ -48,8 +48,6 @@ $orderby = 'date';
 $order   = 'DESC';
 if ( $current_sort === 'popular' ) {
     $orderby = 'comment_count';
-} elseif ( $current_sort === 'section' ) {
-    $orderby = 'meta_value';
 }
 
 $query = new WP_Query( [
@@ -143,9 +141,6 @@ $section_slugs = [
                 <button
                     class="pa-sort-tab<?php echo $current_sort === 'popular'  ? ' is-active' : ''; ?>"
                     data-sort="popular">Популярные</button>
-                <button
-                    class="pa-sort-tab<?php echo $current_sort === 'section'  ? ' is-active' : ''; ?>"
-                    data-sort="section">По разделу</button>
             </div>
         </div>
 

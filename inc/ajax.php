@@ -219,6 +219,8 @@ function palime_handle_filter_archive() {
                 $post_data['source']    = function_exists( 'get_field' ) ? (string) get_field( 'news_source', $post_id ) : '';
                 $post_data['editor']    = function_exists( 'get_field' ) ? (string) get_field( 'news_editor', $post_id ) : '';
                 $post_data['verified']  = function_exists( 'get_field' ) ? (bool) get_field( 'is_verified',  $post_id ) : false;
+                $post_data['time']      = get_the_time( 'H:i' );
+                $post_data['date_key']  = get_the_date( 'Y-m-d' );
             }
 
             $posts[] = $post_data;

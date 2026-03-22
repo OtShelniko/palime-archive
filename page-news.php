@@ -16,7 +16,7 @@ get_header();
 // Параметры из GET
 // ------------------------------------------------------------------
 $current_section = sanitize_key( $_GET['section'] ?? '' );
-$current_sort    = in_array( $_GET['sort'] ?? '', [ 'fresh', 'section' ], true )
+$current_sort    = in_array( $_GET['sort'] ?? '', [ 'fresh' ], true )
                    ? sanitize_key( $_GET['sort'] )
                    : 'fresh';
 
@@ -34,9 +34,6 @@ if ( $current_section ) {
 
 $orderby = 'date';
 $order   = 'DESC';
-if ( $current_sort === 'section' ) {
-    $orderby = 'meta_value';
-}
 
 $query = new WP_Query( [
     'post_type'              => 'news',
@@ -137,6 +134,7 @@ $section_labels = [
                         $is_active = $current_section === $slug;
                     ?>
                         <button
+                            type="button"
                             class="pa-news-section-filter<?php echo $mod ? " pa-news-section-filter--{$mod}" : ''; ?><?php echo $is_active ? ' is-active' : ''; ?>"
                             data-section="<?php echo esc_attr( $slug ); ?>"
                             aria-pressed="<?php echo $is_active ? 'true' : 'false'; ?>"
@@ -145,22 +143,6 @@ $section_labels = [
                 </div>
             </div>
         </div><!-- /.pa-news-hero -->
-
-        <?php /* ---- Подзаголовок-навигация ---- */ ?>
-        <nav class="pa-news-subnav" aria-label="Навигация по разделам">
-            <?php foreach ( $section_labels as $slug => $label ) :
-                $is_active = $current_section === $slug;
-            ?>
-                <button
-                    class="pa-news-subnav__item<?php echo $is_active ? ' is-active' : ''; ?>"
-                    data-section="<?php echo esc_attr( $slug ); ?>"
-                    aria-pressed="<?php echo $is_active ? 'true' : 'false'; ?>"
-                ><?php echo esc_html( $label ); ?></button>
-                <?php if ( $slug !== 'art' ) : ?>
-                    <span class="pa-news-subnav__sep" aria-hidden="true">·</span>
-                <?php endif; ?>
-            <?php endforeach; ?>
-        </nav>
 
         <?php /* ---- Список новостей, сгруппированных по дате ---- */ ?>
         <div class="pa-news-body" id="pa-news-results">
@@ -181,9 +163,6 @@ $section_labels = [
                                     <button
                                         class="pa-date-group__sort-btn<?php echo $current_sort === 'fresh'   ? ' is-active' : ''; ?>"
                                         data-sort="fresh">Свежие</button>
-                                    <button
-                                        class="pa-date-group__sort-btn<?php echo $current_sort === 'section' ? ' is-active' : ''; ?>"
-                                        data-sort="section">По разделу</button>
                                 </div>
                             <?php endif; $first_group = false; ?>
                         </div>
@@ -324,7 +303,7 @@ $section_labels = [
         // Группируем по дате
         var byDate = {};
         posts.forEach(function (p) {
-            var dk = (p.date_raw || p.date || '').substring(0, 10);
+            var dk = p.date_key || (p.date_raw || p.date || '').substring(0, 10);
             if (!byDate[dk]) byDate[dk] = [];
             byDate[dk].push(p);
         });
@@ -338,7 +317,6 @@ $section_labels = [
             if (firstGroup) {
                 sortHtml = '<div class="pa-date-group__sort" role="group">'
                     + '<button class="pa-date-group__sort-btn' + (currentSort==='fresh'   ?' is-active':'') + '" data-sort="fresh">Свежие</button>'
-                    + '<button class="pa-date-group__sort-btn' + (currentSort==='section' ?' is-active':'') + '" data-sort="section">По разделу</button>'
                     + '</div>';
                 firstGroup = false;
             }
@@ -361,7 +339,7 @@ $section_labels = [
                 var source  = p.source  ? p.source  + ' <span aria-hidden="true">·</span> ' : '';
                 var editor  = p.editor  ? p.editor  + ' <span aria-hidden="true">·</span> ' : '';
                 var verified = p.verified ? 'Подтверждено' : 'Не подтверждено';
-                var time    = (p.date || '').substring(11, 16) || '';
+                var time    = p.time || '';
 
                 html += '<li role="listitem">'
                     + '<a class="pa-news-item" href="' + p.url + '">'
@@ -389,7 +367,7 @@ $section_labels = [
         currentSection = slug;
 
         // Обновить все кнопки разделов
-        document.querySelectorAll('[data-section]').forEach(function (btn) {
+        document.querySelectorAll('.pa-news-section-filter[data-section]').forEach(function (btn) {
             var active = btn.dataset.section === slug;
             btn.classList.toggle('is-active', active);
             btn.setAttribute('aria-pressed', active ? 'true' : 'false');
@@ -410,13 +388,13 @@ $section_labels = [
         });
     }
 
-    // Кнопки разделов в hero и subnav
-    document.querySelectorAll('[data-section]').forEach(function (btn) {
+    // Кнопки разделов
+    document.querySelectorAll('.pa-news-section-filter[data-section]').forEach(function (btn) {
         btn.addEventListener('click', function () {
             var slug = btn.dataset.section;
             if (slug === currentSection) {
                 currentSection = '';
-                document.querySelectorAll('[data-section]').forEach(function (b) {
+                document.querySelectorAll('.pa-news-section-filter[data-section]').forEach(function (b) {
                     b.classList.remove('is-active');
                     b.setAttribute('aria-pressed', 'false');
                 });
