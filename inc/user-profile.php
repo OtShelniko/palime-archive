@@ -72,7 +72,7 @@ add_action( 'wp_ajax_palime_toggle_save', function() {
     } else {
         $saved[] = $article_id;
         $action  = 'saved';
-        palime_add_points( $user_id, PALIME_POINTS_SAVE, 'Сохранение статьи' );
+        palime_add_points( $user_id, PALIME_XP_SAVE, 'Сохранение статьи', 'base' );
     }
 
     update_user_meta( $user_id, 'palime_saved_articles', $saved );
@@ -96,7 +96,7 @@ add_action( 'wp_ajax_palime_track_share', function() {
     $shared_key = 'shared_' . $article_id;
     if ( ! get_user_meta( $user_id, $shared_key, true ) ) {
         update_user_meta( $user_id, $shared_key, 1 );
-        palime_add_points( $user_id, PALIME_POINTS_SHARE, 'Шеринг статьи' );
+        palime_add_points( $user_id, PALIME_XP_SHARE, 'Шеринг статьи', 'social' );
     }
 
     wp_send_json_success();

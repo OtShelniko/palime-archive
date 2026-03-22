@@ -99,7 +99,7 @@ function palime_handle_telegram_auth() {
         update_user_meta( $user_id, 'last_name',  sanitize_text_field( $data['last_name']  ?? '' ) );
 
         // Стартовые очки
-        palime_add_points( $user_id, PALIME_POINTS_TELEGRAM, 'Подписка Telegram' );
+        palime_add_points( $user_id, PALIME_XP_TELEGRAM, 'Подписка Telegram', 'social' );
 
         $user = get_user_by( 'id', $user_id );
     }

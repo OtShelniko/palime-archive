@@ -164,6 +164,17 @@ function palime_enqueue_assets() {
         );
     }
 
+    // tracker.js — трекинг чтения и сессий
+    if ( is_singular( 'article' ) && is_user_logged_in() ) {
+        wp_enqueue_script(
+            'palime-tracker',
+            $uri . '/assets/js/tracker.js',
+            [ 'palime-main' ],
+            $ver,
+            true
+        );
+    }
+
     // ---------------------------------------------------------
     // Передаём данные в JS через wp_localize_script
     // ---------------------------------------------------------
