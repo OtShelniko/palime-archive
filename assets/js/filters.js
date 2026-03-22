@@ -206,8 +206,9 @@
 
             btn.addEventListener('click', () => {
                 Object.assign(this.state, {
-                    section: '', person: '', era: '', theme: '', editorial_flag: '',
-                    type: '', status: '', search: '', sort: 'date', page: 1,
+                    section: '', person: '', era: '', theme: '', genre: '',
+                    editorial_flag: '', type: '', status: '', search: '',
+                    sort: 'date', page: 1,
                 });
 
                 document.querySelectorAll('.pa-filter-tag.is-active').forEach(b => {
@@ -329,6 +330,7 @@
                 person:           this.state.person,
                 era:              this.state.era,
                 theme:            this.state.theme,
+                genre:            this.state.genre,
                 editorial_flag:   this.state.editorial_flag,
                 type:             this.state.type,
                 status:           this.state.status,
