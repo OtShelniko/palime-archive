@@ -50,6 +50,34 @@ function palime_register_rest_routes() {
         },
     ] );
 
+    // GET /palime/v1/leaderboard — топ пользователей
+    register_rest_route( $namespace, '/leaderboard', [
+        'methods'             => 'GET',
+        'callback'            => 'palime_api_get_leaderboard',
+        'permission_callback' => '__return_true',
+        'args' => [
+            'limit' => [ 'default' => 10, 'sanitize_callback' => 'absint' ],
+        ],
+    ] );
+
+    // GET /palime/v1/achievements — достижения текущего пользователя
+    register_rest_route( $namespace, '/achievements', [
+        'methods'             => 'GET',
+        'callback'            => 'palime_api_get_achievements',
+        'permission_callback' => function() {
+            return is_user_logged_in();
+        },
+    ] );
+
+    // POST /palime/v1/profile/update — обновить профиль
+    register_rest_route( $namespace, '/profile/update', [
+        'methods'             => 'POST',
+        'callback'            => 'palime_api_update_profile',
+        'permission_callback' => function() {
+            return is_user_logged_in();
+        },
+    ] );
+
     // GET /palime/v1/persons — автодополнение персон для фильтра архива
     register_rest_route( $namespace, '/persons', [
         'methods'             => 'GET',
@@ -171,6 +199,69 @@ function palime_api_get_profile( WP_REST_Request $request ) {
         'saved_count'  => count( $data['saved'] ),
         'log'          => $data['log'],
     ] );
+}
+
+function palime_api_get_leaderboard( WP_REST_Request $request ) {
+    $limit = min( (int) $request['limit'], 50 );
+
+    $users = get_users( [
+        'meta_key' => 'palime_points',
+        'orderby'  => 'meta_value_num',
+        'order'    => 'DESC',
+        'number'   => $limit,
+    ] );
+
+    $result = [];
+    $rank   = 1;
+    foreach ( $users as $user ) {
+        $points = palime_get_points( $user->ID );
+        if ( $points <= 0 ) continue;
+
+        $level = palime_get_user_level( $user->ID );
+        $result[] = [
+            'rank'         => $rank++,
+            'display_name' => $user->display_name,
+            'points'       => $points,
+            'level'        => $level['name'],
+            'avatar'       => get_avatar_url( $user->ID, [ 'size' => 40 ] ),
+        ];
+    }
+
+    return rest_ensure_response( $result );
+}
+
+function palime_api_get_achievements( WP_REST_Request $request ) {
+    $user_id      = get_current_user_id();
+    $achievements = palime_get_achievements();
+    $unlocked     = palime_get_user_achievements( $user_id );
+
+    $result = [];
+    foreach ( $achievements as $key => $ach ) {
+        $result[] = [
+            'key'         => $key,
+            'name'        => $ach['name'],
+            'description' => $ach['description'],
+            'icon'        => $ach['icon'],
+            'bonus'       => $ach['bonus'],
+            'unlocked'    => in_array( $key, $unlocked, true ),
+        ];
+    }
+
+    return rest_ensure_response( $result );
+}
+
+function palime_api_update_profile( WP_REST_Request $request ) {
+    $user_id      = get_current_user_id();
+    $display_name = sanitize_text_field( $request->get_param( 'display_name' ) );
+
+    if ( $display_name ) {
+        wp_update_user( [
+            'ID'           => $user_id,
+            'display_name' => $display_name,
+        ] );
+    }
+
+    return rest_ensure_response( [ 'success' => true ] );
 }
 
 function palime_api_get_persons( WP_REST_Request $request ) {
