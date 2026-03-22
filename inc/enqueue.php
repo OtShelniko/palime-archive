@@ -53,14 +53,7 @@ function palime_enqueue_assets() {
     );
 
     // Стили конкретных страниц — подключаем только там где нужно
-    if ( is_front_page() || is_home() ) {
-        wp_enqueue_style(
-            'palime-page-home',
-            $uri . '/assets/css/pages/home.css',
-            [ 'palime-utilities' ],
-            $ver . '.2'
-        );
-    }
+    // home/front-page CSS подключается напрямую из front-page.php
 
     if ( is_page_template( 'page-archive.php' ) ) {
         wp_enqueue_style(
