@@ -1,0 +1,430 @@
+/* Palime Archive — rewards.css */
+/* Стили наград, бейджей, гейтинга контента, рамок профиля */
+
+
+/* =========================================================
+   1. СКРЫТЫЕ МАТЕРИАЛЫ — ЗАГЛУШКА
+   ========================================================= */
+
+.gated-content {
+    padding: var(--spacing-2xl) var(--spacing-xl);
+    text-align: center;
+    border: 1px solid rgba(0,0,0,0.08);
+    background: var(--color-second);
+    margin: var(--spacing-xl) 0;
+}
+
+.gated-content__icon {
+    width: 48px;
+    height: 48px;
+    margin: 0 auto var(--spacing-lg);
+    border: 2px solid rgba(0,0,0,0.12);
+    border-radius: 50%;
+    position: relative;
+}
+
+.gated-content__icon::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 18px;
+    height: 22px;
+    transform: translate(-50%, -50%);
+    border: 2px solid rgba(0,0,0,0.25);
+    border-radius: 2px;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+.gated-content__title {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: var(--spacing-md);
+    opacity: 0.7;
+}
+
+.gated-content__message {
+    font-family: var(--font-serif);
+    font-size: 1.05rem;
+    line-height: 1.7;
+    max-width: 500px;
+    margin: 0 auto var(--spacing-md);
+    color: var(--color-text);
+    opacity: 0.8;
+}
+
+.gated-content__message a {
+    color: var(--accent);
+    text-decoration: underline;
+}
+
+.gated-content__message strong {
+    color: var(--accent);
+    font-weight: 600;
+}
+
+.gated-content__progress {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.06em;
+    opacity: 0.4;
+    text-transform: uppercase;
+}
+
+
+/* =========================================================
+   2. БЕЙДЖИ ПО УРОВНЮ
+   ========================================================= */
+
+.palime-badge {
+    display: inline-flex;
+    align-items: center;
+    font-family: var(--font-mono);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+/* Бейдж в профиле */
+.palime-badge--profile {
+    font-size: 0.62rem;
+    padding: 4px 12px;
+    margin-bottom: var(--spacing-sm);
+    background: rgba(0,0,0,0.06);
+    color: var(--color-text);
+    opacity: 0.7;
+}
+
+/* Бейдж в привилегиях */
+.palime-badge--privileges {
+    font-size: 0.68rem;
+    padding: 5px 14px;
+    background: var(--accent);
+    color: #fff;
+}
+
+/* Бейдж в комментариях */
+.palime-badge--comment {
+    font-size: 0.55rem;
+    padding: 2px 6px;
+    margin-left: 6px;
+    background: rgba(0,0,0,0.06);
+    color: var(--color-text);
+    opacity: 0.6;
+    vertical-align: middle;
+}
+
+/* Уровни 1-2: базовый стиль, ничего особенного */
+
+/* Уровень 3-4: лёгкий акцент */
+.palime-badge--level-3,
+.palime-badge--level-4 {
+    background: rgba(0,0,0,0.08);
+    opacity: 1;
+}
+
+.palime-badge--level-3.palime-badge--profile,
+.palime-badge--level-4.palime-badge--profile {
+    border-left: 2px solid var(--accent);
+}
+
+/* Уровень 5-6: средний статус */
+.palime-badge--level-5,
+.palime-badge--level-6 {
+    background: rgba(10, 10, 10, 0.1);
+    color: var(--color-text);
+    opacity: 1;
+}
+
+.palime-badge--level-5.palime-badge--profile,
+.palime-badge--level-6.palime-badge--profile {
+    background: var(--color-text);
+    color: var(--color-bg);
+}
+
+/* Уровень 7: апостол */
+.palime-badge--level-7 {
+    background: var(--accent);
+    color: #fff;
+    opacity: 1;
+}
+
+.palime-badge--level-7.palime-badge--comment {
+    background: var(--accent);
+    color: #fff;
+}
+
+/* Уровень 8: архонт — высший */
+.palime-badge--level-8 {
+    background: var(--color-text);
+    color: var(--color-bg);
+    opacity: 1;
+}
+
+.palime-badge--level-8.palime-badge--profile {
+    background: var(--color-text);
+    color: var(--color-bg);
+    padding: 5px 16px;
+    border-left: 3px solid var(--accent);
+}
+
+.palime-badge--level-8.palime-badge--comment {
+    background: var(--color-text);
+    color: var(--color-bg);
+}
+
+
+/* =========================================================
+   3. РАМКА ПРОФИЛЯ ПО УРОВНЮ
+   ========================================================= */
+
+/* Уровни 1-2: без рамки */
+
+/* Уровень 3: тонкая рамка */
+.profile-page--level-3 .profile-sidebar {
+    border-top: 2px solid rgba(0,0,0,0.12);
+    padding-top: var(--spacing-md);
+}
+
+/* Уровень 4: акцентная линия */
+.profile-page--level-4 .profile-sidebar {
+    border-top: 2px solid var(--accent);
+    padding-top: var(--spacing-md);
+}
+
+/* Уровень 5: рамка с акцентом */
+.profile-page--level-5 .profile-sidebar {
+    border: 1px solid rgba(0,0,0,0.1);
+    border-top: 3px solid var(--accent);
+    padding: var(--spacing-lg);
+    background: var(--color-bg);
+}
+
+/* Уровень 6: двойная линия */
+.profile-page--level-6 .profile-sidebar {
+    border: 1px solid rgba(0,0,0,0.1);
+    border-top: 3px solid var(--color-text);
+    padding: var(--spacing-lg);
+    background: var(--color-bg);
+    box-shadow: 0 1px 0 0 rgba(0,0,0,0.04);
+}
+
+/* Уровень 7: премиальная рамка */
+.profile-page--level-7 .profile-sidebar {
+    border: 1px solid rgba(0,0,0,0.12);
+    border-top: 3px solid var(--accent);
+    border-bottom: 1px solid var(--accent);
+    padding: var(--spacing-lg);
+    background: linear-gradient(180deg, rgba(217, 21, 21, 0.02) 0%, var(--color-bg) 100%);
+}
+
+/* Уровень 8: архонт — уникальная рамка */
+.profile-page--level-8 .profile-sidebar {
+    border: 1px solid rgba(0,0,0,0.15);
+    border-top: 4px solid var(--color-text);
+    border-left: 4px solid var(--color-text);
+    padding: var(--spacing-lg);
+    background: linear-gradient(135deg, rgba(10, 10, 10, 0.03) 0%, var(--color-bg) 100%);
+}
+
+
+/* =========================================================
+   4. СТИЛЬ НИКА ПО УРОВНЮ
+   ========================================================= */
+
+.palime-username {
+    /* Базовый стиль — без изменений для 1-2 */
+}
+
+/* Уровни 3-4: лёгкий акцент */
+.palime-username--level-3,
+.palime-username--level-4 {
+    position: relative;
+}
+
+.palime-username--level-3::after,
+.palime-username--level-4::after {
+    content: '';
+    display: block;
+    width: 24px;
+    height: 2px;
+    background: var(--accent);
+    margin-top: 4px;
+    opacity: 0.5;
+}
+
+/* Уровни 5-6: статусный стиль */
+.palime-username--level-5,
+.palime-username--level-6 {
+    position: relative;
+}
+
+.palime-username--level-5::after,
+.palime-username--level-6::after {
+    content: '';
+    display: block;
+    width: 40px;
+    height: 2px;
+    background: var(--color-text);
+    margin-top: 4px;
+    opacity: 0.6;
+}
+
+/* Уровень 7: апостол */
+.palime-username--level-7 {
+    color: var(--accent);
+}
+
+.palime-username--level-7::after {
+    content: '';
+    display: block;
+    width: 40px;
+    height: 2px;
+    background: var(--accent);
+    margin-top: 4px;
+}
+
+/* Уровень 8: архонт — высший */
+.palime-username--level-8 {
+    position: relative;
+}
+
+.palime-username--level-8::after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 3px;
+    background: var(--color-text);
+    margin-top: 4px;
+}
+
+/* Стиль ника в комментариях */
+.comment .palime-username--level-3,
+.comment .palime-username--level-4 {
+    font-weight: 500;
+}
+
+.comment .palime-username--level-3::after,
+.comment .palime-username--level-4::after {
+    display: none;
+}
+
+.comment .palime-username--level-5,
+.comment .palime-username--level-6 {
+    font-weight: 600;
+}
+
+.comment .palime-username--level-5::after,
+.comment .palime-username--level-6::after {
+    display: none;
+}
+
+.comment .palime-username--level-7 {
+    color: var(--accent);
+    font-weight: 600;
+}
+
+.comment .palime-username--level-7::after {
+    display: none;
+}
+
+.comment .palime-username--level-8 {
+    font-weight: 700;
+}
+
+.comment .palime-username--level-8::after {
+    display: none;
+}
+
+
+/* =========================================================
+   5. БЛОК ПРИВИЛЕГИЙ
+   ========================================================= */
+
+.privileges-block {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-md);
+}
+
+.privileges-block__current {
+    padding: var(--spacing-lg);
+    background: var(--color-second);
+    border-left: 3px solid var(--accent);
+}
+
+.privileges-block__header {
+    margin-bottom: var(--spacing-md);
+}
+
+.privileges-block__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.privileges-block__list li {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.02em;
+    padding-left: var(--spacing-md);
+    position: relative;
+}
+
+.privileges-block__list li::before {
+    content: '+';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-weight: 600;
+}
+
+.privileges-block__next {
+    padding: var(--spacing-lg);
+    background: var(--color-second);
+    border-left: 3px solid rgba(0,0,0,0.1);
+    opacity: 0.6;
+}
+
+.privileges-block__next-header {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: var(--spacing-md);
+    opacity: 0.7;
+}
+
+.privileges-block__next-name {
+    display: block;
+    font-size: 0.8rem;
+    margin-top: 4px;
+    opacity: 1;
+    color: var(--color-text);
+}
+
+.privileges-block__list--locked li::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border: 1px solid rgba(0,0,0,0.3);
+    border-radius: 50%;
+    top: 4px;
+}
+
+
+/* =========================================================
+   АДАПТИВ
+   ========================================================= */
+
+@media (max-width: 768px) {
+    .privileges-block {
+        grid-template-columns: 1fr;
+    }
+}

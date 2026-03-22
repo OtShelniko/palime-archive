@@ -43,10 +43,14 @@ $saved_ids = get_user_meta( $user_id, 'palime_saved_articles', true ) ?: [];
 // Группируем достижения по рарности
 $rarity_order = [ 'epic', 'rare', 'uncommon', 'common' ];
 
+// Привилегии
+$privileges_info = palime_get_user_privileges_info( $user_id );
+$level_num       = (int) ( $level['number'] ?? 1 );
+
 get_header();
 ?>
 
-<div class="profile-page">
+<div class="profile-page profile-page--level-<?php echo $level_num; ?>">
     <div class="profile-page__container">
 
         <!-- ══════════════════════════════════════════
@@ -59,8 +63,9 @@ get_header();
                 <?php echo get_avatar( $user_id, 80 ); ?>
             </div>
 
-            <!-- Имя и email -->
-            <h1 class="profile-name"><?php echo esc_html( $user->display_name ); ?></h1>
+            <!-- Имя и бейдж -->
+            <h1 class="profile-name palime-username palime-username--level-<?php echo $level_num; ?>"><?php echo esc_html( $user->display_name ); ?></h1>
+            <?php echo palime_render_badge( $user_id, 'profile' ); ?>
             <p class="profile-email"><?php echo esc_html( $user->user_email ); ?></p>
 
             <!-- Уровень -->
@@ -207,6 +212,35 @@ get_header();
                     <?php endforeach; ?>
                 </div>
                 <?php endif; ?>
+
+                <!-- Привилегии -->
+                <h3 class="profile-content__subtitle">ТЕКУЩИЕ ПРИВИЛЕГИИ</h3>
+                <div class="privileges-block">
+                    <div class="privileges-block__current">
+                        <div class="privileges-block__header">
+                            <?php echo palime_render_badge( $user_id, 'privileges' ); ?>
+                        </div>
+                        <ul class="privileges-block__list">
+                            <?php foreach ( $privileges_info['current']['privileges'] as $priv ) : ?>
+                                <li><?php echo esc_html( $priv ); ?></li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
+
+                    <?php if ( $privileges_info['next'] ) : ?>
+                        <div class="privileges-block__next">
+                            <div class="privileges-block__next-header">
+                                Следующий уровень откроет
+                                <span class="privileges-block__next-name"><?php echo esc_html( $privileges_info['next']['name'] ); ?></span>
+                            </div>
+                            <ul class="privileges-block__list privileges-block__list--locked">
+                                <?php foreach ( $privileges_info['next']['privileges'] as $priv ) : ?>
+                                    <li><?php echo esc_html( $priv ); ?></li>
+                                <?php endforeach; ?>
+                            </ul>
+                        </div>
+                    <?php endif; ?>
+                </div>
             </section>
 
             <!-- ── ДОСТИЖЕНИЯ ── -->

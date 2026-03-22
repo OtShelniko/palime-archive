@@ -114,6 +114,14 @@ function palime_enqueue_assets() {
         $ver
     );
 
+    // Награды, бейджи, гейтинг — глобальный CSS
+    wp_enqueue_style(
+        'palime-rewards',
+        $uri . '/assets/css/rewards.css',
+        [ 'palime-utilities' ],
+        $ver
+    );
+
     // ---------------------------------------------------------
     // JS
     // ---------------------------------------------------------
