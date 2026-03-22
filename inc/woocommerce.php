@@ -129,6 +129,19 @@ add_filter( 'woocommerce_get_myaccount_page_permalink', function() {
     return home_url( '/profile/' );
 } );
 
+// Редирект после WooCommerce-логина — на /profile (не-админы)
+add_filter( 'woocommerce_login_redirect', function( $redirect, $user ) {
+    if ( isset( $user->roles ) && ! in_array( 'administrator', $user->roles ) ) {
+        return home_url( '/profile/' );
+    }
+    return $redirect;
+}, 10, 2 );
+
+// Редирект после WooCommerce-регистрации — на /profile
+add_filter( 'woocommerce_registration_redirect', function() {
+    return home_url( '/profile/' );
+} );
+
 // =========================================================
 // ШАБЛОНЫ
 // =========================================================
