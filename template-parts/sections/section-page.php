@@ -133,23 +133,23 @@ $hero_has_media = (bool) $hero_thumb_url;
 <!-- 1. Заставка -->
 <section
 	class="section-page__hero grid grid--2<?php echo $section_slug ? ' section-page--' . esc_attr( $section_slug ) : ''; ?>"
-	style="<?php echo esc_attr( 'background:' . $bg_color . ';color:#fff;position:relative;overflow:hidden;min-height:min(70vh,920px);align-items:stretch;' ); ?>"
+	style="<?php echo esc_attr( 'background:' . $bg_color ); ?>"
 	aria-labelledby="section-page-title-<?php echo esc_attr( $section_slug ? $section_slug : 'default' ); ?>">
 
-	<div class="section-page__hero-text" style="position:relative;z-index:1;padding:var(--spacing-2xl) var(--gutter);display:flex;flex-direction:column;justify-content:center;">
+	<div class="section-page__hero-text">
 		<?php if ( $status_line ) : ?>
-			<p class="section-page__hero-meta text-mono text-xs mb-lg" style="opacity:.45;letter-spacing:.18em;text-transform:uppercase;">
+			<p class="section-page__hero-meta text-mono text-xs mb-lg">
 				<?php echo esc_html( $status_line ); ?>
 			</p>
 		<?php endif; ?>
 
 		<h1 id="section-page-title-<?php echo esc_attr( $section_slug ? $section_slug : 'default' ); ?>"
 			class="section-page__hero-title text-display"
-			style="font-family:var(--font-display);font-size:clamp(2.5rem,7vw,5rem);line-height:1;color:<?php echo esc_attr( $accent_color ); ?>;margin-bottom:var(--spacing-md);">
+			style="color:<?php echo esc_attr( $accent_color ); ?>">
 			<?php echo esc_html( strtoupper( $section_name ) ); ?>
 		</h1>
 
-		<p class="section-page__hero-slogan mb-xl" style="font-family:var(--font-serif);font-size:clamp(1rem,2vw,1.35rem);opacity:.78;max-width:36rem;line-height:1.55;">
+		<p class="section-page__hero-slogan mb-xl">
 			<?php echo esc_html( $section_slogan ); ?>
 		</p>
 
@@ -160,23 +160,22 @@ $hero_has_media = (bool) $hero_thumb_url;
 				<?php esc_html_e( 'Открыть каталог', 'palime-archive' ); ?>
 			</a>
 			<a href="<?php echo esc_url( $rankings_url ); ?>"
-				class="btn btn--outline"
-				style="color:#fff;border-color:rgba(255,255,255,.38);">
+				class="btn btn--outline">
 				<?php esc_html_e( 'Смотреть рейтинги', 'palime-archive' ); ?>
 			</a>
 		</div>
 	</div>
 
-	<div class="section-page__hero-visual<?php echo $hero_has_media ? ' section-page__hero-visual--media' : ' section-page__hero-visual--empty'; ?> hide-mobile" style="position:relative;min-height:280px;">
+	<div class="section-page__hero-visual<?php echo $hero_has_media ? ' section-page__hero-visual--media' : ' section-page__hero-visual--empty'; ?> hide-mobile">
 		<div class="section-page__hero-visual-inner">
 		<?php if ( $hero_thumb_url ) : ?>
-			<div class="section-page__hero-img" style="height:100%;min-height:320px;background-image:url(<?php echo esc_url( $hero_thumb_url ); ?>);background-size:cover;background-position:center;border-left:1px solid rgba(255,255,255,.08);"></div>
+			<div class="section-page__hero-img" style="background-image:url(<?php echo esc_url( $hero_thumb_url ); ?>)"></div>
 		<?php else : ?>
-			<div class="section-page__hero-placeholder flex" style="height:100%;min-height:320px;align-items:center;justify-content:center;flex-direction:column;gap:var(--spacing-md);border-left:1px solid rgba(255,255,255,.08);background:rgba(0,0,0,.25);">
-				<span class="section-page__hero-placeholder-meta text-mono text-xs" style="opacity:.35;letter-spacing:.2em;text-transform:uppercase;">
+			<div class="section-page__hero-placeholder flex">
+				<span class="section-page__hero-placeholder-meta text-mono text-xs">
 					<?php esc_html_e( 'Hero · изображение раздела', 'palime-archive' ); ?>
 				</span>
-				<span class="section-page__hero-placeholder-mark" style="font-size:2rem;opacity:.4;" aria-hidden="true">◼</span>
+				<span class="section-page__hero-placeholder-mark" aria-hidden="true">◼</span>
 				<span class="section-page__hero-placeholder-name text-display" aria-hidden="true">
 					<?php echo esc_html( strtoupper( $section_name ) ); ?>
 				</span>
@@ -190,10 +189,10 @@ $hero_has_media = (bool) $hero_thumb_url;
 <!-- 2. Свежие материалы -->
 <section class="section section-page__fresh" id="fresh">
 	<div class="container">
-		<div class="flex flex--between mb-xl flex--wrap" style="gap:var(--spacing-md);">
+		<div class="flex flex--between mb-xl flex--wrap flex--gap">
 			<div>
-				<span class="section-page__eyebrow text-mono text-xs text-muted text-upper" style="letter-spacing:.12em;">— <?php esc_html_e( 'Свежие материалы', 'palime-archive' ); ?> —</span>
-				<h2 class="section-page__heading mt-sm" style="font-family:var(--font-display);font-size:clamp(1.35rem,3vw,1.85rem);">
+				<span class="section-page__eyebrow text-mono text-xs text-muted text-upper">— <?php esc_html_e( 'Свежие материалы', 'palime-archive' ); ?> —</span>
+				<h2 class="section-page__heading mt-sm">
 					<?php esc_html_e( 'Последние статьи', 'palime-archive' ); ?>
 				</h2>
 			</div>
@@ -208,8 +207,10 @@ $hero_has_media = (bool) $hero_thumb_url;
 				[
 					'post_type'      => 'article',
 					'posts_per_page' => 6,
+					'post_status'    => 'publish',
 					'orderby'        => 'date',
 					'order'          => 'DESC',
+					'no_found_rows'  => true,
 				],
 				! empty( $tax_query_section ) ? [ 'tax_query' => $tax_query_section ] : []
 			)
@@ -227,16 +228,16 @@ $hero_has_media = (bool) $hero_thumb_url;
 				?>
 			</div>
 		<?php else : ?>
-			<div class="grid grid--cards section-page__stub-cards" style="opacity:.35;">
+			<div class="grid grid--cards section-page__stub-cards">
 				<?php for ( $s = 0; $s < 3; $s++ ) : ?>
-					<article class="card section-page__stub-card" style="padding:var(--spacing-lg);border:1px dashed rgba(0,0,0,.2);">
+					<article class="card section-page__stub-card">
 						<p class="section-page__stub-index text-mono text-xs mb-sm"><?php echo esc_html( sprintf( '%02d', $s + 1 ) ); ?></p>
-						<h3 class="section-page__stub-title text-serif" style="font-size:1rem;">—</h3>
+						<h3 class="section-page__stub-title text-serif">—</h3>
 						<p class="section-page__stub-copy text-mono text-xs text-muted mt-md"><?php esc_html_e( 'Материалы появятся здесь', 'palime-archive' ); ?></p>
 					</article>
 				<?php endfor; ?>
 			</div>
-			<p class="text-muted text-mono text-xs mt-md section-page__stub-caption" style="letter-spacing:.08em;">
+			<p class="text-muted text-mono text-xs mt-md section-page__stub-caption">
 				<?php esc_html_e( '— Материалы появятся здесь —', 'palime-archive' ); ?>
 			</p>
 		<?php endif; ?>
@@ -251,136 +252,30 @@ $hero_has_media = (bool) $hero_thumb_url;
 
 
 <!-- 3. Рейтинги -->
-<section class="section section-page__ratings" id="ratings" style="background:var(--color-second);">
+<section class="section section-page__ratings section--accent" id="ratings">
 	<div class="container">
 		<div class="mb-xl">
-			<span class="section-page__eyebrow text-mono text-xs text-muted text-upper" style="letter-spacing:.12em;">— <?php esc_html_e( 'Рейтинги', 'palime-archive' ); ?> —</span>
-			<h2 class="section-page__heading mt-sm" style="font-family:var(--font-display);font-size:clamp(1.35rem,3vw,1.85rem);">
+			<span class="section-page__eyebrow text-mono text-xs text-muted text-upper">— <?php esc_html_e( 'Рейтинги', 'palime-archive' ); ?> —</span>
+			<h2 class="section-page__heading mt-sm">
 				<?php echo esc_html( $section_name ); ?> · <?php esc_html_e( 'Топ', 'palime-archive' ); ?>
 			</h2>
 			<p class="section-page__section-note text-mono text-xs text-muted mt-xs"><?php esc_html_e( 'Некоторые записи остаются спорными', 'palime-archive' ); ?></p>
 		</div>
 
 		<div class="grid grid--2">
-			<div class="section-page__ratings-column">
-				<h3 class="section-page__column-title text-mono text-xs text-upper mb-lg" style="letter-spacing:.12em;color:var(--accent);">
-					<?php echo esc_html( $rating_authors ); ?>
-				</h3>
-				<?php
-				$authors_ranking = new WP_Query(
-					array_merge(
-						[
-							'post_type'      => 'ranking',
-							'posts_per_page' => 1,
-							'orderby'        => 'date',
-							'order'          => 'DESC',
-							'meta_query'     => [
-								[
-									'key'     => 'ranking_category',
-									'value'   => 'authors',
-									'compare' => '=',
-								],
-							],
-						],
-						! empty( $tax_query_section ) ? [ 'tax_query' => $tax_query_section ] : []
-					)
-				);
-				if ( $authors_ranking->have_posts() ) :
-					while ( $authors_ranking->have_posts() ) :
-						$authors_ranking->the_post();
-						$items = function_exists( 'get_field' ) ? get_field( 'ranking_items' ) : [];
-						if ( $items ) :
-							?>
-							<ol class="section-page__ranking-list" style="list-style:none;display:flex;flex-direction:column;gap:var(--spacing-sm);">
-								<?php foreach ( $items as $i => $item ) : ?>
-									<li class="section-page__ranking-item flex flex--gap" style="padding:var(--spacing-sm) 0;border-bottom:1px solid rgba(0,0,0,.06);">
-										<span class="section-page__ranking-index text-mono" style="color:var(--accent);min-width:1.5rem;font-size:.8rem;"><?php echo esc_html( str_pad( (string) ( $i + 1 ), 2, '0', STR_PAD_LEFT ) ); ?></span>
-										<span class="section-page__ranking-name text-serif">
-											<?php echo esc_html( is_array( $item ) ? ( $item['name'] ?? $item[0] ?? '' ) : $item ); ?>
-										</span>
-									</li>
-								<?php endforeach; ?>
-							</ol>
-							<?php
-						else :
-							?>
-							<p class="text-muted text-mono text-xs section-page__stub-caption"><?php esc_html_e( '— Рейтинг формируется —', 'palime-archive' ); ?></p>
-							<?php
-						endif;
-					endwhile;
-					wp_reset_postdata();
-				else :
-					?>
-					<ul class="section-page__stub-ranking text-mono text-xs" style="opacity:.3;list-style:none;">
-						<?php for ( $r = 1; $r <= 5; $r++ ) : ?>
-							<li class="section-page__stub-ranking-item" style="padding:.5rem 0;border-bottom:1px solid rgba(0,0,0,.06);">—</li>
-						<?php endfor; ?>
-					</ul>
-					<p class="text-muted text-mono text-xs mt-sm section-page__stub-caption"><?php esc_html_e( '— Рейтинг формируется —', 'palime-archive' ); ?></p>
-					<?php
-				endif;
-				?>
-			</div>
+			<?php
+			get_template_part( 'template-parts/sections/ranking-column', null, [
+				'column_title'     => $rating_authors,
+				'ranking_category' => 'authors',
+				'tax_query'        => $tax_query_section,
+			] );
 
-			<div class="section-page__ratings-column">
-				<h3 class="section-page__column-title text-mono text-xs text-upper mb-lg" style="letter-spacing:.12em;color:var(--accent);">
-					<?php echo esc_html( $rating_works ); ?>
-				</h3>
-				<?php
-				$works_ranking = new WP_Query(
-					array_merge(
-						[
-							'post_type'      => 'ranking',
-							'posts_per_page' => 1,
-							'orderby'        => 'date',
-							'order'          => 'DESC',
-							'meta_query'     => [
-								[
-									'key'     => 'ranking_category',
-									'value'   => 'works',
-									'compare' => '=',
-								],
-							],
-						],
-						! empty( $tax_query_section ) ? [ 'tax_query' => $tax_query_section ] : []
-					)
-				);
-				if ( $works_ranking->have_posts() ) :
-					while ( $works_ranking->have_posts() ) :
-						$works_ranking->the_post();
-						$items = function_exists( 'get_field' ) ? get_field( 'ranking_items' ) : [];
-						if ( $items ) :
-							?>
-							<ol class="section-page__ranking-list" style="list-style:none;display:flex;flex-direction:column;gap:var(--spacing-sm);">
-								<?php foreach ( $items as $i => $item ) : ?>
-									<li class="section-page__ranking-item flex flex--gap" style="padding:var(--spacing-sm) 0;border-bottom:1px solid rgba(0,0,0,.06);">
-										<span class="section-page__ranking-index text-mono" style="color:var(--accent);min-width:1.5rem;font-size:.8rem;"><?php echo esc_html( str_pad( (string) ( $i + 1 ), 2, '0', STR_PAD_LEFT ) ); ?></span>
-										<span class="section-page__ranking-name text-serif">
-											<?php echo esc_html( is_array( $item ) ? ( $item['name'] ?? $item[0] ?? '' ) : $item ); ?>
-										</span>
-									</li>
-								<?php endforeach; ?>
-							</ol>
-							<?php
-						else :
-							?>
-							<p class="text-muted text-mono text-xs section-page__stub-caption"><?php esc_html_e( '— Рейтинг формируется —', 'palime-archive' ); ?></p>
-							<?php
-						endif;
-					endwhile;
-					wp_reset_postdata();
-				else :
-					?>
-					<ul class="section-page__stub-ranking text-mono text-xs" style="opacity:.3;list-style:none;">
-						<?php for ( $r = 1; $r <= 5; $r++ ) : ?>
-							<li class="section-page__stub-ranking-item" style="padding:.5rem 0;border-bottom:1px solid rgba(0,0,0,.06);">—</li>
-						<?php endfor; ?>
-					</ul>
-					<p class="text-muted text-mono text-xs mt-sm section-page__stub-caption"><?php esc_html_e( '— Рейтинг формируется —', 'palime-archive' ); ?></p>
-					<?php
-				endif;
-				?>
-			</div>
+			get_template_part( 'template-parts/sections/ranking-column', null, [
+				'column_title'     => $rating_works,
+				'ranking_category' => 'works',
+				'tax_query'        => $tax_query_section,
+			] );
+			?>
 		</div>
 	</div>
 </section>
@@ -389,10 +284,10 @@ $hero_has_media = (bool) $hero_thumb_url;
 <!-- 4. Новости -->
 <section class="section section-page__news">
 	<div class="container">
-		<div class="flex flex--between mb-xl flex--wrap" style="gap:var(--spacing-md);">
+		<div class="flex flex--between mb-xl flex--wrap flex--gap">
 			<div>
-				<span class="section-page__eyebrow text-mono text-xs text-muted text-upper" style="letter-spacing:.12em;">— <?php esc_html_e( 'Новости', 'palime-archive' ); ?> —</span>
-				<h2 class="section-page__heading mt-sm" style="font-family:var(--font-display);font-size:clamp(1.35rem,3vw,1.85rem);">
+				<span class="section-page__eyebrow text-mono text-xs text-muted text-upper">— <?php esc_html_e( 'Новости', 'palime-archive' ); ?> —</span>
+				<h2 class="section-page__heading mt-sm">
 					<?php echo esc_html( $section_name ); ?> · <?php esc_html_e( 'Лента', 'palime-archive' ); ?>
 				</h2>
 			</div>
@@ -407,8 +302,10 @@ $hero_has_media = (bool) $hero_thumb_url;
 				[
 					'post_type'      => 'news',
 					'posts_per_page' => 5,
+					'post_status'    => 'publish',
 					'orderby'        => 'date',
 					'order'          => 'DESC',
+					'no_found_rows'  => true,
 				],
 				! empty( $tax_query_section ) ? [ 'tax_query' => $tax_query_section ] : []
 			)
@@ -416,7 +313,7 @@ $hero_has_media = (bool) $hero_thumb_url;
 		?>
 
 		<?php if ( $news_query->have_posts() ) : ?>
-			<ul class="section-page__news-list" style="list-style:none;">
+			<ul class="section-page__news-list">
 				<?php
 				while ( $news_query->have_posts() ) :
 					$news_query->the_post();
@@ -426,7 +323,7 @@ $hero_has_media = (bool) $hero_thumb_url;
 				?>
 			</ul>
 		<?php else : ?>
-			<p class="text-muted text-mono text-xs section-page__stub-news" style="letter-spacing:.08em;opacity:.45;">
+			<p class="text-muted text-mono text-xs section-page__stub-news">
 				<?php esc_html_e( '— Новости появятся здесь —', 'palime-archive' ); ?>
 			</p>
 		<?php endif; ?>
@@ -436,16 +333,17 @@ $hero_has_media = (bool) $hero_thumb_url;
 
 <!-- 5. Цитата дня (таксономия section) -->
 <?php
-$today     = current_time( 'Y-m-d' );
+$today_ts  = current_time( 'timestamp' );
 $quote_tax = ! empty( $tax_query_section ) ? [ 'tax_query' => $tax_query_section ] : [];
 $quote_args = array_merge( [
 	'post_type'      => 'quote_of_day',
 	'posts_per_page' => 1,
+	'no_found_rows'  => true,
 	'date_query'     => [
 		[
-			'year'  => (int) gmdate( 'Y', strtotime( $today ) ),
-			'month' => (int) gmdate( 'm', strtotime( $today ) ),
-			'day'   => (int) gmdate( 'd', strtotime( $today ) ),
+			'year'  => (int) gmdate( 'Y', $today_ts ),
+			'month' => (int) gmdate( 'm', $today_ts ),
+			'day'   => (int) gmdate( 'd', $today_ts ),
 		],
 	],
 ], $quote_tax );
@@ -457,6 +355,7 @@ if ( ! $quote_query->have_posts() ) {
 			'posts_per_page' => 1,
 			'orderby'        => 'date',
 			'order'          => 'DESC',
+			'no_found_rows'  => true,
 		], $quote_tax )
 	);
 }
@@ -478,21 +377,21 @@ if ( ! $quote_query->have_posts() ) {
 			wp_reset_postdata();
 			?>
 
-			<p class="section-page__quote-eyebrow text-mono text-xs mb-lg" style="opacity:.4;letter-spacing:.2em;text-transform:uppercase;">
+			<p class="section-page__quote-eyebrow text-mono text-xs mb-lg">
 				<?php esc_html_e( '— Цитата дня —', 'palime-archive' ); ?>
 			</p>
 
-			<blockquote class="section-page__quote-text text-serif" style="font-size:clamp(1.15rem,2.5vw,1.85rem);line-height:1.55;max-width:48rem;margin:0 auto;font-style:italic;">
+			<blockquote class="section-page__quote-text text-serif">
 				&laquo;<?php echo esc_html( $q_text ); ?>&raquo;
 			</blockquote>
 
 			<?php if ( $q_author || $q_work ) : ?>
-				<div class="section-page__quote-meta mt-lg text-mono text-xs" style="opacity:.55;letter-spacing:.08em;">
+				<div class="section-page__quote-meta mt-lg text-mono text-xs">
 					<?php if ( $q_author ) : ?>
-						<p class="section-page__quote-meta-line" style="margin:0 0 .25em;">Автор: <?php echo esc_html( $q_author ); ?></p>
+						<p class="section-page__quote-meta-line"><?php esc_html_e( 'Автор:', 'palime-archive' ); ?> <?php echo esc_html( $q_author ); ?></p>
 					<?php endif; ?>
 					<?php if ( $q_work ) : ?>
-						<p class="section-page__quote-meta-line" style="margin:0;">Из произведения: &laquo;<?php echo esc_html( $q_work ); ?>&raquo;</p>
+						<p class="section-page__quote-meta-line"><?php esc_html_e( 'Из произведения:', 'palime-archive' ); ?> &laquo;<?php echo esc_html( $q_work ); ?>&raquo;</p>
 					<?php endif; ?>
 				</div>
 			<?php endif; ?>
@@ -505,14 +404,14 @@ if ( ! $quote_query->have_posts() ) {
 			?>
 			<?php if ( $q_link_url ) : ?>
 				<div class="mt-lg">
-					<a href="<?php echo esc_url( $q_link_url ); ?>" class="btn btn--outline" style="color:#fff;border-color:rgba(255,255,255,.3);">
+					<a href="<?php echo esc_url( $q_link_url ); ?>" class="btn btn--outline">
 						<?php esc_html_e( 'Открыть дело →', 'palime-archive' ); ?>
 					</a>
 				</div>
 			<?php endif; ?>
 
 		<?php else : ?>
-			<p class="text-mono text-xs section-page__stub-quote" style="opacity:.4;letter-spacing:.12em;">
+			<p class="text-mono text-xs section-page__stub-quote">
 				<?php esc_html_e( '— Цитата дня · блок зарезервирован (таксономия section + ACF) —', 'palime-archive' ); ?>
 			</p>
 		<?php endif; ?>
@@ -526,8 +425,10 @@ $monthly_query = new WP_Query(
 	[
 		'post_type'      => 'monthly_best',
 		'posts_per_page' => 1,
+		'post_status'    => 'publish',
 		'orderby'        => 'date',
 		'order'          => 'DESC',
+		'no_found_rows'  => true,
 		'meta_query'     => $meta_section,
 	]
 );
@@ -536,8 +437,8 @@ $monthly_query = new WP_Query(
 <section class="section section-page__monthly section--accent">
 	<div class="container">
 		<div class="mb-xl">
-			<span class="section-page__eyebrow text-mono text-xs text-muted text-upper" style="letter-spacing:.12em;">— <?php esc_html_e( 'Итог', 'palime-archive' ); ?> —</span>
-			<h2 class="section-page__heading mt-sm" style="font-family:var(--font-display);font-size:clamp(1.35rem,3vw,1.85rem);">
+			<span class="section-page__eyebrow text-mono text-xs text-muted text-upper">— <?php esc_html_e( 'Итог', 'palime-archive' ); ?> —</span>
+			<h2 class="section-page__heading mt-sm">
 				<?php esc_html_e( 'Лучшее за месяц', 'palime-archive' ); ?>
 			</h2>
 		</div>
@@ -554,16 +455,16 @@ $monthly_query = new WP_Query(
 						<?php
 						$cat_items = function_exists( 'get_field' ) ? get_field( 'monthly_' . sanitize_key( (string) $cat_key ), $monthly_post_id ) : [];
 						?>
-						<div class="card section-page__monthly-card" style="padding:var(--spacing-lg);">
-							<h3 class="section-page__column-title text-mono text-xs text-upper mb-lg" style="letter-spacing:.1em;color:var(--accent);">
+						<div class="card section-page__monthly-card">
+							<h3 class="section-page__column-title text-mono text-xs text-upper mb-lg">
 								<?php echo esc_html( $cat_label ); ?>
 							</h3>
 							<?php if ( $cat_items ) : ?>
-								<ol class="section-page__monthly-list" style="list-style:none;display:flex;flex-direction:column;gap:var(--spacing-sm);">
+								<ol class="section-page__monthly-list">
 									<?php foreach ( $cat_items as $i => $entry ) : ?>
-										<li class="section-page__monthly-item flex flex--gap" style="padding-bottom:var(--spacing-xs);border-bottom:1px solid rgba(0,0,0,.05);">
-											<span class="section-page__ranking-index text-mono text-xs" style="color:var(--accent);min-width:1.25rem;"><?php echo esc_html( str_pad( (string) ( $i + 1 ), 2, '0', STR_PAD_LEFT ) ); ?></span>
-											<span class="section-page__monthly-copy text-serif" style="font-size:.95rem;line-height:1.4;">
+										<li class="section-page__monthly-item flex flex--gap">
+											<span class="section-page__ranking-index text-mono text-xs"><?php echo esc_html( str_pad( (string) ( $i + 1 ), 2, '0', STR_PAD_LEFT ) ); ?></span>
+											<span class="section-page__monthly-copy text-serif">
 												<?php echo esc_html( is_array( $entry ) ? ( $entry['title'] ?? $entry[0] ?? '' ) : $entry ); ?>
 											</span>
 										</li>
@@ -583,7 +484,7 @@ $monthly_query = new WP_Query(
 
 		<?php else : ?>
 			<?php wp_reset_postdata(); ?>
-			<p class="text-muted text-mono text-xs section-page__stub-monthly" style="letter-spacing:.08em;">
+			<p class="text-muted text-mono text-xs section-page__stub-monthly">
 				<?php esc_html_e( '— Итог месяца появится здесь (meta palime_section + CPT monthly_best) —', 'palime-archive' ); ?>
 			</p>
 		<?php endif; ?>
@@ -596,19 +497,19 @@ $monthly_query = new WP_Query(
 	<div class="container">
 		<div class="grid grid--sidebar">
 			<div>
-				<span class="section-page__eyebrow text-mono text-xs text-muted text-upper mb-lg" style="letter-spacing:.12em;display:block;">— <?php esc_html_e( 'О разделе', 'palime-archive' ); ?> —</span>
+				<span class="section-page__eyebrow text-mono text-xs text-muted text-upper mb-lg" style="display:block;">— <?php esc_html_e( 'О разделе', 'palime-archive' ); ?> —</span>
 				<?php if ( $section_about ) : ?>
-					<div class="section-page__about-body text-serif" style="font-size:1.1rem;line-height:1.75;max-width:40rem;">
+					<div class="section-page__about-body text-serif">
 						<?php echo wp_kses_post( $section_about ); ?>
 					</div>
 				<?php else : ?>
-					<p class="text-muted text-serif section-page__stub-about" style="font-size:1.05rem;line-height:1.7;max-width:40rem;opacity:.55;">
+					<p class="text-muted text-serif section-page__stub-about">
 						<?php esc_html_e( 'Текст о разделе задаётся в $args[\'section_about\'] (разрешённый HTML через wp_kses_post).', 'palime-archive' ); ?>
 					</p>
 				<?php endif; ?>
 			</div>
-			<div class="section-page__about-side" style="align-self:center;text-align:center;">
-				<p class="section-page__about-word text-display" style="font-family:var(--font-display);font-size:clamp(2rem,4vw,3.5rem);line-height:1.1;color:var(--accent);">
+			<div class="section-page__about-side">
+				<p class="section-page__about-word text-display">
 					<?php echo esc_html( strtoupper( $section_name ) ); ?>
 				</p>
 			</div>
@@ -618,11 +519,11 @@ $monthly_query = new WP_Query(
 
 
 <!-- 8. Превью магазина -->
-<section class="section section-page__shop" style="background:var(--color-ui);color:#fff;">
+<section class="section section-page__shop">
 	<div class="container">
-		<div class="flex flex--between flex--wrap section-page__shop-inner" style="gap:var(--spacing-xl);align-items:center;">
+		<div class="flex flex--between flex--wrap section-page__shop-inner">
 			<div>
-				<p class="text-mono text-xs mb-md" style="opacity:.65;letter-spacing:.2em;text-transform:uppercase;">
+				<p class="section-page__shop-eyebrow text-mono text-xs mb-md">
 					— <?php esc_html_e( 'Текущий дроп', 'palime-archive' ); ?> —
 				</p>
 				<?php
@@ -651,24 +552,23 @@ $monthly_query = new WP_Query(
 				?>
 
 				<?php if ( $drop ) : ?>
-					<h2 style="font-family:var(--font-display);font-size:clamp(1.4rem,3vw,2.25rem);margin-bottom:var(--spacing-md);">
+					<h2 class="section-page__shop-title">
 						<?php echo esc_html( $drop->get_name() ); ?>
 					</h2>
-					<p class="text-serif mb-xl" style="opacity:.78;">
+					<p class="text-serif mb-xl" style="opacity:0.78;">
 						<?php echo esc_html( wp_trim_words( $drop->get_short_description(), 20, '…' ) ); ?>
 					</p>
 				<?php else : ?>
-					<h2 class="section-page__stub-shop-title" style="font-family:var(--font-display);font-size:clamp(1.4rem,3vw,2.25rem);margin-bottom:var(--spacing-xl);opacity:.85;">
+					<h2 class="section-page__stub-shop-title">
 						<?php esc_html_e( 'Магазин Palime', 'palime-archive' ); ?>
 					</h2>
-					<p class="text-mono text-xs mb-lg" style="opacity:.45;">
+					<p class="text-mono text-xs mb-lg" style="opacity:0.45;">
 						<?php esc_html_e( 'Товар с разделом (ACF section → _palime_section) или WooCommerce не подключён.', 'palime-archive' ); ?>
 					</p>
 				<?php endif; ?>
 
 				<a href="<?php echo esc_url( $shop_url ); ?>"
-					class="btn btn--outline"
-					style="color:#fff;border-color:#fff;">
+					class="btn btn--outline">
 					<?php esc_html_e( 'Перейти в магазин →', 'palime-archive' ); ?>
 				</a>
 			</div>
@@ -686,7 +586,7 @@ $monthly_query = new WP_Query(
 					echo wp_kses_post( $img_html );
 					?>
 				<?php else : ?>
-					<div class="section-page__stub-shop-visual text-mono text-xs" style="min-height:12rem;min-width:12rem;border:1px dashed rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;opacity:.4;">
+					<div class="section-page__stub-shop-visual text-mono text-xs">
 						<?php esc_html_e( 'Обложка дропа', 'palime-archive' ); ?>
 					</div>
 				<?php endif; ?>
