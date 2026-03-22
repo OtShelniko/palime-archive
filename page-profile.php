@@ -112,6 +112,9 @@ get_header();
                 <div class="profile-nav__item" data-tab="achievements">Достижения</div>
                 <div class="profile-nav__item" data-tab="history">История XP</div>
                 <div class="profile-nav__item" data-tab="saved">Сохранённое</div>
+                <?php if ( class_exists( 'WooCommerce' ) ) : ?>
+                    <div class="profile-nav__item" data-tab="orders">Заказы</div>
+                <?php endif; ?>
                 <div class="profile-nav__item" data-tab="settings">Настройки</div>
             </nav>
 
@@ -346,6 +349,48 @@ get_header();
                     <p class="profile-empty">Нет сохранённых статей. Нажмите на закладку в любой статье.</p>
                 <?php endif; ?>
             </section>
+
+            <!-- ── ЗАКАЗЫ (WooCommerce) ── -->
+            <?php if ( class_exists( 'WooCommerce' ) ) : ?>
+            <section class="profile-content__section" data-section="orders">
+                <h2 class="profile-content__title">ЗАКАЗЫ</h2>
+
+                <?php
+                $orders = wc_get_orders( [
+                    'customer' => $user_id,
+                    'limit'    => 20,
+                    'orderby'  => 'date',
+                    'order'    => 'DESC',
+                ] );
+                ?>
+
+                <?php if ( ! empty( $orders ) ) : ?>
+                    <div class="profile-orders">
+                        <div class="profile-orders__head">
+                            <span>Номер</span>
+                            <span>Дата</span>
+                            <span>Статус</span>
+                            <span>Сумма</span>
+                            <span></span>
+                        </div>
+                        <?php foreach ( $orders as $order ) :
+                            $status_label = wc_get_order_status_name( $order->get_status() );
+                            $view_url     = $order->get_view_order_url();
+                        ?>
+                            <div class="profile-orders__row">
+                                <span class="profile-orders__id">#<?php echo esc_html( $order->get_order_number() ); ?></span>
+                                <span class="profile-orders__date"><?php echo esc_html( $order->get_date_created()->date_i18n( 'd.m.Y' ) ); ?></span>
+                                <span class="profile-orders__status profile-orders__status--<?php echo esc_attr( $order->get_status() ); ?>"><?php echo esc_html( $status_label ); ?></span>
+                                <span class="profile-orders__total"><?php echo wp_kses_post( $order->get_formatted_order_total() ); ?></span>
+                                <a href="<?php echo esc_url( $view_url ); ?>" class="profile-orders__link">Подробнее</a>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                <?php else : ?>
+                    <p class="profile-empty">Заказов пока нет.</p>
+                <?php endif; ?>
+            </section>
+            <?php endif; ?>
 
             <!-- ── НАСТРОЙКИ ── -->
             <section class="profile-content__section" data-section="settings">
