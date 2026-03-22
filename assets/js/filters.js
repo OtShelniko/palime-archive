@@ -229,6 +229,7 @@
             const doSearch = this._debounce((val) => {
                 this.state.search = val.trim();
                 this.state.page   = 1;
+                this.updateActiveTags();
                 this.fetch();
             }, 400);
 
@@ -261,7 +262,7 @@
                 });
 
                 const personInput = document.querySelector('#pa-person-input');
-                if (personInput) personInput.value = '';
+                if (personInput) { personInput.value = ''; personInput.dataset.resolvedName = ''; }
 
                 const searchInput = document.querySelector('#pa-archive-search');
                 if (searchInput) searchInput.value = '';
@@ -545,7 +546,13 @@
 
                 var label = labels[key];
                 var displayVal = this.state[key];
-                if (key !== 'search') {
+                if (key === 'person') {
+                    // Person uses text input, not tag buttons — show name from input
+                    var personInput = document.querySelector('#pa-person-input');
+                    if (personInput && personInput.value.trim()) {
+                        displayVal = personInput.value.trim();
+                    }
+                } else if (key !== 'search') {
                     var activeBtn = document.querySelector('.pa-filter-tag.is-active[data-filter="' + key + '"]');
                     if (activeBtn && activeBtn.textContent) {
                         displayVal = activeBtn.textContent.trim();
@@ -576,7 +583,7 @@
             });
             if (key === 'person') {
                 var pi = document.querySelector('#pa-person-input');
-                if (pi) pi.value = '';
+                if (pi) { pi.value = ''; pi.dataset.resolvedName = ''; }
             }
             if (key === 'search') {
                 var si = document.querySelector('#pa-archive-search');

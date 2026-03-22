@@ -93,19 +93,21 @@
     color: rgba(0,0,0,.3);
 }
 
-/* Specificity (0,2,1) beats Underscores input[type="text"] (0,1,1) */
+/* !important needed: palime_remove_version_query strips ?ver= from CSS URLs,
+   so browsers cache old stylesheets; Underscores input[type="text"] rules
+   from cached style.css can override these without !important. */
 .pa-archive-hero__search input.pa-archive-hero__search-input {
-    -webkit-appearance: none;
-    appearance: none;
-    padding: 9px 14px;
-    background: var(--color-text);
-    border: none;
-    border-radius: 0;
+    -webkit-appearance: none !important;
+    appearance: none !important;
+    padding: 9px 14px !important;
+    background: var(--color-text) !important;
+    border: none !important;
+    border-radius: 0 !important;
     font-family: var(--font-mono);
     font-size: .78rem;
-    color: rgba(255,255,255,.85);
-    -webkit-text-fill-color: rgba(255,255,255,.85);
-    caret-color: #fff;
+    color: rgba(255,255,255,.85) !important;
+    -webkit-text-fill-color: rgba(255,255,255,.85) !important;
+    caret-color: #fff !important;
     outline: none;
     width: 100%;
     cursor: text;
@@ -113,15 +115,15 @@
 }
 
 .pa-archive-hero__search input.pa-archive-hero__search-input::placeholder {
-    color: rgba(255,255,255,.25);
-    -webkit-text-fill-color: rgba(255,255,255,.25);
+    color: rgba(255,255,255,.25) !important;
+    -webkit-text-fill-color: rgba(255,255,255,.25) !important;
 }
 
 .pa-archive-hero__search input.pa-archive-hero__search-input:focus {
-    background: #111;
-    color: #fff;
-    -webkit-text-fill-color: #fff;
-    caret-color: #fff;
+    background: #111 !important;
+    color: #fff !important;
+    -webkit-text-fill-color: #fff !important;
+    caret-color: #fff !important;
     outline: 1px solid rgba(255,255,255,.3);
     outline-offset: 0;
 }
@@ -179,34 +181,34 @@
     position: relative;
 }
 
-/* Specificity (0,2,1) beats Underscores input[type="text"] (0,1,1) */
+/* !important: same cache-busting reason as hero search input */
 .pa-filter-person input.pa-filter-person__input {
-    -webkit-appearance: none;
-    appearance: none;
+    -webkit-appearance: none !important;
+    appearance: none !important;
     width: 100%;
-    padding: 8px 10px;
-    background: var(--color-text);
-    border: none;
-    border-radius: 0;
+    padding: 8px 10px !important;
+    background: var(--color-text) !important;
+    border: none !important;
+    border-radius: 0 !important;
     font-family: var(--font-mono);
     font-size: .72rem;
-    color: rgba(255,255,255,.85);
-    -webkit-text-fill-color: rgba(255,255,255,.85);
-    caret-color: #fff;
+    color: rgba(255,255,255,.85) !important;
+    -webkit-text-fill-color: rgba(255,255,255,.85) !important;
+    caret-color: #fff !important;
     outline: none;
     cursor: text;
 }
 
 .pa-filter-person input.pa-filter-person__input:focus {
-    color: #fff;
-    -webkit-text-fill-color: #fff;
-    caret-color: #fff;
+    color: #fff !important;
+    -webkit-text-fill-color: #fff !important;
+    caret-color: #fff !important;
     outline: 1px solid rgba(255,255,255,.3);
     outline-offset: 0;
 }
 
 .pa-filter-person input.pa-filter-person__input::placeholder {
-    color: rgba(255,255,255,.25);
+    color: rgba(255,255,255,.25) !important;
     -webkit-text-fill-color: rgba(255,255,255,.25);
 }
 
