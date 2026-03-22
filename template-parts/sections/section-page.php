@@ -18,8 +18,8 @@
  *   hero_button_text_color string  опционально — цвет текста у primary-кнопки в герое (если пусто — #fff; для светлого accent задайте тёмный цвет)
  *
  * Routing spec v1.1: статьи CPT article → URL %section%/%postname%/ (см. inc/setup.php).
- * Таксономия section не зарегистрирована для quote_of_day и monthly_best — фильтр по разделу
- * через meta_key palime_section (заглушка до появления полей в БД).
+ * Таксономия section зарегистрирована для quote_of_day (фильтр по tax_query).
+ * Для monthly_best используется meta_key palime_section.
  *
  * @package Palime_Archive
  */
@@ -72,7 +72,7 @@ if ( $section_slug ) {
 	];
 }
 
-// CPT quote_of_day / monthly_best не привязаны к таксономии section — фильтр по meta palime_section.
+// CPT monthly_best не привязан к таксономии section — фильтр по meta palime_section.
 if ( $section_slug ) {
 	$meta_section = [
 		[
@@ -426,13 +426,13 @@ if ( ! $hero_thumb_url && $section_slug ) {
 </section>
 
 
-<!-- 5. Цитата дня (meta palime_section; без таксономии section на CPT) -->
+<!-- 5. Цитата дня (таксономия section) -->
 <?php
 $today     = current_time( 'Y-m-d' );
-$quote_args = [
+$quote_tax = ! empty( $tax_query_section ) ? [ 'tax_query' => $tax_query_section ] : [];
+$quote_args = array_merge( [
 	'post_type'      => 'quote_of_day',
 	'posts_per_page' => 1,
-	'meta_query'     => $meta_section,
 	'date_query'     => [
 		[
 			'year'  => (int) gmdate( 'Y', strtotime( $today ) ),
@@ -440,17 +440,16 @@ $quote_args = [
 			'day'   => (int) gmdate( 'd', strtotime( $today ) ),
 		],
 	],
-];
+], $quote_tax );
 $quote_query = new WP_Query( $quote_args );
 if ( ! $quote_query->have_posts() ) {
 	$quote_query = new WP_Query(
-		[
+		array_merge( [
 			'post_type'      => 'quote_of_day',
 			'posts_per_page' => 1,
 			'orderby'        => 'date',
 			'order'          => 'DESC',
-			'meta_query'     => $meta_section,
-		]
+		], $quote_tax )
 	);
 }
 ?>
@@ -480,24 +479,25 @@ if ( ! $quote_query->have_posts() ) {
 			</blockquote>
 
 			<?php if ( $q_author || $q_work ) : ?>
-				<p class="mt-lg text-mono text-xs" style="opacity:.55;letter-spacing:.08em;">
-					<?php
-					if ( $q_author ) {
-						echo esc_html( $q_author );
-					}
-					if ( $q_author && $q_work ) {
-						echo ' · ';
-					}
-					if ( $q_work ) {
-						echo esc_html( $q_work );
-					}
-					?>
-				</p>
+				<div class="mt-lg text-mono text-xs" style="opacity:.55;letter-spacing:.08em;">
+					<?php if ( $q_author ) : ?>
+						<p style="margin:0 0 .25em;">Автор: <?php echo esc_html( $q_author ); ?></p>
+					<?php endif; ?>
+					<?php if ( $q_work ) : ?>
+						<p style="margin:0;">Из произведения: &laquo;<?php echo esc_html( $q_work ); ?>&raquo;</p>
+					<?php endif; ?>
+				</div>
 			<?php endif; ?>
 
-			<?php if ( $q_link ) : ?>
+			<?php
+			$q_link_url = '';
+			if ( $q_link ) {
+				$q_link_url = is_numeric( $q_link ) ? get_permalink( (int) $q_link ) : $q_link;
+			}
+			?>
+			<?php if ( $q_link_url ) : ?>
 				<div class="mt-lg">
-					<a href="<?php echo esc_url( $q_link ); ?>" class="btn btn--outline" style="color:#fff;border-color:rgba(255,255,255,.3);">
+					<a href="<?php echo esc_url( $q_link_url ); ?>" class="btn btn--outline" style="color:#fff;border-color:rgba(255,255,255,.3);">
 						<?php esc_html_e( 'Открыть дело →', 'palime-archive' ); ?>
 					</a>
 				</div>
@@ -505,7 +505,7 @@ if ( ! $quote_query->have_posts() ) {
 
 		<?php else : ?>
 			<p class="text-mono text-xs section-page__stub-quote" style="opacity:.4;letter-spacing:.12em;">
-				<?php esc_html_e( '— Цитата дня · блок зарезервирован (meta palime_section + ACF) —', 'palime-archive' ); ?>
+				<?php esc_html_e( '— Цитата дня · блок зарезервирован (таксономия section + ACF) —', 'palime-archive' ); ?>
 			</p>
 		<?php endif; ?>
 	</div>

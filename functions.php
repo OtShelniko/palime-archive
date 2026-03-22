@@ -13,6 +13,7 @@ require_once get_template_directory() . '/inc/post-types.php';
 require_once get_template_directory() . '/inc/taxonomies.php';
 require_once get_template_directory() . '/inc/taxonomy-seed.php';
 require_once get_template_directory() . '/inc/acf.php';
+require_once get_template_directory() . '/inc/quote-fields.php';
 
 // Утилиты
 require_once get_template_directory() . '/inc/helpers.php';
