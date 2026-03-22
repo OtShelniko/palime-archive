@@ -7,11 +7,12 @@
     var data = window.palimeData || {};
     if (!data.userId) return;
 
-    var articleId = document.querySelector('[data-article-id]');
-    if (articleId) {
-        articleId = parseInt(articleId.dataset.articleId, 10);
+    var articleEl = document.querySelector('[data-article-id]');
+    var articleId = 0;
+
+    if (articleEl) {
+        articleId = parseInt(articleEl.dataset.articleId, 10);
     } else {
-        // Попробуем получить из body class
         var match = document.body.className.match(/postid-(\d+)/);
         articleId = match ? parseInt(match[1], 10) : 0;
     }
@@ -20,7 +21,7 @@
 
     var startTime = Date.now();
     var maxScroll = 0;
-    var tracked = false;
+    var readTracked = false;
 
     // Отслеживаем максимальный скролл
     window.addEventListener('scroll', function () {
@@ -31,29 +32,67 @@
             if (percent > maxScroll) {
                 maxScroll = percent;
             }
-
-            // Трекаем при 70%+ скролла
-            if (maxScroll >= 70 && !tracked) {
-                tracked = true;
-                trackRead();
-            }
         }
     });
 
-    function trackRead() {
+    // Проверяем каждые 5 секунд: скролл >= 70% -> отправляем чтение
+    // Отправляем реальное time_spent, лонгрид засчитывается серверной стороной при >= 120с
+    var checkInterval = setInterval(function () {
+        if (readTracked) {
+            clearInterval(checkInterval);
+            return;
+        }
+
+        if (maxScroll >= 70) {
+            readTracked = true;
+            clearInterval(checkInterval);
+
+            var timeSpent = Math.round((Date.now() - startTime) / 1000);
+
+            var body = new FormData();
+            body.append('action', 'palime_track_read');
+            body.append('nonce', data.nonce);
+            body.append('article_id', articleId);
+            body.append('scroll_percent', maxScroll);
+            body.append('time_spent', timeSpent);
+
+            fetch(data.ajaxUrl, { method: 'POST', body: body });
+        }
+    }, 5000);
+
+    // Дополнительная проверка для лонгридов: если пользователь долго на странице,
+    // но скролл ещё не достиг 70% — отправляем при уходе со страницы
+    window.addEventListener('beforeunload', function () {
+        clearInterval(checkInterval);
+        clearInterval(sessionInterval);
+
         var timeSpent = Math.round((Date.now() - startTime) / 1000);
 
-        var body = new FormData();
-        body.append('action', 'palime_track_read');
-        body.append('nonce', data.nonce);
-        body.append('article_id', articleId);
-        body.append('scroll_percent', maxScroll);
-        body.append('time_spent', timeSpent);
+        // Если не трекнули чтение и скролл >= 70%
+        if (!readTracked && maxScroll >= 70) {
+            var body = new FormData();
+            body.append('action', 'palime_track_read');
+            body.append('nonce', data.nonce);
+            body.append('article_id', articleId);
+            body.append('scroll_percent', maxScroll);
+            body.append('time_spent', timeSpent);
 
-        fetch(data.ajaxUrl, { method: 'POST', body: body });
-    }
+            navigator.sendBeacon(data.ajaxUrl, body);
+        }
 
-    // Трекинг сессии: каждые 10 минут отправляем время
+        // Финальный трек сессии
+        var minutesSpent = Math.round(timeSpent / 60);
+        if (minutesSpent >= 1) {
+            var sessionBody = new FormData();
+            sessionBody.append('action', 'palime_track_session');
+            sessionBody.append('nonce', data.nonce);
+            sessionBody.append('minutes', minutesSpent % 10 || 1);
+
+            navigator.sendBeacon(data.ajaxUrl, sessionBody);
+        }
+    });
+
+    // Трекинг сессии: каждые 10 минут
     var sessionInterval = setInterval(function () {
         var body = new FormData();
         body.append('action', 'palime_track_session');
@@ -61,21 +100,6 @@
         body.append('minutes', 10);
 
         fetch(data.ajaxUrl, { method: 'POST', body: body });
-    }, 600000); // 10 минут
-
-    // При закрытии страницы — финальный трек
-    window.addEventListener('beforeunload', function () {
-        clearInterval(sessionInterval);
-
-        var minutesSpent = Math.round((Date.now() - startTime) / 60000);
-        if (minutesSpent < 1) return;
-
-        var body = new FormData();
-        body.append('action', 'palime_track_session');
-        body.append('nonce', data.nonce);
-        body.append('minutes', minutesSpent % 10 || 1); // Остаток, не отправленный интервалом
-
-        navigator.sendBeacon(data.ajaxUrl, body);
-    });
+    }, 600000);
 
 })();

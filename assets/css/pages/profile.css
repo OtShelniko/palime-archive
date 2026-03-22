@@ -589,6 +589,14 @@
     white-space: nowrap;
 }
 
+.points-log__item--negative .points-log__amount {
+    color: rgba(0,0,0,0.4);
+}
+
+.points-log__item--rollback .points-log__category-dot {
+    background: rgba(0,0,0,0.15);
+}
+
 .points-log__date {
     font-family: var(--font-mono);
     font-size: 0.7rem;
