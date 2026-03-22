@@ -25,8 +25,12 @@ $level    = palime_get_user_level( $user_id );
 $progress = palime_get_level_progress( $user_id );
 $streak   = palime_get_streak( $user_id );
 
+// Дневной лимит
+$daily_earned = palime_get_daily_points( $user_id );
+$daily_cap    = PALIME_DAILY_BASE_CAP;
+
 // Достижения
-$achievements     = palime_get_achievements();
+$achievements      = palime_get_achievements();
 $user_achievements = palime_get_user_achievements( $user_id );
 
 // Лог очков
@@ -35,6 +39,9 @@ $log = array_reverse( array_slice( $log, -20 ) );
 
 // Сохранённые статьи
 $saved_ids = get_user_meta( $user_id, 'palime_saved_articles', true ) ?: [];
+
+// Группируем достижения по рарности
+$rarity_order = [ 'epic', 'rare', 'uncommon', 'common' ];
 
 get_header();
 ?>
@@ -59,21 +66,30 @@ get_header();
             <!-- Уровень -->
             <div class="profile-level">
                 <span class="profile-level__badge"><?php echo esc_html( $level['name'] ); ?></span>
+                <div class="profile-level__number">Уровень <?php echo (int) $level['number']; ?></div>
                 <div class="profile-level__points"><?php echo number_format( $points, 0, '', ' ' ); ?></div>
-                <div class="profile-level__label">ОЧКОВ</div>
+                <div class="profile-level__label">XP</div>
 
-                <!-- Прогресс -->
+                <!-- Прогресс до следующего уровня -->
                 <div class="profile-progress">
                     <div class="profile-progress__bar">
                         <div class="profile-progress__fill" data-percent="<?php echo (int) $progress['percent']; ?>" style="width: <?php echo (int) $progress['percent']; ?>%;"></div>
                     </div>
                     <div class="profile-progress__label">
                         <?php if ( $progress['next_name'] ) : ?>
-                            До <?php echo esc_html( $progress['next_name'] ); ?>: <?php echo (int) ( $progress['next_min'] - $progress['current'] ); ?> очков
+                            До <?php echo esc_html( $progress['next_name'] ); ?>: <?php echo (int) ( $progress['next_min'] - $progress['current'] ); ?> XP
                         <?php else : ?>
                             Максимальный уровень
                         <?php endif; ?>
                     </div>
+                </div>
+
+                <!-- Дневной лимит базовых очков -->
+                <div class="profile-daily-cap">
+                    <div class="profile-daily-cap__bar">
+                        <div class="profile-daily-cap__fill" style="width: <?php echo min( 100, round( $daily_earned / $daily_cap * 100 ) ); ?>%;"></div>
+                    </div>
+                    <div class="profile-daily-cap__label">Базовый XP: <?php echo (int) $daily_earned; ?>/<?php echo (int) $daily_cap; ?> за сегодня</div>
                 </div>
             </div>
 
@@ -89,7 +105,7 @@ get_header();
             <nav class="profile-nav">
                 <div class="profile-nav__item active" data-tab="overview">Обзор</div>
                 <div class="profile-nav__item" data-tab="achievements">Достижения</div>
-                <div class="profile-nav__item" data-tab="history">История очков</div>
+                <div class="profile-nav__item" data-tab="history">История XP</div>
                 <div class="profile-nav__item" data-tab="saved">Сохранённое</div>
                 <div class="profile-nav__item" data-tab="settings">Настройки</div>
             </nav>
@@ -114,7 +130,7 @@ get_header();
                 <div class="profile-stats">
                     <div class="profile-stats__card">
                         <div class="profile-stats__value"><?php echo number_format( $points, 0, '', ' ' ); ?></div>
-                        <div class="profile-stats__label">Очков</div>
+                        <div class="profile-stats__label">XP</div>
                     </div>
                     <div class="profile-stats__card">
                         <div class="profile-stats__value"><?php echo count( $user_achievements ); ?>/<?php echo count( $achievements ); ?></div>
@@ -130,15 +146,12 @@ get_header();
                     </div>
                 </div>
 
-                <!-- Уровни -->
-                <h3 class="profile-content__subtitle">СИСТЕМА УРОВНЕЙ</h3>
+                <!-- Карта уровней -->
+                <h3 class="profile-content__subtitle">ПУТЬ ВОСХОЖДЕНИЯ</h3>
                 <div class="profile-levels-map">
                     <?php
                     $all_levels  = palime_get_levels();
-                    $current_lvl = 1;
-                    foreach ( $all_levels as $num => $data ) {
-                        if ( $points >= $data['min'] ) $current_lvl = $num;
-                    }
+                    $current_lvl = $level['number'];
                     foreach ( $all_levels as $num => $data ) :
                         $is_current  = ( $num === $current_lvl );
                         $is_unlocked = ( $num <= $current_lvl );
@@ -148,11 +161,38 @@ get_header();
                             <div class="level-card__info">
                                 <div class="level-card__name"><?php echo esc_html( $data['name'] ); ?></div>
                                 <div class="level-card__perks"><?php echo esc_html( $data['perks'] ); ?></div>
-                                <div class="level-card__min"><?php echo $data['min']; ?> очков</div>
+                                <div class="level-card__min"><?php echo number_format( $data['min'], 0, '', ' ' ); ?> XP</div>
                             </div>
                         </div>
                     <?php endforeach; ?>
                 </div>
+
+                <!-- Последние разблокированные достижения -->
+                <?php
+                $recent_achievements = array_slice( array_reverse( $user_achievements ), 0, 3 );
+                if ( ! empty( $recent_achievements ) ) :
+                ?>
+                <h3 class="profile-content__subtitle">ПОСЛЕДНИЕ ДОСТИЖЕНИЯ</h3>
+                <div class="achievements-grid achievements-grid--compact">
+                    <?php foreach ( $recent_achievements as $key ) :
+                        if ( ! isset( $achievements[ $key ] ) ) continue;
+                        $ach = $achievements[ $key ];
+                        $rarity = $ach['rarity'] ?? 'common';
+                    ?>
+                        <div class="achievement-card achievement-card--unlocked achievement-card--<?php echo esc_attr( $rarity ); ?>">
+                            <div class="achievement-card__icon"><?php echo $ach['icon']; ?></div>
+                            <div class="achievement-card__info">
+                                <div class="achievement-card__name"><?php echo esc_html( $ach['name'] ); ?></div>
+                                <div class="achievement-card__desc"><?php echo esc_html( $ach['description'] ); ?></div>
+                            </div>
+                            <div class="achievement-card__meta">
+                                <span class="achievement-card__rarity achievement-card__rarity--<?php echo esc_attr( $rarity ); ?>"><?php echo esc_html( palime_get_rarity_label( $rarity ) ); ?></span>
+                                <span class="achievement-card__status">+<?php echo (int) $ach['bonus']; ?></span>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+                <?php endif; ?>
 
                 <!-- Последние действия -->
                 <?php if ( ! empty( $log ) ) : ?>
@@ -162,7 +202,7 @@ get_header();
                         <div class="points-log__item">
                             <span><?php echo esc_html( $entry['reason'] ?: 'Действие' ); ?></span>
                             <span class="points-log__date"><?php echo esc_html( palime_format_date_short( $entry['date'] ) ); ?></span>
-                            <span class="points-log__amount"><?php echo (int) $entry['amount']; ?></span>
+                            <span class="points-log__amount">+<?php echo (int) $entry['amount']; ?></span>
                         </div>
                     <?php endforeach; ?>
                 </div>
@@ -173,40 +213,69 @@ get_header();
             <section class="profile-content__section" data-section="achievements">
                 <h2 class="profile-content__title">ДОСТИЖЕНИЯ</h2>
 
-                <div class="achievements-grid">
-                    <?php foreach ( $achievements as $key => $ach ) :
-                        $unlocked = in_array( $key, $user_achievements, true );
-                    ?>
-                        <div class="achievement-card <?php echo $unlocked ? 'achievement-card--unlocked' : 'achievement-card--locked'; ?>">
-                            <div class="achievement-card__icon"><?php echo $ach['icon']; ?></div>
-                            <div class="achievement-card__info">
-                                <div class="achievement-card__name"><?php echo esc_html( $ach['name'] ); ?></div>
-                                <div class="achievement-card__desc"><?php echo esc_html( $ach['description'] ); ?></div>
-                            </div>
-                            <?php if ( $unlocked ) : ?>
-                                <div class="achievement-card__status">+<?php echo (int) $ach['bonus']; ?></div>
-                            <?php endif; ?>
-                        </div>
-                    <?php endforeach; ?>
+                <div class="achievements-summary">
+                    <span class="achievements-summary__count"><?php echo count( $user_achievements ); ?></span>
+                    <span class="achievements-summary__total">/ <?php echo count( $achievements ); ?></span>
+                    <span class="achievements-summary__label">разблокировано</span>
                 </div>
+
+                <?php foreach ( $rarity_order as $rarity ) :
+                    $rarity_achievements = array_filter( $achievements, function( $ach ) use ( $rarity ) {
+                        return ( $ach['rarity'] ?? 'common' ) === $rarity;
+                    });
+                    if ( empty( $rarity_achievements ) ) continue;
+                ?>
+                    <h3 class="profile-content__subtitle achievements-rarity-title achievements-rarity-title--<?php echo esc_attr( $rarity ); ?>">
+                        <?php echo esc_html( palime_get_rarity_label( $rarity ) ); ?>
+                    </h3>
+
+                    <div class="achievements-grid">
+                        <?php foreach ( $rarity_achievements as $key => $ach ) :
+                            $unlocked = in_array( $key, $user_achievements, true );
+                            $is_hidden = ! empty( $ach['hidden'] ) && ! $unlocked;
+                        ?>
+                            <div class="achievement-card <?php echo $unlocked ? 'achievement-card--unlocked' : 'achievement-card--locked'; ?> achievement-card--<?php echo esc_attr( $rarity ); ?>">
+                                <div class="achievement-card__icon"><?php echo $unlocked ? $ach['icon'] : '??'; ?></div>
+                                <div class="achievement-card__info">
+                                    <div class="achievement-card__name">
+                                        <?php echo $is_hidden ? '???' : esc_html( $ach['name'] ); ?>
+                                    </div>
+                                    <div class="achievement-card__desc">
+                                        <?php echo $is_hidden ? 'Скрытое достижение' : esc_html( $ach['description'] ); ?>
+                                    </div>
+                                </div>
+                                <div class="achievement-card__meta">
+                                    <?php if ( $unlocked ) : ?>
+                                        <span class="achievement-card__status">+<?php echo (int) $ach['bonus']; ?> XP</span>
+                                    <?php else : ?>
+                                        <span class="achievement-card__bonus">+<?php echo (int) $ach['bonus']; ?></span>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endforeach; ?>
             </section>
 
-            <!-- ── ИСТОРИЯ ОЧКОВ ── -->
+            <!-- ── ИСТОРИЯ XP ── -->
             <section class="profile-content__section" data-section="history">
-                <h2 class="profile-content__title">ИСТОРИЯ ОЧКОВ</h2>
+                <h2 class="profile-content__title">ИСТОРИЯ XP</h2>
 
                 <?php if ( ! empty( $log ) ) : ?>
                     <div class="points-log">
-                        <?php foreach ( $log as $entry ) : ?>
-                            <div class="points-log__item">
+                        <?php foreach ( $log as $entry ) :
+                            $category = $entry['category'] ?? 'base';
+                        ?>
+                            <div class="points-log__item points-log__item--<?php echo esc_attr( $category ); ?>">
+                                <span class="points-log__category-dot"></span>
                                 <span><?php echo esc_html( $entry['reason'] ?: 'Действие' ); ?></span>
                                 <span class="points-log__date"><?php echo esc_html( palime_format_date_short( $entry['date'] ) ); ?></span>
-                                <span class="points-log__amount"><?php echo (int) $entry['amount']; ?></span>
+                                <span class="points-log__amount">+<?php echo (int) $entry['amount']; ?></span>
                             </div>
                         <?php endforeach; ?>
                     </div>
                 <?php else : ?>
-                    <p class="profile-empty">Пока нет действий. Голосуйте, комментируйте и сохраняйте статьи, чтобы получать очки.</p>
+                    <p class="profile-empty">Пока нет действий. Читайте статьи, голосуйте и комментируйте.</p>
                 <?php endif; ?>
             </section>
 

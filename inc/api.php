@@ -189,15 +189,22 @@ function palime_api_get_ranking( WP_REST_Request $request ) {
 function palime_api_get_profile( WP_REST_Request $request ) {
     $user_id = get_current_user_id();
     $data    = palime_get_profile_data( $user_id );
+    $level   = palime_get_user_level( $user_id );
 
     return rest_ensure_response( [
-        'display_name' => $data['user']->display_name,
-        'email'        => $data['user']->user_email,
-        'points'       => $data['points'],
-        'level'        => $data['level'],
-        'progress'     => palime_get_level_progress( $user_id ),
-        'saved_count'  => count( $data['saved'] ),
-        'log'          => $data['log'],
+        'display_name'    => $data['user']->display_name,
+        'email'           => $data['user']->user_email,
+        'points'          => $data['points'],
+        'level'           => $level,
+        'level_number'    => $level['number'] ?? 1,
+        'progress'        => palime_get_level_progress( $user_id ),
+        'streak'          => palime_get_streak( $user_id ),
+        'daily_earned'    => palime_get_daily_points( $user_id ),
+        'daily_cap'       => PALIME_DAILY_BASE_CAP,
+        'saved_count'     => count( $data['saved'] ),
+        'achievements'    => count( palime_get_user_achievements( $user_id ) ),
+        'total_achievements' => count( palime_get_achievements() ),
+        'log'             => $data['log'],
     ] );
 }
 
@@ -223,6 +230,7 @@ function palime_api_get_leaderboard( WP_REST_Request $request ) {
             'display_name' => $user->display_name,
             'points'       => $points,
             'level'        => $level['name'],
+            'level_number' => $level['number'] ?? 1,
             'avatar'       => get_avatar_url( $user->ID, [ 'size' => 40 ] ),
         ];
     }
@@ -237,13 +245,18 @@ function palime_api_get_achievements( WP_REST_Request $request ) {
 
     $result = [];
     foreach ( $achievements as $key => $ach ) {
+        $is_unlocked = in_array( $key, $unlocked, true );
+        $is_hidden   = ! empty( $ach['hidden'] ) && ! $is_unlocked;
+
         $result[] = [
             'key'         => $key,
-            'name'        => $ach['name'],
-            'description' => $ach['description'],
-            'icon'        => $ach['icon'],
+            'name'        => $is_hidden ? '???' : $ach['name'],
+            'description' => $is_hidden ? 'Скрытое достижение' : $ach['description'],
+            'icon'        => $is_unlocked ? $ach['icon'] : '??',
             'bonus'       => $ach['bonus'],
-            'unlocked'    => in_array( $key, $unlocked, true ),
+            'rarity'      => $ach['rarity'] ?? 'common',
+            'hidden'      => ! empty( $ach['hidden'] ),
+            'unlocked'    => $is_unlocked,
         ];
     }
 

@@ -66,7 +66,16 @@
     font-size: 0.72rem;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    margin-bottom: var(--spacing-md);
+    margin-bottom: var(--spacing-sm);
+}
+
+.profile-level__number {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    opacity: 0.5;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: var(--spacing-sm);
 }
 
 .profile-level__points {
@@ -110,6 +119,33 @@
     font-family: var(--font-mono);
     font-size: 0.68rem;
     opacity: 0.45;
+    text-align: right;
+}
+
+/* Дневной лимит базовых очков */
+.profile-daily-cap {
+    margin-top: var(--spacing-sm);
+}
+
+.profile-daily-cap__bar {
+    height: 2px;
+    background: rgba(0,0,0,0.06);
+    border-radius: 1px;
+    overflow: hidden;
+    margin-bottom: 4px;
+}
+
+.profile-daily-cap__fill {
+    height: 100%;
+    background: rgba(0,0,0,0.25);
+    border-radius: 1px;
+    transition: width 0.4s ease;
+}
+
+.profile-daily-cap__label {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    opacity: 0.35;
     text-align: right;
 }
 
@@ -304,10 +340,60 @@
 }
 
 /* === ДОСТИЖЕНИЯ === */
+.achievements-summary {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    margin-bottom: var(--spacing-lg);
+}
+
+.achievements-summary__count {
+    font-family: var(--font-mono);
+    font-size: 2rem;
+    font-weight: 400;
+    color: var(--accent);
+}
+
+.achievements-summary__total {
+    font-family: var(--font-mono);
+    font-size: 1.2rem;
+    opacity: 0.35;
+}
+
+.achievements-summary__label {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    opacity: 0.4;
+    margin-left: var(--spacing-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+/* Заголовки рарности */
+.achievements-rarity-title--epic {
+    color: #9B59B6;
+    opacity: 1;
+}
+
+.achievements-rarity-title--rare {
+    color: #2980B9;
+    opacity: 1;
+}
+
+.achievements-rarity-title--uncommon {
+    color: #27AE60;
+    opacity: 1;
+}
+
 .achievements-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+}
+
+.achievements-grid--compact {
+    margin-bottom: 0;
 }
 
 .achievement-card {
@@ -329,6 +415,22 @@
     background: rgba(217, 21, 21, 0.03);
 }
 
+/* Рарность-цвета для разблокированных */
+.achievement-card--unlocked.achievement-card--epic {
+    border-color: #9B59B6;
+    background: rgba(155, 89, 182, 0.06);
+}
+
+.achievement-card--unlocked.achievement-card--rare {
+    border-color: #2980B9;
+    background: rgba(41, 128, 185, 0.05);
+}
+
+.achievement-card--unlocked.achievement-card--uncommon {
+    border-color: #27AE60;
+    background: rgba(39, 174, 96, 0.05);
+}
+
 .achievement-card__icon {
     width: 44px;
     height: 44px;
@@ -347,6 +449,18 @@
     color: #fff;
 }
 
+.achievement-card--unlocked.achievement-card--epic .achievement-card__icon {
+    background: #9B59B6;
+}
+
+.achievement-card--unlocked.achievement-card--rare .achievement-card__icon {
+    background: #2980B9;
+}
+
+.achievement-card--unlocked.achievement-card--uncommon .achievement-card__icon {
+    background: #27AE60;
+}
+
 .achievement-card__name {
     font-family: var(--font-mono);
     font-size: 0.8rem;
@@ -360,12 +474,65 @@
     opacity: 0.5;
 }
 
-.achievement-card__status {
+.achievement-card__meta {
     margin-left: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+    white-space: nowrap;
+}
+
+.achievement-card__status {
     font-family: var(--font-mono);
     font-size: 0.72rem;
     color: var(--accent);
-    white-space: nowrap;
+}
+
+.achievement-card--epic .achievement-card__status {
+    color: #9B59B6;
+}
+
+.achievement-card--rare .achievement-card__status {
+    color: #2980B9;
+}
+
+.achievement-card--uncommon .achievement-card__status {
+    color: #27AE60;
+}
+
+.achievement-card__bonus {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    opacity: 0.35;
+}
+
+.achievement-card__rarity {
+    font-family: var(--font-mono);
+    font-size: 0.58rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    background: rgba(0,0,0,0.06);
+}
+
+.achievement-card__rarity--epic {
+    color: #9B59B6;
+    background: rgba(155, 89, 182, 0.1);
+}
+
+.achievement-card__rarity--rare {
+    color: #2980B9;
+    background: rgba(41, 128, 185, 0.1);
+}
+
+.achievement-card__rarity--uncommon {
+    color: #27AE60;
+    background: rgba(39, 174, 96, 0.1);
+}
+
+.achievement-card__rarity--common {
+    color: rgba(0,0,0,0.4);
 }
 
 /* === ЛОГ ОЧКОВ === */
@@ -378,27 +545,55 @@
 .points-log__item {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    gap: var(--spacing-sm);
     padding: var(--spacing-sm) var(--spacing-md);
     background: var(--color-second);
     border-radius: var(--radius-sm);
     font-size: 0.875rem;
 }
 
+/* Цветные точки по категории */
+.points-log__category-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    background: rgba(0,0,0,0.2);
+}
+
+.points-log__item--base .points-log__category-dot {
+    background: #27AE60;
+}
+
+.points-log__item--social .points-log__category-dot {
+    background: #F39C12;
+}
+
+.points-log__item--valuable .points-log__category-dot {
+    background: #E74C3C;
+}
+
+.points-log__item--streak .points-log__category-dot {
+    background: #9B59B6;
+}
+
+.points-log__item--achievement .points-log__category-dot {
+    background: #2980B9;
+}
+
 .points-log__amount {
+    margin-left: auto;
     font-family: var(--font-mono);
     font-weight: 600;
     color: var(--accent);
-}
-
-.points-log__amount::before {
-    content: '+';
+    white-space: nowrap;
 }
 
 .points-log__date {
     font-family: var(--font-mono);
     font-size: 0.7rem;
     opacity: 0.4;
+    white-space: nowrap;
 }
 
 /* === СОХРАНЁННЫЕ СТАТЬИ === */

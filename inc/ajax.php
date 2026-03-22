@@ -40,7 +40,8 @@ function palime_handle_vote() {
     update_post_meta( $ranking_id, $votes_key, $current + 1 );
 
     // Начисляем очки
-    palime_add_points( $user_id, PALIME_POINTS_VOTE, 'Голосование в рейтинге' );
+    palime_add_points( $user_id, PALIME_XP_VOTE, 'Голосование в рейтинге', 'base' );
+    palime_check_achievements( $user_id );
 
     wp_send_json_success( [ 'votes' => $current + 1 ] );
 }
