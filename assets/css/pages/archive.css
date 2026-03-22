@@ -103,7 +103,9 @@
     border-radius: 0;
     font-family: var(--font-mono);
     font-size: .78rem;
-    color: rgba(255,255,255,.7);
+    color: rgba(255,255,255,.85);
+    -webkit-text-fill-color: rgba(255,255,255,.85);
+    caret-color: #fff;
     outline: none;
     width: 100%;
     cursor: text;
@@ -111,12 +113,15 @@
 }
 
 .pa-archive-hero__search input.pa-archive-hero__search-input::placeholder {
-    color: rgba(255,255,255,.2);
+    color: rgba(255,255,255,.25);
+    -webkit-text-fill-color: rgba(255,255,255,.25);
 }
 
 .pa-archive-hero__search input.pa-archive-hero__search-input:focus {
     background: #111;
     color: #fff;
+    -webkit-text-fill-color: #fff;
+    caret-color: #fff;
     outline: 1px solid rgba(255,255,255,.3);
     outline-offset: 0;
 }
@@ -185,19 +190,24 @@
     border-radius: 0;
     font-family: var(--font-mono);
     font-size: .72rem;
-    color: rgba(255,255,255,.8);
+    color: rgba(255,255,255,.85);
+    -webkit-text-fill-color: rgba(255,255,255,.85);
+    caret-color: #fff;
     outline: none;
     cursor: text;
 }
 
 .pa-filter-person input.pa-filter-person__input:focus {
     color: #fff;
+    -webkit-text-fill-color: #fff;
+    caret-color: #fff;
     outline: 1px solid rgba(255,255,255,.3);
     outline-offset: 0;
 }
 
 .pa-filter-person input.pa-filter-person__input::placeholder {
     color: rgba(255,255,255,.25);
+    -webkit-text-fill-color: rgba(255,255,255,.25);
 }
 
 .pa-filter-person__hint {
