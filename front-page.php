@@ -6,6 +6,15 @@
  * @package Palime_Archive
  */
 
+// Подключаем CSS главной страницы ДО get_header(),
+// чтобы стиль попал в wp_head() гарантированно.
+wp_enqueue_style(
+    'palime-page-home',
+    get_template_directory_uri() . '/assets/css/pages/front-page.css',
+    [ 'palime-variables' ],
+    filemtime( get_template_directory() . '/assets/css/pages/front-page.css' )
+);
+
 get_header();
 
 // Данные для живого индекса
