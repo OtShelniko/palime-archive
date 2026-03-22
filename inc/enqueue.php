@@ -80,6 +80,15 @@ function palime_enqueue_assets() {
         );
     }
 
+    if ( is_page_template( 'page-auth.php' ) ) {
+        wp_enqueue_style(
+            'palime-page-auth',
+            $uri . '/assets/css/pages/auth.css',
+            [ 'palime-utilities' ],
+            $ver
+        );
+    }
+
     if ( is_page_template( 'page-blog.php' ) || is_page_template( 'page-news.php' ) ) {
         wp_enqueue_style(
             'palime-page-blog',
@@ -166,6 +175,17 @@ function palime_enqueue_assets() {
         wp_enqueue_script(
             'palime-profile',
             $uri . '/assets/js/profile.js',
+            [ 'palime-main' ],
+            $ver,
+            true
+        );
+    }
+
+    // auth.js — логика страницы авторизации
+    if ( is_page_template( 'page-auth.php' ) ) {
+        wp_enqueue_script(
+            'palime-auth',
+            $uri . '/assets/js/auth.js',
             [ 'palime-main' ],
             $ver,
             true
