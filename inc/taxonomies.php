@@ -6,7 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 function palime_register_taxonomies() {
 
-    $post_types_all = [ 'article', 'news', 'ranking', 'dossier' ];
+    $post_types_all = [ 'article', 'news', 'ranking', 'dossier', 'quote_of_day' ];
     $post_types_art = [ 'article', 'dossier' ];
 
     register_taxonomy( 'section', array_merge( $post_types_all, [ 'route' ] ), [
