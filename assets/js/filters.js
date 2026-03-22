@@ -197,6 +197,14 @@
             }, 400);
 
             searchInput.addEventListener('input', () => doSearch(searchInput.value));
+
+            // Safety net: click on search container focuses the input
+            var searchWrap = searchInput.closest('.pa-archive-hero__search');
+            if (searchWrap) {
+                searchWrap.addEventListener('click', function(e) {
+                    if (e.target !== searchInput) searchInput.focus();
+                });
+            }
         },
 
         /** Кнопка сброса */
