@@ -101,7 +101,7 @@
                     return;
                 }
 
-                const restBase = (typeof palimeData !== 'undefined') ? palimeData.restBase : '/wp-json/';
+                const restBase = (typeof palimeData !== 'undefined' && palimeData.restBase) ? palimeData.restBase : '/wp-json/';
                 fetch(restBase + 'palime/v1/persons?search=' + encodeURIComponent(q))
                     .then(function(r) { return r.json(); })
                     .then(function(data) {
@@ -145,7 +145,7 @@
                     }
 
                     // Resolve typed name to slug via REST before applying filter
-                    var restBase = (typeof palimeData !== 'undefined') ? palimeData.restBase : '/wp-json/';
+                    var restBase = (typeof palimeData !== 'undefined' && palimeData.restBase) ? palimeData.restBase : '/wp-json/';
                     fetch(restBase + 'palime/v1/persons?search=' + encodeURIComponent(q))
                         .then(function(r) { return r.json(); })
                         .then(function(data) {
