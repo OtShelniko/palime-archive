@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 // Если пользователь не авторизован — редирект на логин
 if ( ! is_user_logged_in() ) {
-    wp_redirect( wp_login_url( get_permalink() ) );
+    wp_redirect( home_url( '/auth/?redirect_to=' . urlencode( get_permalink() ) ) );
     exit;
 }
 

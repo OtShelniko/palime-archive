@@ -129,11 +129,11 @@ $shop_url        = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_perm
                     ВЫЙТИ
                 </a>
             <?php else : ?>
-                <a href="<?php echo esc_url( wp_login_url( get_permalink() ) ); ?>" class="pa-btn-profile">
+                <a href="<?php echo esc_url( home_url( '/auth/' ) ); ?>" class="pa-btn-profile">
                     ВОЙТИ
                 </a>
                 <?php if ( get_option( 'users_can_register' ) ) : ?>
-                    <a href="<?php echo esc_url( wp_registration_url() ); ?>" class="pa-btn-profile" style="opacity:.5;">
+                    <a href="<?php echo esc_url( home_url( '/auth/?tab=register' ) ); ?>" class="pa-btn-profile" style="opacity:.5;">
                         РЕГИСТРАЦИЯ
                     </a>
                 <?php endif; ?>
@@ -163,9 +163,9 @@ $shop_url        = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_perm
                 <li><a href="<?php echo esc_url( home_url( '/profile/' ) ); ?>">Профиль</a></li>
                 <li><a href="<?php echo esc_url( wp_logout_url( home_url( '/' ) ) ); ?>">Выйти</a></li>
             <?php else : ?>
-                <li><a href="<?php echo esc_url( wp_login_url( get_permalink() ) ); ?>">Войти</a></li>
+                <li><a href="<?php echo esc_url( home_url( '/auth/' ) ); ?>">Войти</a></li>
                 <?php if ( get_option( 'users_can_register' ) ) : ?>
-                    <li><a href="<?php echo esc_url( wp_registration_url() ); ?>">Регистрация</a></li>
+                    <li><a href="<?php echo esc_url( home_url( '/auth/?tab=register' ) ); ?>">Регистрация</a></li>
                 <?php endif; ?>
             <?php endif; ?>
         </ul>
