@@ -8,9 +8,10 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-// Если уже авторизован — на профиль
+// Если уже авторизован — на redirect_to или профиль
 if ( is_user_logged_in() ) {
-    wp_redirect( home_url( '/profile/' ) );
+    $dest = ! empty( $_GET['redirect_to'] ) ? esc_url_raw( $_GET['redirect_to'] ) : home_url( '/profile/' );
+    wp_safe_redirect( $dest );
     exit;
 }
 
