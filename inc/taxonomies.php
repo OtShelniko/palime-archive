@@ -140,11 +140,17 @@ function palime_register_taxonomies() {
         'rewrite'           => [ 'slug' => 'era' ],
     ] );
 
+    // Legacy: жанр больше не используется в публичных фильтрах.
+    // Данные сохраняются; REST и админка доступны для миграции в theme / article-type.
     register_taxonomy( 'genre', [ 'article' ], [
-        'label'        => 'Жанр',
-        'hierarchical' => false,
-        'show_in_rest' => true,
-        'rewrite'      => [ 'slug' => 'genre' ],
+        'label'              => 'Жанр (legacy)',
+        'hierarchical'       => false,
+        'public'             => false,
+        'publicly_queryable' => false,
+        'show_ui'            => true,
+        'show_in_rest'       => true,
+        'show_admin_column'  => false,
+        'rewrite'            => false,
     ] );
 
     register_taxonomy( 'country', $post_types_art, [

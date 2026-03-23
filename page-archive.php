@@ -25,37 +25,42 @@ $total_query = new WP_Query( [
 $total_found = $total_query->found_posts;
 wp_reset_postdata();
 
-// ── Каталогизировано (статус VERIFIED) ───────────────────
-$verified_query = new WP_Query( [
-    'post_type'              => 'article',
-    'posts_per_page'         => 1,
-    'post_status'            => 'publish',
-    'update_post_meta_cache' => false,
-    'update_post_term_cache' => false,
-    'tax_query'              => [ [
-        'taxonomy' => 'status',
-        'field'    => 'slug',
-        'terms'    => 'verified',
-    ] ],
-] );
-$total_verified = $verified_query->found_posts;
-wp_reset_postdata();
+// ── Служебная статистика (только для редакторов) ─────────
+$total_verified = 0;
+$total_disputed = 0;
+$show_editor_stats = current_user_can( 'edit_posts' );
 
-// ── Спорные (статус DISPUTED) ────────────────────────────
-$disputed_query = new WP_Query( [
-    'post_type'              => 'article',
-    'posts_per_page'         => 1,
-    'post_status'            => 'publish',
-    'update_post_meta_cache' => false,
-    'update_post_term_cache' => false,
-    'tax_query'              => [ [
-        'taxonomy' => 'status',
-        'field'    => 'slug',
-        'terms'    => 'disputed',
-    ] ],
-] );
-$total_disputed = $disputed_query->found_posts;
-wp_reset_postdata();
+if ( $show_editor_stats ) {
+    $verified_query = new WP_Query( [
+        'post_type'              => 'article',
+        'posts_per_page'         => 1,
+        'post_status'            => 'publish',
+        'update_post_meta_cache' => false,
+        'update_post_term_cache' => false,
+        'tax_query'              => [ [
+            'taxonomy' => 'status',
+            'field'    => 'slug',
+            'terms'    => 'verified',
+        ] ],
+    ] );
+    $total_verified = $verified_query->found_posts;
+    wp_reset_postdata();
+
+    $disputed_query = new WP_Query( [
+        'post_type'              => 'article',
+        'posts_per_page'         => 1,
+        'post_status'            => 'publish',
+        'update_post_meta_cache' => false,
+        'update_post_term_cache' => false,
+        'tax_query'              => [ [
+            'taxonomy' => 'status',
+            'field'    => 'slug',
+            'terms'    => 'disputed',
+        ] ],
+    ] );
+    $total_disputed = $disputed_query->found_posts;
+    wp_reset_postdata();
+}
 
 // ── Термины для тег-фильтров ──────────────────────────────
 $terms_section  = get_terms( [ 'taxonomy' => 'section',          'hide_empty' => true ] );
@@ -63,8 +68,6 @@ $terms_type     = get_terms( [ 'taxonomy' => 'article-type',   'hide_empty' => t
 $terms_theme    = get_terms( [ 'taxonomy' => 'theme',          'hide_empty' => true ] );
 $terms_era      = get_terms( [ 'taxonomy' => 'era',            'hide_empty' => true ] );
 $terms_editorial = get_terms( [ 'taxonomy' => 'editorial-flag', 'hide_empty' => true ] );
-$terms_status   = get_terms( [ 'taxonomy' => 'status',         'hide_empty' => true ] );
-$terms_genre    = get_terms( [ 'taxonomy' => 'genre',          'hide_empty' => true ] );
 
 // Имена разделов для CSS-класса бейджа
 $section_css = [
@@ -97,11 +100,13 @@ $current_month = $months_ru[ (int) date( 'n' ) ] . ' ' . date( 'Y' );
                 <span class="pa-archive-hero__label">ЗАПИСЕЙ</span>
             </div>
             <div class="pa-archive-hero__stats">
+                <strong><?php echo esc_html( $current_month ); ?></strong>
+                <?php if ( $show_editor_stats ) : ?>
+                &nbsp;·&nbsp;
                 Каталогизировано:&nbsp;<strong><?php echo esc_html( number_format( $total_verified, 0, '.', '&nbsp;' ) ); ?></strong>
                 &nbsp;·&nbsp;
                 Спорно:&nbsp;<strong><?php echo esc_html( $total_disputed ); ?></strong>
-                &nbsp;·&nbsp;
-                <strong><?php echo esc_html( $current_month ); ?></strong>
+                <?php endif; ?>
             </div>
         </div>
 
@@ -240,44 +245,6 @@ $current_month = $months_ru[ (int) date( 'n' ) ] . ' ' . date( 'Y' );
         </div>
         <?php endif; ?>
 
-        <!-- ЖАНР (расширенный фильтр) -->
-        <?php if ( $terms_genre && ! is_wp_error( $terms_genre ) ) :
-            usort( $terms_genre, function( $a, $b ) { return $b->count - $a->count; } );
-            $genre_visible = array_slice( $terms_genre, 0, 8 );
-            $genre_rest    = array_slice( $terms_genre, 8 );
-        ?>
-        <details class="pa-filter-details">
-            <summary class="pa-filter-details__summary">Жанр</summary>
-            <div class="pa-filter-tags pa-filter-tags--genre" data-filter-group="genre">
-                <?php foreach ( $genre_visible as $t ) : ?>
-                    <button
-                        type="button"
-                        class="pa-filter-tag"
-                        data-filter="genre"
-                        data-value="<?php echo esc_attr( $t->slug ); ?>"
-                        aria-pressed="false"
-                    ><?php echo esc_html( $t->name ); ?></button>
-                <?php endforeach; ?>
-            </div>
-            <?php if ( $genre_rest ) : ?>
-            <details class="pa-filter-details pa-filter-details--inline">
-                <summary class="pa-filter-details__summary">Ещё <?php echo count( $genre_rest ); ?></summary>
-                <div class="pa-filter-tags pa-filter-tags--nested" data-filter-group="genre">
-                    <?php foreach ( $genre_rest as $t ) : ?>
-                        <button
-                            type="button"
-                            class="pa-filter-tag"
-                            data-filter="genre"
-                            data-value="<?php echo esc_attr( $t->slug ); ?>"
-                            aria-pressed="false"
-                        ><?php echo esc_html( $t->name ); ?></button>
-                    <?php endforeach; ?>
-                </div>
-            </details>
-            <?php endif; ?>
-        </details>
-        <?php endif; ?>
-
         <!-- РЕДАКТОРСКИЕ МЕТКИ (вторичный блок) -->
         <?php if ( $terms_editorial && ! is_wp_error( $terms_editorial ) ) : ?>
         <details class="pa-filter-details">
@@ -295,33 +262,6 @@ $current_month = $months_ru[ (int) date( 'n' ) ] . ' ' . date( 'Y' );
             </div>
         </details>
         <?php endif; ?>
-
-        <!-- СТАТУС (вторичный) -->
-        <details class="pa-filter-details">
-            <summary class="pa-filter-details__summary">Статус</summary>
-            <div class="pa-filter-tags pa-filter-tags--nested" data-filter-group="status">
-                <?php
-                // Публичные термины (без служебного «редакция»)
-                $status_exclude = [ 'redakciya', 'редакция' ];
-                if ( $terms_status && ! is_wp_error( $terms_status ) ) :
-                    foreach ( $terms_status as $t ) :
-                        if ( in_array( $t->slug, $status_exclude, true ) ) continue;
-                ?>
-                    <button
-                        type="button"
-                        class="pa-filter-tag"
-                        data-filter="status"
-                        data-value="<?php echo esc_attr( $t->slug ); ?>"
-                        aria-pressed="false"
-                    ><?php echo esc_html( $t->name ); ?></button>
-                <?php endforeach;
-                else : ?>
-                    <button type="button" class="pa-filter-tag" data-filter="status" data-value="verified">Подтверждено</button>
-                    <button type="button" class="pa-filter-tag" data-filter="status" data-value="disputed">Спорно</button>
-                    <button type="button" class="pa-filter-tag" data-filter="status" data-value="archived">В архиве</button>
-                <?php endif; ?>
-            </div>
-        </details>
 
         <!-- ЭПОХА (вторичный / по данным) -->
         <?php if ( $terms_era && ! is_wp_error( $terms_era ) ) : ?>
