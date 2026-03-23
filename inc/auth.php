@@ -16,6 +16,11 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 add_action( 'login_init', 'palime_redirect_wp_login' );
 
 function palime_redirect_wp_login() {
+    // Залогиненные администраторы — не трогаем, пусть WP обработает штатно
+    if ( is_user_logged_in() && current_user_can( 'manage_options' ) ) {
+        return;
+    }
+
     // Не трогаем AJAX, POST-запросы (обработка форм WP), logout, postpass
     $action = isset( $_REQUEST['action'] ) ? $_REQUEST['action'] : '';
 
