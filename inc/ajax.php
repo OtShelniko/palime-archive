@@ -273,7 +273,7 @@ function palime_handle_live_index() {
             $args['orderby'] = 'date';
             $args['order']   = 'DESC';
             $args['tax_query'] = [ [
-                'taxonomy' => 'post_tag',
+                'taxonomy' => 'editorial-flag',
                 'field'    => 'slug',
                 'terms'    => 'editors-choice',
             ] ];

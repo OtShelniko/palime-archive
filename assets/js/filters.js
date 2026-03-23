@@ -19,10 +19,8 @@
             person:          '',
             era:             '',
             theme:           '',
-            genre:           '',
             editorial_flag:  '',
             type:            '',
-            status:          '',
             search:          '',
             sort:            'date',
             page:            1,
@@ -251,8 +249,8 @@
 
             btn.addEventListener('click', () => {
                 Object.assign(this.state, {
-                    section: '', person: '', era: '', theme: '', genre: '',
-                    editorial_flag: '', type: '', status: '', search: '',
+                    section: '', person: '', era: '', theme: '',
+                    editorial_flag: '', type: '', search: '',
                     sort: 'date', page: 1,
                 });
 
@@ -304,7 +302,6 @@
                 theme: 'theme',
                 editorial_flag: 'editorial_flag',
                 type: 'type',
-                status: 'status',
                 q: 'search',
                 sort: 'sort',
             };
@@ -375,10 +372,8 @@
                 person:           this.state.person,
                 era:              this.state.era,
                 theme:            this.state.theme,
-                genre:            this.state.genre,
                 editorial_flag:   this.state.editorial_flag,
                 type:             this.state.type,
-                status:           this.state.status,
                 search:           this.state.search,
                 sort:             this.state.sort,
                 paged:            this.state.page,
@@ -442,7 +437,6 @@
             var sectionSlug  = post.section_slug  || '';
             var sectionName  = post.section_name  || '';
             var typeLabel    = post.type_label    || '';
-            var statusLabel  = post.status_label  || '';
             var readingTime  = post.reading_time  ? post.reading_time + '\u00a0мин' : '';
             var lead         = this._esc(post.lead || post.excerpt || '');
             var title        = this._esc(post.title || '');
@@ -465,7 +459,6 @@
                 + '<div class="pa-article-row__meta">'
                 + (sectionName ? '<span class="pa-article-row__section ' + sectionCSS + '">' + sectionName + '</span>' : '')
                 + (typeLabel   ? '<span class="pa-article-row__type">' + typeLabel   + '</span>' : '')
-                + (statusLabel ? '<span class="pa-article-row__status">' + statusLabel + '</span>' : '')
                 + '</div>'
 
                 + '<div class="pa-article-row__date-col">'
@@ -537,7 +530,6 @@
                 theme:           'Тема',
                 editorial_flag:  'Метка',
                 type:            'Тип',
-                status:          'Статус',
                 search:          'Поиск',
             };
 
