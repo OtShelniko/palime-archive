@@ -1,0 +1,706 @@
+/* Palime Archive — join.css */
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.pa-join-hero {
+    background: var(--color-text);
+    color: #fff;
+    padding: 120px 0 80px;
+    text-align: center;
+}
+
+.pa-join-hero__label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent-main);
+    margin-bottom: 16px;
+}
+
+.pa-join-hero__title {
+    font-family: var(--font-display);
+    font-size: clamp(2.4rem, 5.5vw, 4.5rem);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    line-height: 1.05;
+    margin-bottom: 28px;
+}
+
+.pa-join-hero__sub {
+    max-width: 640px;
+    margin: 0 auto;
+    font-family: var(--font-serif);
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: rgba(255,255,255,0.55);
+}
+
+
+/* ============================================================
+   COMMON SECTION
+   ============================================================ */
+.pa-join-section {
+    padding: 80px 0;
+}
+
+.pa-join-section--dark {
+    background: var(--color-text);
+    color: #fff;
+}
+
+.pa-join-block__title {
+    font-family: var(--font-display);
+    font-size: clamp(1.6rem, 3vw, 2.4rem);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+}
+
+.pa-join-block__sub {
+    font-family: var(--font-serif);
+    font-size: 1rem;
+    line-height: 1.7;
+    max-width: 600px;
+    margin-bottom: 40px;
+}
+
+.pa-join-section--dark .pa-join-block__sub {
+    color: rgba(255,255,255,0.45);
+}
+
+.pa-join-section:not(.pa-join-section--dark) .pa-join-block__sub {
+    color: rgba(10,10,10,0.55);
+}
+
+
+/* ============================================================
+   2. КАК ЭТО РАБОТАЕТ
+   ============================================================ */
+.pa-join-how {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: 56px;
+    align-items: start;
+}
+
+.pa-join-how__label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent-main);
+    opacity: 0.6;
+    margin-bottom: 8px;
+}
+
+.pa-join-how__title {
+    font-family: var(--font-display);
+    font-size: clamp(1.6rem, 3vw, 2.4rem);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+}
+
+.pa-join-how__desc {
+    font-family: var(--font-serif);
+    font-size: 1.05rem;
+    line-height: 1.8;
+    color: rgba(10,10,10,0.7);
+    margin-bottom: 12px;
+}
+
+.pa-join-how__steps {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    border-top: 1px solid rgba(10,10,10,0.1);
+}
+
+.pa-join-how__step {
+    display: flex;
+    gap: 16px;
+    padding: 20px 0;
+    border-bottom: 1px solid rgba(10,10,10,0.06);
+    align-items: baseline;
+}
+
+.pa-join-how__step-num {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--accent-main);
+    opacity: 0.5;
+    flex-shrink: 0;
+}
+
+.pa-join-how__step-text {
+    font-family: var(--font-serif);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: rgba(10,10,10,0.65);
+}
+
+
+/* ============================================================
+   3. ДВА ПУТИ
+   ============================================================ */
+.pa-join-paths {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+}
+
+.pa-join-path {
+    background: var(--color-card-dark);
+    padding: 36px 32px;
+}
+
+.pa-join-path--earn {
+    border-left: 3px solid #fff;
+}
+
+.pa-join-path--patron {
+    border-left: 3px solid var(--accent-main);
+}
+
+.pa-join-path__tag {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.35);
+    margin-bottom: 12px;
+}
+
+.pa-join-path--patron .pa-join-path__tag {
+    color: var(--accent-main);
+    opacity: 0.6;
+}
+
+.pa-join-path__title {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #fff;
+    margin-bottom: 12px;
+}
+
+.pa-join-path__desc {
+    font-family: var(--font-serif);
+    font-size: 0.92rem;
+    line-height: 1.7;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 20px;
+}
+
+.pa-join-path__list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.pa-join-path__list li {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    color: rgba(255,255,255,0.6);
+    padding-left: 16px;
+    position: relative;
+}
+
+.pa-join-path__list li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: rgba(255,255,255,0.25);
+}
+
+.pa-join-path--patron .pa-join-path__list li::before {
+    color: var(--accent-main);
+    opacity: 0.5;
+}
+
+
+/* ============================================================
+   4. XP ЗА ДЕЙСТВИЯ
+   ============================================================ */
+.pa-join-xp {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+    margin-bottom: 32px;
+}
+
+.pa-join-xp__group-label {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(10,10,10,0.35);
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(10,10,10,0.08);
+}
+
+.pa-join-xp__row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(10,10,10,0.04);
+}
+
+.pa-join-xp__action {
+    font-family: var(--font-serif);
+    font-size: 0.9rem;
+    color: rgba(10,10,10,0.7);
+}
+
+.pa-join-xp__val {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--accent-main);
+    letter-spacing: 0.04em;
+}
+
+.pa-join-xp__limits {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+
+.pa-join-xp__limit {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    color: rgba(10,10,10,0.35);
+    padding-left: 12px;
+    border-left: 2px solid var(--accent-main);
+}
+
+
+/* ============================================================
+   5. УРОВНИ
+   ============================================================ */
+.pa-join-levels {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: rgba(255,255,255,0.06);
+}
+
+.pa-join-level {
+    background: var(--color-card-dark);
+    padding: 24px 20px;
+    display: flex;
+    flex-direction: column;
+    transition: border-color 0.2s ease;
+    border-top: 2px solid transparent;
+}
+
+.pa-join-level:hover {
+    border-top-color: var(--accent-main);
+}
+
+.pa-join-level__head {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.pa-join-level__num {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--accent-main);
+    opacity: 0.5;
+}
+
+.pa-join-level__name {
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #fff;
+}
+
+.pa-join-level__perk {
+    font-family: var(--font-serif);
+    font-size: 0.82rem;
+    line-height: 1.5;
+    color: rgba(255,255,255,0.4);
+    margin-bottom: auto;
+    padding-bottom: 12px;
+}
+
+.pa-join-level__threshold {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: rgba(255,255,255,0.25);
+    letter-spacing: 0.04em;
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+.pa-join-level__arrow {
+    color: rgba(255,255,255,0.15);
+}
+
+
+/* ============================================================
+   6. ДОСТИЖЕНИЯ
+   ============================================================ */
+.pa-join-achieve {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    background: rgba(10,10,10,0.04);
+}
+
+.pa-join-achieve__card {
+    display: grid;
+    grid-template-columns: 48px 1fr auto;
+    gap: 16px;
+    align-items: center;
+    padding: 16px 20px;
+    background: var(--color-bg);
+    border-left: 2px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.pa-join-achieve__card:hover {
+    background: #f5f3f0;
+}
+
+.pa-join-achieve__card--common  { border-left-color: rgba(10,10,10,0.15); }
+.pa-join-achieve__card--uncommon { border-left-color: #4DB7FF; }
+.pa-join-achieve__card--rare    { border-left-color: #C6A25A; }
+.pa-join-achieve__card--epic    { border-left-color: var(--accent-main); }
+.pa-join-achieve__card--hidden  { border-left-color: rgba(10,10,10,0.08); opacity: 0.5; }
+
+.pa-join-achieve__icon {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(10,10,10,0.1);
+    color: rgba(10,10,10,0.4);
+}
+
+.pa-join-achieve__name {
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 2px;
+}
+
+.pa-join-achieve__desc {
+    font-family: var(--font-serif);
+    font-size: 0.85rem;
+    color: rgba(10,10,10,0.5);
+}
+
+.pa-join-achieve__bonus {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--accent-main);
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+}
+
+
+/* ============================================================
+   7. ЧТО ОТКРЫВАЕТСЯ
+   ============================================================ */
+.pa-join-rewards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: rgba(255,255,255,0.06);
+}
+
+.pa-join-reward {
+    background: var(--color-card-dark);
+    padding: 28px 24px;
+}
+
+.pa-join-reward__icon {
+    display: block;
+    font-size: 14px;
+    color: var(--accent-main);
+    margin-bottom: 12px;
+}
+
+.pa-join-reward__title {
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #fff;
+    margin-bottom: 8px;
+}
+
+.pa-join-reward__desc {
+    font-family: var(--font-serif);
+    font-size: 0.85rem;
+    line-height: 1.5;
+    color: rgba(255,255,255,0.4);
+}
+
+
+/* ============================================================
+   8. ПАТРОН АРХИВА
+   ============================================================ */
+.pa-join-patron {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: 56px;
+    align-items: start;
+}
+
+.pa-join-patron__label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent-main);
+    opacity: 0.6;
+    margin-bottom: 8px;
+}
+
+.pa-join-patron__title {
+    font-family: var(--font-display);
+    font-size: clamp(1.6rem, 3vw, 2.4rem);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+}
+
+.pa-join-patron__desc {
+    font-family: var(--font-serif);
+    font-size: 1rem;
+    line-height: 1.8;
+    color: rgba(10,10,10,0.65);
+    margin-bottom: 12px;
+}
+
+.pa-join-patron__btn {
+    display: inline-block;
+    margin-top: 16px;
+    padding: 10px 24px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #fff;
+    background: var(--accent-main);
+    border: 1px solid var(--accent-main);
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.pa-join-patron__btn:hover {
+    background: transparent;
+    color: var(--accent-main);
+}
+
+.pa-join-patron__perks {
+    border-top: 1px solid rgba(10,10,10,0.1);
+    display: flex;
+    flex-direction: column;
+}
+
+.pa-join-patron__perk {
+    display: flex;
+    gap: 12px;
+    padding: 16px 0;
+    border-bottom: 1px solid rgba(10,10,10,0.06);
+    font-family: var(--font-serif);
+    font-size: 0.95rem;
+    color: rgba(10,10,10,0.7);
+    align-items: baseline;
+}
+
+.pa-join-patron__perk-mark {
+    font-family: var(--font-mono);
+    color: var(--accent-main);
+    flex-shrink: 0;
+}
+
+
+/* ============================================================
+   9. ЧТО ДАЛЬШЕ
+   ============================================================ */
+.pa-join-roadmap {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+.pa-join-roadmap__item {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    font-family: var(--font-serif);
+    font-size: 0.92rem;
+    color: rgba(255,255,255,0.55);
+    padding: 16px;
+    background: var(--color-card-dark);
+}
+
+.pa-join-roadmap__dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent-main);
+    opacity: 0.5;
+    flex-shrink: 0;
+}
+
+
+/* ============================================================
+   10. CTA
+   ============================================================ */
+.pa-join-cta {
+    text-align: center;
+    border-top: 1px solid rgba(10,10,10,0.08);
+    padding: 80px 0;
+}
+
+.pa-join-cta__title {
+    font-family: var(--font-display);
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+}
+
+.pa-join-cta__sub {
+    font-family: var(--font-serif);
+    font-size: 1rem;
+    line-height: 1.7;
+    color: rgba(10,10,10,0.55);
+    max-width: 520px;
+    margin: 0 auto 32px;
+}
+
+.pa-join-cta__actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.pa-join-cta__btn {
+    display: inline-block;
+    padding: 12px 28px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.pa-join-cta__btn--primary {
+    background: var(--accent-main);
+    color: #fff;
+    border: 1px solid var(--accent-main);
+}
+
+.pa-join-cta__btn--primary:hover {
+    background: transparent;
+    color: var(--accent-main);
+}
+
+.pa-join-cta__btn--secondary {
+    background: transparent;
+    color: #0A0A0A;
+    border: 1px solid rgba(10,10,10,0.2);
+}
+
+.pa-join-cta__btn--secondary:hover {
+    border-color: #0A0A0A;
+    color: #0A0A0A;
+}
+
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 1024px) {
+    .pa-join-levels {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .pa-join-rewards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .pa-join-roadmap {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .pa-join-hero {
+        padding: 80px 0 56px;
+    }
+
+    .pa-join-section {
+        padding: 56px 0;
+    }
+
+    .pa-join-how {
+        grid-template-columns: 1fr;
+        gap: 32px;
+    }
+
+    .pa-join-paths {
+        grid-template-columns: 1fr;
+    }
+
+    .pa-join-xp {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+
+    .pa-join-levels {
+        grid-template-columns: 1fr;
+    }
+
+    .pa-join-rewards {
+        grid-template-columns: 1fr;
+    }
+
+    .pa-join-patron {
+        grid-template-columns: 1fr;
+        gap: 32px;
+    }
+
+    .pa-join-roadmap {
+        grid-template-columns: 1fr;
+    }
+
+    .pa-join-achieve__card {
+        grid-template-columns: 36px 1fr auto;
+        gap: 12px;
+    }
+
+    .pa-join-xp__limits {
+        flex-direction: column;
+        gap: 12px;
+    }
+}

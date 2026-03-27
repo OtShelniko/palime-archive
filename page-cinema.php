@@ -34,6 +34,8 @@ get_template_part(
 		'section_slug'    => $section_slug,
 		'section_name'    => 'Кино',
 		'section_slogan'  => 'Режиссёры, работы, подборки, разборы. Кино как форма власти, памяти и стиля.',
+		'section_intro'   => 'Фильмы, режиссёры, разборы сцен и рейтинги. Каждый материал входит в архив как элемент системы: связан с другими работами, темами и контекстами.',
+		'section_code'    => 'CIN',
 		'status_line'     => 'CINEMA · SECTION · INDEX: ACTIVE | ПРОЕКТОР: ВКЛ | АРХИВ: АКТИВЕН',
 		'bg_color'        => '#0A1020',
 		'accent_color'    => '#4DB7FF',

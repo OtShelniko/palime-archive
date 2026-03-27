@@ -3,13 +3,13 @@
    ================================================================= */
 
 /* =========================================================
-   HERO — большой счётчик + статистика + поиск
+   HERO — archive control header
    ========================================================= */
 
 .pa-archive-hero {
     background: var(--color-bg);
-    border-bottom: 1px solid rgba(0,0,0,.08);
-    padding: 32px 0 28px;
+    border-bottom: 1px solid rgba(0,0,0,.07);
+    padding: 44px 0 36px;
     position: relative;
     z-index: 1;
 }
@@ -24,48 +24,58 @@
     padding: 0 var(--gutter);
 }
 
-/* Левая часть: число + лейбл */
-.pa-archive-hero__left {
-    min-width: 0;
-    overflow: hidden;
+/* Archive identifier label */
+.pa-archive-hero__tag {
+    font-family: var(--font-mono);
+    font-size: .58rem;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: rgba(0,0,0,.22);
+    margin-bottom: 18px;
+    padding-left: 10px;
+    border-left: 2px solid var(--color-ui);
 }
 
+/* Count block */
 .pa-archive-hero__count {
     display: flex;
     align-items: baseline;
-    gap: 12px;
+    gap: 16px;
     line-height: 1;
 }
 
 .pa-archive-hero__number {
     font-family: var(--font-display);
-    font-size: clamp(2.5rem, 5vw, 5rem);
+    font-size: clamp(4rem, 9vw, 8rem);
     font-weight: 400;
-    letter-spacing: -.01em;
+    letter-spacing: -.02em;
     color: var(--color-text);
-    line-height: 1;
+    line-height: .9;
 }
 
 .pa-archive-hero__label {
-    font-family: var(--font-display);
-    font-size: clamp(2.5rem, 5vw, 5rem);
-    font-weight: 400;
-    color: var(--color-text);
-    line-height: 1;
-}
-
-/* На мобайле — в столбик */
-@media (max-width: 640px) {
-    .pa-archive-hero__count { flex-direction: column; gap: 0; }
-}
-
-.pa-archive-hero__stats {
-    margin-top: 10px;
     font-family: var(--font-mono);
     font-size: .65rem;
-    letter-spacing: .12em;
+    font-weight: 400;
+    letter-spacing: .16em;
     text-transform: uppercase;
-    color: rgba(0,0,0,.35);
+    color: rgba(0,0,0,.28);
+    line-height: 1.5;
+    max-width: 5.5rem;
+}
+
+/* Status bar */
+.pa-archive-hero__stats {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 16px;
+    font-family: var(--font-mono);
+    font-size: .58rem;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: rgba(0,0,0,.28);
 }
 
 .pa-archive-hero__stats strong {
@@ -73,13 +83,22 @@
     font-weight: 400;
 }
 
-/* Правая часть: поиск */
+.pa-archive-hero__stats-sep {
+    color: rgba(0,0,0,.12);
+}
+
+.pa-archive-hero__stats-status {
+    color: var(--color-ui);
+    opacity: .6;
+}
+
+/* Search — open/underline style */
 .pa-archive-hero__search {
     display: flex;
     flex-direction: column;
-    gap: 6px;
-    min-width: 260px;
-    max-width: 340px;
+    gap: 8px;
+    min-width: 280px;
+    max-width: 360px;
     flex-shrink: 0;
     position: relative;
     z-index: 2;
@@ -87,49 +106,52 @@
 
 .pa-archive-hero__search-label {
     font-family: var(--font-mono);
-    font-size: .58rem;
-    letter-spacing: .18em;
+    font-size: .55rem;
+    letter-spacing: .2em;
     text-transform: uppercase;
-    color: rgba(0,0,0,.3);
+    color: rgba(0,0,0,.25);
 }
 
-/* !important needed: palime_remove_version_query strips ?ver= from CSS URLs,
-   so browsers cache old stylesheets; Underscores input[type="text"] rules
-   from cached style.css can override these without !important. */
+/* !important: override Underscores cached style.css rules */
 .pa-archive-hero__search input.pa-archive-hero__search-input {
     -webkit-appearance: none !important;
     appearance: none !important;
-    padding: 9px 14px !important;
-    background: var(--color-text) !important;
+    padding: 10px 0 !important;
+    background: transparent !important;
     border: none !important;
+    border-bottom: 1px solid rgba(0,0,0,.2) !important;
     border-radius: 0 !important;
     font-family: var(--font-mono);
-    font-size: .78rem;
-    color: rgba(255,255,255,.85) !important;
-    -webkit-text-fill-color: rgba(255,255,255,.85) !important;
-    caret-color: #fff !important;
+    font-size: .8rem;
+    letter-spacing: .02em;
+    color: var(--color-text) !important;
+    -webkit-text-fill-color: var(--color-text) !important;
+    caret-color: var(--color-text) !important;
     outline: none;
     width: 100%;
     cursor: text;
-    transition: background .15s;
+    transition: border-color .15s;
 }
 
 .pa-archive-hero__search input.pa-archive-hero__search-input::placeholder {
-    color: rgba(255,255,255,.25) !important;
-    -webkit-text-fill-color: rgba(255,255,255,.25) !important;
+    color: rgba(0,0,0,.22) !important;
+    -webkit-text-fill-color: rgba(0,0,0,.22) !important;
+    font-style: italic;
 }
 
 .pa-archive-hero__search input.pa-archive-hero__search-input:focus {
-    background: #111 !important;
-    color: #fff !important;
-    -webkit-text-fill-color: #fff !important;
-    caret-color: #fff !important;
-    outline: 1px solid rgba(255,255,255,.3);
-    outline-offset: 0;
+    border-bottom-color: var(--color-text) !important;
+    color: var(--color-text) !important;
+    -webkit-text-fill-color: var(--color-text) !important;
+}
+
+@media (max-width: 640px) {
+    .pa-archive-hero__count { flex-direction: column; gap: 4px; }
+    .pa-archive-hero__label { max-width: none; }
 }
 
 /* =========================================================
-   ОСНОВНОЙ ЛЕЙАУТ: САЙДБАР + РЕЗУЛЬТАТЫ
+   ОСНОВНОЙ ЛЕЙАУТ
    ========================================================= */
 
 .pa-archive-body {
@@ -147,18 +169,18 @@
 
 .pa-archive-sidebar {
     position: sticky;
-    top: 56px; /* высота хедера */
+    top: 56px;
     max-height: calc(100vh - 80px);
     overflow-y: auto;
     scrollbar-width: thin;
-    scrollbar-color: rgba(0,0,0,.15) transparent;
+    scrollbar-color: rgba(0,0,0,.1) transparent;
 }
 
 /* Группа фильтра */
 .pa-filter-group {
-    margin-bottom: 22px;
-    padding-bottom: 22px;
-    border-bottom: 1px solid rgba(0,0,0,.07);
+    margin-bottom: 24px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid rgba(0,0,0,.06);
 }
 
 .pa-filter-group:last-child {
@@ -168,57 +190,67 @@
 
 .pa-filter-group__label {
     font-family: var(--font-mono);
-    font-size: .58rem;
-    letter-spacing: .18em;
+    font-size: .55rem;
+    letter-spacing: .2em;
     text-transform: uppercase;
-    color: rgba(0,0,0,.35);
-    margin-bottom: 10px;
+    color: rgba(0,0,0,.28);
+    margin-bottom: 12px;
     display: block;
 }
 
-/* Поле персоны */
+.pa-filter-group__empty {
+    font-family: var(--font-mono);
+    font-size: .6rem;
+    color: rgba(0,0,0,.28);
+    line-height: 1.55;
+}
+
+/* Поле персоны — open/underline style (согласовано с поиском в хедере) */
 .pa-filter-person {
     position: relative;
 }
 
-/* !important: same cache-busting reason as hero search input */
+/* !important: same cache-busting reason as hero search */
 .pa-filter-person input.pa-filter-person__input {
     -webkit-appearance: none !important;
     appearance: none !important;
     width: 100%;
-    padding: 8px 10px !important;
-    background: var(--color-text) !important;
+    padding: 7px 0 !important;
+    background: transparent !important;
     border: none !important;
+    border-bottom: 1px solid rgba(0,0,0,.18) !important;
     border-radius: 0 !important;
     font-family: var(--font-mono);
-    font-size: .72rem;
-    color: rgba(255,255,255,.85) !important;
-    -webkit-text-fill-color: rgba(255,255,255,.85) !important;
-    caret-color: #fff !important;
+    font-size: .7rem;
+    letter-spacing: .04em;
+    color: var(--color-text) !important;
+    -webkit-text-fill-color: var(--color-text) !important;
+    caret-color: var(--color-text) !important;
     outline: none;
     cursor: text;
-}
-
-.pa-filter-person input.pa-filter-person__input:focus {
-    color: #fff !important;
-    -webkit-text-fill-color: #fff !important;
-    caret-color: #fff !important;
-    outline: 1px solid rgba(255,255,255,.3);
-    outline-offset: 0;
+    transition: border-color .15s;
 }
 
 .pa-filter-person input.pa-filter-person__input::placeholder {
-    color: rgba(255,255,255,.25) !important;
-    -webkit-text-fill-color: rgba(255,255,255,.25);
+    color: rgba(0,0,0,.25) !important;
+    -webkit-text-fill-color: rgba(0,0,0,.25) !important;
+    font-style: italic;
+}
+
+.pa-filter-person input.pa-filter-person__input:focus {
+    border-bottom-color: var(--color-text) !important;
+    color: var(--color-text) !important;
+    -webkit-text-fill-color: var(--color-text) !important;
 }
 
 .pa-filter-person__hint {
     display: block;
-    margin-top: 6px;
+    margin-top: 7px;
     font-family: var(--font-mono);
-    font-size: .58rem;
-    color: rgba(0,0,0,.3);
+    font-size: .52rem;
+    color: rgba(0,0,0,.22);
     letter-spacing: .04em;
+    font-style: italic;
 }
 
 /* Дропдаун подсказок */
@@ -228,7 +260,9 @@
     top: 100%;
     left: 0;
     right: 0;
-    background: var(--color-text);
+    background: var(--color-bg);
+    border: 1px solid rgba(0,0,0,.12);
+    border-top: none;
     z-index: 20;
     max-height: 180px;
     overflow-y: auto;
@@ -239,20 +273,24 @@
 }
 
 .pa-filter-person__suggestion {
-    padding: 8px 10px;
+    padding: 8px 12px;
     font-family: var(--font-mono);
-    font-size: .7rem;
-    color: rgba(255,255,255,.6);
+    font-size: .68rem;
+    letter-spacing: .04em;
+    color: rgba(0,0,0,.5);
     cursor: pointer;
-    transition: background .1s;
+    transition: background .1s, color .1s;
+    border-bottom: 1px solid rgba(0,0,0,.04);
 }
+
+.pa-filter-person__suggestion:last-child { border-bottom: none; }
 
 .pa-filter-person__suggestion:hover {
-    background: rgba(255,255,255,.07);
-    color: #fff;
+    background: rgba(0,0,0,.03);
+    color: var(--color-text);
 }
 
-/* Теги-кнопки фильтра */
+/* Теги-кнопки */
 .pa-filter-tags {
     display: flex;
     flex-wrap: wrap;
@@ -263,16 +301,16 @@
     display: inline-block;
     padding: 4px 10px;
     font-family: var(--font-mono);
-    font-size: .6rem;
+    font-size: .58rem;
     letter-spacing: .08em;
     text-transform: uppercase;
-    border: 1px solid rgba(0,0,0,.2);
-    color: rgba(0,0,0,.45);
+    border: 1px solid rgba(0,0,0,.14);
+    color: rgba(0,0,0,.38);
     cursor: pointer;
     background: transparent;
-    transition: all .12s;
+    transition: border-color .12s, color .12s, background .12s;
     white-space: nowrap;
-    line-height: 1.4;
+    line-height: 1.5;
 }
 
 .pa-filter-tag:hover {
@@ -288,95 +326,92 @@
 
 /* Главный фильтр — раздел */
 .pa-filter-group--primary {
-    margin-bottom: 26px;
-    padding-bottom: 26px;
-    border-bottom: 2px solid rgba(0,0,0,.12);
+    margin-bottom: 28px;
+    padding-bottom: 28px;
+    border-bottom: 1px solid rgba(0,0,0,.09);
 }
 
 .pa-filter-group--primary .pa-filter-group__label {
-    font-size: .65rem;
+    font-size: .6rem;
     letter-spacing: .22em;
-    color: rgba(0,0,0,.5);
-    margin-bottom: 12px;
+    color: rgba(0,0,0,.42);
+    margin-bottom: 14px;
 }
 
-.pa-filter-tags--section {
-    gap: 6px;
-}
+.pa-filter-tags--section { gap: 6px; }
 
 .pa-filter-tag--lg {
     padding: 7px 14px;
-    font-size: .68rem;
+    font-size: .65rem;
     letter-spacing: .1em;
 }
 
-/* Для тегов с акцентом раздела */
-.pa-filter-tag--cinema.is-active  { background: #4DB7FF; border-color: #4DB7FF; color: #000; }
-.pa-filter-tag--lit.is-active     { background: #4A3428; border-color: #4A3428; color: #fff; }
-.pa-filter-tag--music.is-active   { background: #FF4FA3; border-color: #FF4FA3; color: #fff; }
-.pa-filter-tag--art.is-active     { background: #C6A25A; border-color: #C6A25A; color: #000; }
+/* Hover — section accent */
+.pa-filter-tag--cinema:hover { border-color: #4DB7FF; color: #4DB7FF; }
+.pa-filter-tag--lit:hover    { border-color: #C8A882; color: #C8A882; }
+.pa-filter-tag--music:hover  { border-color: #FF4FA3; color: #FF4FA3; }
+.pa-filter-tag--art:hover    { border-color: #C6A25A; color: #C6A25A; }
 
-/* Hover-цвета для разделов */
-.pa-filter-tag--cinema:hover  { border-color: #4DB7FF; color: #4DB7FF; }
-.pa-filter-tag--lit:hover     { border-color: #4A3428; color: #4A3428; }
-.pa-filter-tag--music:hover   { border-color: #FF4FA3; color: #FF4FA3; }
-.pa-filter-tag--art:hover     { border-color: #C6A25A; color: #C6A25A; }
+/* Active — section accent fill */
+.pa-filter-tag--cinema.is-active { background: #4DB7FF; border-color: #4DB7FF; color: #0A1020; }
+.pa-filter-tag--lit.is-active    { background: #4A3428; border-color: #4A3428; color: #F5EEE4; }
+.pa-filter-tag--music.is-active  { background: #FF4FA3; border-color: #FF4FA3; color: #fff; }
+.pa-filter-tag--art.is-active    { background: #C6A25A; border-color: #C6A25A; color: #0D0C0A; }
 
-/* Вторичные фильтры: редакторские метки, эпоха */
+/* Вторичные фильтры */
 .pa-filter-details {
-    margin-bottom: 22px;
-    padding-bottom: 14px;
-    border-bottom: 1px solid rgba(0,0,0,.07);
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(0,0,0,.06);
 }
 
 .pa-filter-details__summary {
     cursor: pointer;
     font-family: var(--font-mono);
-    font-size: .58rem;
+    font-size: .55rem;
     letter-spacing: .18em;
     text-transform: uppercase;
-    color: rgba(0,0,0,.35);
+    color: rgba(0,0,0,.28);
     margin-bottom: 10px;
     list-style: none;
+    user-select: none;
+    transition: color .1s;
 }
 
-.pa-filter-details__summary::-webkit-details-marker {
-    display: none;
-}
+.pa-filter-details__summary::-webkit-details-marker { display: none; }
 
 .pa-filter-details[open] .pa-filter-details__summary {
-    color: rgba(0,0,0,.55);
+    color: rgba(0,0,0,.48);
 }
 
-.pa-filter-tags--nested {
-    margin-top: 4px;
-}
+.pa-filter-tags--nested { margin-top: 6px; }
 
 .pa-filter-tags--theme {
-    max-height: 220px;
+    max-height: 200px;
     overflow-y: auto;
     scrollbar-width: thin;
-    scrollbar-color: rgba(0,0,0,.15) transparent;
+    scrollbar-color: rgba(0,0,0,.1) transparent;
 }
 
 /* Кнопка сброса */
 .pa-filter-reset {
     width: 100%;
-    padding: 8px;
+    margin-top: 8px;
+    padding: 10px 0 0;
     font-family: var(--font-mono);
-    font-size: .6rem;
-    letter-spacing: .12em;
+    font-size: .55rem;
+    letter-spacing: .14em;
     text-transform: uppercase;
-    border: 1px solid rgba(0,0,0,.15);
-    color: rgba(0,0,0,.35);
+    border: none;
+    border-top: 1px solid rgba(0,0,0,.07);
+    color: rgba(0,0,0,.25);
     background: transparent;
     cursor: pointer;
-    transition: all .12s;
-    margin-top: 4px;
+    transition: color .12s;
+    text-align: left;
 }
 
 .pa-filter-reset:hover {
-    border-color: var(--color-text);
     color: var(--color-text);
 }
 
@@ -385,29 +420,30 @@
     display: flex;
     flex-wrap: wrap;
     gap: 5px;
-    min-height: 24px;
-    margin-bottom: 10px;
+    min-height: 22px;
+    margin-bottom: 14px;
 }
 
 .pa-active-filter {
     display: inline-flex;
     align-items: center;
-    gap: 5px;
+    gap: 6px;
     padding: 3px 9px;
-    background: var(--color-text);
-    color: rgba(255,255,255,.8);
+    border: 1px solid rgba(0,0,0,.12);
+    color: rgba(0,0,0,.45);
     font-family: var(--font-mono);
-    font-size: .58rem;
+    font-size: .55rem;
     letter-spacing: .06em;
 }
 
 .pa-active-filter__remove {
     cursor: pointer;
-    opacity: .5;
+    opacity: .38;
     transition: opacity .1s;
-    font-size: .9rem;
+    font-size: .85rem;
     line-height: 1;
 }
+
 .pa-active-filter__remove:hover { opacity: 1; }
 
 /* =========================================================
@@ -416,61 +452,74 @@
 
 .pa-archive-results {}
 
-/* Шапка результатов: счётчик + сортировка */
+/* Шапка: счётчик + сортировка */
 .pa-results-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: var(--spacing-md);
-    margin-bottom: 20px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid rgba(0,0,0,.08);
+    margin-bottom: 24px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid rgba(0,0,0,.07);
 }
 
 .pa-results-found {
     font-family: var(--font-mono);
-    font-size: .65rem;
+    font-size: .58rem;
     letter-spacing: .1em;
     text-transform: uppercase;
-    color: rgba(0,0,0,.35);
+    color: rgba(0,0,0,.25);
 }
 
 .pa-results-found strong {
     color: var(--color-text);
+    font-weight: 400;
 }
 
 /* Вкладки сортировки */
 .pa-sort-tabs {
     display: flex;
     align-items: center;
-    gap: 0;
 }
 
 .pa-sort-tab {
-    padding: 5px 14px;
+    padding: 6px 14px;
     font-family: var(--font-mono);
-    font-size: .6rem;
+    font-size: .58rem;
     letter-spacing: .12em;
     text-transform: uppercase;
-    color: rgba(0,0,0,.35);
+    color: rgba(0,0,0,.28);
     background: none;
     border: none;
+    border-right: 1px solid rgba(0,0,0,.07);
     cursor: pointer;
     transition: color .12s;
-    border-right: 1px solid rgba(0,0,0,.1);
+    position: relative;
 }
 
-.pa-sort-tab:last-child {
-    border-right: none;
+.pa-sort-tab:last-child { border-right: none; }
+
+/* Active indicator: line on the header border */
+.pa-sort-tab::after {
+    content: '';
+    position: absolute;
+    bottom: -15px;
+    left: 14px;
+    right: 14px;
+    height: 1px;
+    background: var(--color-ui);
+    opacity: 0;
+    transition: opacity .15s;
 }
 
-.pa-sort-tab:hover {
+.pa-sort-tab:hover { color: var(--color-text); }
+
+.pa-sort-tab.is-active {
     color: var(--color-text);
 }
 
-.pa-sort-tab.is-active {
-    color: var(--color-ui);
-    font-weight: 500;
+.pa-sort-tab.is-active::after {
+    opacity: 1;
 }
 
 /* =========================================================
@@ -482,21 +531,28 @@
     flex-direction: column;
 }
 
-/* Одна строка-статья */
+/* Строка-статья */
 .pa-article-row {
     display: grid;
     grid-template-columns: 1fr auto;
     grid-template-rows: auto auto auto;
     gap: 0 var(--spacing-lg);
-    padding: 20px 0;
-    border-bottom: 1px solid rgba(0,0,0,.07);
+    padding: 22px 0 22px 16px;
+    border-bottom: 1px solid rgba(0,0,0,.06);
     text-decoration: none;
     color: inherit;
-    transition: background .1s;
+    border-left: 2px solid transparent;
+    transition: border-left-color .15s ease, background .15s ease, padding-left .15s ease;
 }
 
 .pa-article-row:first-child {
-    border-top: 1px solid rgba(0,0,0,.07);
+    border-top: 1px solid rgba(0,0,0,.06);
+}
+
+.pa-article-row:hover {
+    border-left-color: var(--color-ui);
+    background: rgba(0,0,0,.012);
+    padding-left: 20px;
 }
 
 /* Верхняя мета-строка */
@@ -506,11 +562,11 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    margin-bottom: 8px;
+    margin-bottom: 9px;
     flex-wrap: wrap;
 }
 
-/* Мета справа: дата + время чтения */
+/* Дата справа */
 .pa-article-row__date-col {
     grid-column: 2;
     grid-row: 1 / 3;
@@ -518,68 +574,70 @@
     flex-direction: column;
     align-items: flex-end;
     gap: 3px;
-    padding-top: 2px;
+    padding-top: 1px;
     flex-shrink: 0;
 }
 
 .pa-article-row__date {
     font-family: var(--font-mono);
-    font-size: .6rem;
-    color: rgba(0,0,0,.35);
-    letter-spacing: .06em;
+    font-size: .57rem;
+    color: rgba(0,0,0,.25);
+    letter-spacing: .04em;
     white-space: nowrap;
 }
 
 .pa-article-row__readtime {
     font-family: var(--font-mono);
-    font-size: .58rem;
-    color: rgba(0,0,0,.25);
+    font-size: .54rem;
+    color: rgba(0,0,0,.18);
     white-space: nowrap;
 }
 
 /* Секция-бейдж */
 .pa-article-row__section {
     display: inline-block;
-    padding: 2px 9px;
+    padding: 2px 8px;
     font-family: var(--font-mono);
-    font-size: .58rem;
+    font-size: .54rem;
     letter-spacing: .1em;
     text-transform: uppercase;
     border: 1px solid currentColor;
+    line-height: 1.5;
 }
 
-.pa-article-row__section--cinema   { color: #4DB7FF; border-color: #4DB7FF; }
-.pa-article-row__section--lit      { color: #8B6A50; border-color: #8B6A50; }
-.pa-article-row__section--music    { color: #FF4FA3; border-color: #FF4FA3; }
-.pa-article-row__section--art      { color: #C6A25A; border-color: #C6A25A; }
-.pa-article-row__section--default  { color: rgba(0,0,0,.4); border-color: rgba(0,0,0,.2); }
+.pa-article-row__section--cinema  { color: #4DB7FF; }
+.pa-article-row__section--lit     { color: #C8A882; }
+.pa-article-row__section--music   { color: #FF4FA3; }
+.pa-article-row__section--art     { color: #C6A25A; }
+.pa-article-row__section--default { color: rgba(0,0,0,.28); }
 
 .pa-article-row__type,
 .pa-article-row__status {
     font-family: var(--font-mono);
-    font-size: .58rem;
+    font-size: .54rem;
     letter-spacing: .06em;
-    color: rgba(0,0,0,.35);
+    color: rgba(0,0,0,.25);
     text-transform: lowercase;
 }
 
-/* Заголовок + стрелка */
+/* Заголовок */
 .pa-article-row__title-wrap {
     grid-column: 1;
     grid-row: 2;
     display: flex;
     align-items: baseline;
-    gap: 12px;
-    margin-bottom: 8px;
+    gap: 10px;
+    margin-bottom: 9px;
 }
 
 .pa-article-row__title {
     font-family: var(--font-display);
-    font-size: clamp(1.1rem, 2vw, 1.55rem);
-    line-height: 1.2;
+    font-size: clamp(1.15rem, 2.2vw, 1.65rem);
+    line-height: 1.18;
     color: var(--color-text);
     font-weight: 400;
     flex: 1;
+    transition: color .12s;
 }
 
 .pa-article-row:hover .pa-article-row__title {
@@ -588,11 +646,11 @@
 
 .pa-article-row__arrow {
     font-family: var(--font-mono);
-    font-size: .9rem;
+    font-size: .85rem;
     color: var(--color-ui);
     flex-shrink: 0;
     opacity: 0;
-    transform: translateX(-4px);
+    transform: translateX(-6px);
     transition: opacity .15s, transform .15s;
 }
 
@@ -601,15 +659,16 @@
     transform: translateX(0);
 }
 
-/* Лид */
+/* Лид — serif italic */
 .pa-article-row__lead {
     grid-column: 1;
     grid-row: 3;
-    font-family: var(--font-mono);
-    font-size: .68rem;
-    line-height: 1.6;
-    color: rgba(0,0,0,.4);
+    font-family: var(--font-serif);
+    font-size: .9rem;
+    line-height: 1.68;
+    color: rgba(0,0,0,.42);
     margin-bottom: 10px;
+    font-style: italic;
 }
 
 /* Теги персон */
@@ -625,22 +684,22 @@
     display: inline-block;
     padding: 2px 9px;
     font-family: var(--font-mono);
-    font-size: .58rem;
+    font-size: .54rem;
     letter-spacing: .06em;
-    border: 1px solid rgba(0,0,0,.15);
-    color: rgba(0,0,0,.5);
+    border: 1px solid rgba(0,0,0,.11);
+    color: rgba(0,0,0,.38);
     text-decoration: none;
-    transition: all .1s;
+    transition: border-color .1s, color .1s, background .1s;
 }
 
 .pa-person-tag:hover {
     border-color: var(--color-text);
     color: var(--color-text);
-    background: rgba(0,0,0,.04);
+    background: rgba(0,0,0,.03);
 }
 
 /* =========================================================
-   ОВЕРЛЕЙ ЗАГРУЗКИ + ПУСТО
+   ЗАГРУЗКА + ПУСТО
    ========================================================= */
 
 .archive-results__grid {
@@ -652,16 +711,16 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: rgba(249,247,244,.75);
+    background: rgba(249,247,244,.72);
     z-index: 5;
 }
 
 .pa-archive-empty {
     padding: var(--spacing-2xl) 0;
     font-family: var(--font-mono);
-    font-size: .72rem;
+    font-size: .68rem;
     letter-spacing: .1em;
-    color: rgba(0,0,0,.3);
+    color: rgba(0,0,0,.25);
 }
 
 /* =========================================================
@@ -671,7 +730,7 @@
 .pa-pagination {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 3px;
     padding: var(--spacing-xl) 0 0;
 }
 
@@ -683,13 +742,13 @@
     height: 32px;
     padding: 0 8px;
     font-family: var(--font-mono);
-    font-size: .62rem;
+    font-size: .6rem;
     letter-spacing: .06em;
-    border: 1px solid rgba(0,0,0,.15);
-    color: rgba(0,0,0,.45);
+    border: 1px solid rgba(0,0,0,.12);
+    color: rgba(0,0,0,.35);
     background: transparent;
     cursor: pointer;
-    transition: all .12s;
+    transition: border-color .12s, color .12s, background .12s;
 }
 
 .pa-pagination__btn:hover {
@@ -713,9 +772,11 @@
 }
 
 @media (max-width: 640px) {
-    .pa-archive-hero__inner { flex-direction: column; align-items: flex-start; }
+    .pa-archive-hero { padding: 28px 0 24px; }
+    .pa-archive-hero__inner { flex-direction: column; align-items: flex-start; gap: var(--spacing-lg); }
     .pa-archive-hero__search { min-width: 100%; max-width: 100%; }
     .pa-archive-body { gap: var(--spacing-lg); }
-    .pa-article-row { grid-template-columns: 1fr; }
-    .pa-article-row__date-col { grid-column: 1; grid-row: auto; flex-direction: row; gap: 10px; }
+    .pa-article-row { grid-template-columns: 1fr; padding-left: 12px; }
+    .pa-article-row:hover { padding-left: 16px; }
+    .pa-article-row__date-col { grid-column: 1; grid-row: auto; flex-direction: row; gap: 10px; margin-bottom: 6px; }
 }

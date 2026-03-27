@@ -86,33 +86,34 @@ $current_month = $months_ru[ (int) date( 'n' ) ] . ' ' . date( 'Y' );
 ?>
 
 <!-- =====================================================
-     HERO: большой счётчик + статистика + поиск
+     HERO: archive control header
      ===================================================== -->
 <div class="pa-archive-hero">
     <div class="pa-archive-hero__inner">
 
         <!-- Левая часть -->
         <div class="pa-archive-hero__left">
+            <p class="pa-archive-hero__tag">PALIME ARCHIVE · РЕЕСТР МАТЕРИАЛОВ</p>
             <div class="pa-archive-hero__count">
-                <span class="pa-archive-hero__number" id="pa-total-number">
-                    <?php echo esc_html( number_format( $total_found, 0, '.', '&nbsp;' ) ); ?>
-                </span>
-                <span class="pa-archive-hero__label">ЗАПИСЕЙ</span>
+                <span class="pa-archive-hero__number" id="pa-total-number"><?php echo esc_html( number_format( $total_found, 0, '.', "\u{00A0}" ) ); ?></span>
+                <span class="pa-archive-hero__label"><?php esc_html_e( 'записей в архиве', 'palime-archive' ); ?></span>
             </div>
             <div class="pa-archive-hero__stats">
-                <strong><?php echo esc_html( $current_month ); ?></strong>
+                <span><?php echo esc_html( $current_month ); ?></span>
                 <?php if ( $show_editor_stats ) : ?>
-                &nbsp;·&nbsp;
-                Каталогизировано:&nbsp;<strong><?php echo esc_html( number_format( $total_verified, 0, '.', '&nbsp;' ) ); ?></strong>
-                &nbsp;·&nbsp;
-                Спорно:&nbsp;<strong><?php echo esc_html( $total_disputed ); ?></strong>
+                    <span class="pa-archive-hero__stats-sep">·</span>
+                    <span><?php esc_html_e( 'Каталогизировано:', 'palime-archive' ); ?>&nbsp;<strong><?php echo esc_html( number_format( $total_verified, 0, '.', "\u{00A0}" ) ); ?></strong></span>
+                    <span class="pa-archive-hero__stats-sep">·</span>
+                    <span><?php esc_html_e( 'Спорно:', 'palime-archive' ); ?>&nbsp;<strong><?php echo esc_html( $total_disputed ); ?></strong></span>
                 <?php endif; ?>
+                <span class="pa-archive-hero__stats-sep">·</span>
+                <span class="pa-archive-hero__stats-status">INDEX: ACTIVE</span>
             </div>
         </div>
 
         <!-- Правая часть: поиск (?q=) -->
         <div class="pa-archive-hero__search">
-            <span class="pa-archive-hero__search-label">Текстовый поиск</span>
+            <span class="pa-archive-hero__search-label"><?php esc_html_e( 'Поиск по архиву', 'palime-archive' ); ?></span>
             <input
                 type="text"
                 name="q"
@@ -120,7 +121,7 @@ $current_month = $months_ru[ (int) date( 'n' ) ] . ' ' . date( 'Y' );
                 class="pa-archive-hero__search-input"
                 placeholder="Тарковский, Кафка, модернизм…"
                 autocomplete="off"
-                aria-label="Поиск по архиву"
+                aria-label="<?php esc_attr_e( 'Поиск по архиву', 'palime-archive' ); ?>"
                 value="<?php echo esc_attr( sanitize_text_field( $_GET['q'] ?? '' ) ); ?>"
             >
         </div>
