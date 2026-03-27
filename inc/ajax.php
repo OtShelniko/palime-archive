@@ -293,8 +293,9 @@ function palime_handle_live_index() {
             $query->the_post();
             $pid = get_the_ID();
 
-            $s_terms = get_the_terms( $pid, 'section' );
-            $medium  = ( $s_terms && ! is_wp_error( $s_terms ) ) ? $s_terms[0]->name : '—';
+            $s_terms     = get_the_terms( $pid, 'section' );
+            $medium      = ( $s_terms && ! is_wp_error( $s_terms ) ) ? $s_terms[0]->name : '—';
+            $medium_slug = ( $s_terms && ! is_wp_error( $s_terms ) ) ? $s_terms[0]->slug : '';
 
             $at   = get_the_terms( $pid, 'article-type' );
             $form = ( $at && ! is_wp_error( $at ) ) ? $at[0]->name : 'Статья';
@@ -302,26 +303,31 @@ function palime_handle_live_index() {
             $min = function_exists( 'get_field' ) ? get_field( 'reading_time', $pid ) : '';
 
             $rows[] = [
-                'id'     => 'PA-' . get_the_date( 'Y' ) . '-' . str_pad( $pid, 3, '0', STR_PAD_LEFT ),
-                'title'  => get_the_title(),
-                'url'    => get_permalink(),
-                'medium' => $medium,
-                'form'   => $form,
-                'min'    => $min ? $min : '—',
+                'id'          => 'PA-' . get_the_date( 'Y' ) . '-' . str_pad( $pid, 3, '0', STR_PAD_LEFT ),
+                'title'       => get_the_title(),
+                'url'         => get_permalink(),
+                'medium'      => $medium,
+                'medium_slug' => $medium_slug,
+                'form'        => $form,
+                'min'         => $min ? $min : '—',
+                'date'        => get_the_date( 'd.m.Y' ),
+                'status'      => 'NEW',
             ];
         }
         wp_reset_postdata();
     }
 
-    // Добиваем до 10 строк placeholder-ами
     while ( count( $rows ) < 10 ) {
         $rows[] = [
-            'id'     => 'PA-——-———',
-            'title'  => '———————————————',
-            'url'    => '#',
-            'medium' => '——————',
-            'form'   => '————',
-            'min'    => '——',
+            'id'          => 'PA-——-———',
+            'title'       => '———————————————',
+            'url'         => '#',
+            'medium'      => '——————',
+            'medium_slug' => '',
+            'form'        => '————',
+            'min'         => '——',
+            'date'        => '——.——.————',
+            'status'      => '',
         ];
     }
 

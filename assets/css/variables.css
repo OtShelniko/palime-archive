@@ -2,10 +2,11 @@
 
 /* === СИСТЕМНЫЕ ЦВЕТА === */
 :root {
-    --color-bg:     #F9F7F4;
-    --color-second: #F3F3F3;
-    --color-text:   #0A0A0A;
-    --color-ui:     #D91515;
+    --color-bg:        #F9F7F4;
+    --color-second:    #F3F3F3;
+    --color-text:      #0A0A0A;
+    --color-ui:        #D91515;
+    --color-card-dark: #2A2A2F;
     --accent:       #D91515; /* переключается по разделу */
 
     /* === АКЦЕНТЫ РАЗДЕЛОВ === */

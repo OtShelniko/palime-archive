@@ -11,7 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 function palime_setup() {
 
     // Переводы
-    load_theme_textdomain( 'palime-theme', get_template_directory() . '/languages' );
+    load_theme_textdomain( 'palime-archive', get_template_directory() . '/languages' );
 
     // Поддержка WordPress-функций
     add_theme_support( 'title-tag' );

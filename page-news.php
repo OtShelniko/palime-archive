@@ -118,17 +118,19 @@ $section_labels = [
 
 <main class="pa-news" id="main" data-section="news">
 
-    <div class="container">
+    <!-- ── HEADER ── -->
+    <div class="pa-news-hero">
+        <div class="pa-news-hero__inner container">
 
-        <?php /* ---- Герой: заголовок слева + фильтры разделов справа ---- */ ?>
-        <div class="pa-news-hero">
             <div class="pa-news-hero__left">
-                <p class="pa-news-hero__label">Новости</p>
-                <h1 class="pa-news-hero__title">События</h1>
+                <p class="pa-news-hero__tag">PALIME ARCHIVE · SIGNALS</p>
+                <h1 class="pa-news-hero__title"><?php esc_html_e( 'События', 'palime-archive' ); ?></h1>
+                <p class="pa-news-hero__sub"><?php esc_html_e( 'Актуальное из архива: новости разделов, обновления, сигналы.', 'palime-archive' ); ?></p>
             </div>
 
             <div class="pa-news-hero__right">
-                <div class="pa-news-section-filters" role="group" aria-label="Фильтр по разделу">
+                <span class="pa-news-hero__filter-label"><?php esc_html_e( 'Раздел', 'palime-archive' ); ?></span>
+                <div class="pa-news-section-filters" role="group" aria-label="<?php esc_attr_e( 'Фильтр по разделу', 'palime-archive' ); ?>">
                     <?php foreach ( $section_labels as $slug => $label ) :
                         $mod       = $section_slugs[ $slug ] ?? '';
                         $is_active = $current_section === $slug;
@@ -142,13 +144,18 @@ $section_labels = [
                     <?php endforeach; ?>
                 </div>
             </div>
-        </div><!-- /.pa-news-hero -->
 
-        <?php /* ---- Список новостей, сгруппированных по дате ---- */ ?>
+        </div>
+    </div><!-- /.pa-news-hero -->
+
+    <div class="container">
+
+        <!-- ── ЛЕНТА ── -->
         <div class="pa-news-body" id="pa-news-results">
 
             <?php if ( ! empty( $news_by_date ) ) :
-                $first_group = true;
+                $first_group  = true;
+                $global_index = 0;
                 foreach ( $news_by_date as $date_key => $items ) : ?>
 
                     <div class="pa-date-group">
@@ -157,12 +164,13 @@ $section_labels = [
                             <span class="pa-date-group__label">
                                 <?php echo esc_html( palime_news_date_label( $date_key ) ); ?>
                             </span>
+                            <span class="pa-date-group__count"><?php echo esc_html( count( $items ) ); ?></span>
 
                             <?php if ( $first_group ) : ?>
-                                <div class="pa-date-group__sort" role="group" aria-label="Сортировка новостей">
+                                <div class="pa-date-group__sort" role="group" aria-label="<?php esc_attr_e( 'Сортировка новостей', 'palime-archive' ); ?>">
                                     <button
-                                        class="pa-date-group__sort-btn<?php echo $current_sort === 'fresh'   ? ' is-active' : ''; ?>"
-                                        data-sort="fresh">Свежие</button>
+                                        class="pa-date-group__sort-btn<?php echo $current_sort === 'fresh' ? ' is-active' : ''; ?>"
+                                        data-sort="fresh"><?php esc_html_e( 'Свежие', 'palime-archive' ); ?></button>
                                 </div>
                             <?php endif; $first_group = false; ?>
                         </div>
@@ -174,9 +182,11 @@ $section_labels = [
                                 $sec_slug    = $sec_obj ? $sec_obj->slug : '';
                                 $sec_name    = $sec_obj ? $sec_obj->name : '';
                                 $sec_mod     = $section_slugs[ $sec_slug ] ?? '';
+                                $is_lead     = ( $global_index === 0 );
+                                $global_index++;
                             ?>
                                 <li role="listitem">
-                                    <a class="pa-news-item" href="<?php echo esc_url( $item['permalink'] ); ?>">
+                                    <a class="pa-news-item<?php echo $is_lead ? ' pa-news-item--lead' : ''; ?>" href="<?php echo esc_url( $item['permalink'] ); ?>">
 
                                         <div class="pa-news-item__left">
                                             <div class="pa-news-item__badges">
@@ -186,7 +196,7 @@ $section_labels = [
                                                     </span>
                                                 <?php endif; ?>
                                                 <?php if ( $item['is_urgent'] ) : ?>
-                                                    <span class="pa-news-item__urgent">Срочно</span>
+                                                    <span class="pa-news-item__urgent"><?php esc_html_e( 'Срочно', 'palime-archive' ); ?></span>
                                                 <?php endif; ?>
                                             </div>
 
@@ -196,20 +206,16 @@ $section_labels = [
 
                                             <p class="pa-news-item__source">
                                                 <?php if ( $item['source'] ) : ?>
-                                                    <?php echo esc_html( $item['source'] ); ?>
-                                                    <span aria-hidden="true">·</span>
+                                                    <span><?php echo esc_html( $item['source'] ); ?></span>
                                                 <?php endif; ?>
                                                 <?php if ( $item['editor'] ) : ?>
-                                                    <?php echo esc_html( $item['editor'] ); ?>
-                                                    <span aria-hidden="true">·</span>
+                                                    <span><?php echo esc_html( $item['editor'] ); ?></span>
                                                 <?php endif; ?>
                                                 <?php if ( $item['verified'] ) : ?>
-                                                    <span>Подтверждено</span>
-                                                <?php else : ?>
-                                                    <span>Не подтверждено</span>
+                                                    <span class="pa-news-item__verified">✓</span>
                                                 <?php endif; ?>
                                             </p>
-                                        </div><!-- /.pa-news-item__left -->
+                                        </div>
 
                                         <div class="pa-news-item__right">
                                             <time class="pa-news-item__time" datetime="<?php echo esc_attr( $date_key . 'T' . $item['time'] ); ?>">
@@ -221,15 +227,15 @@ $section_labels = [
                                     </a>
                                 </li>
                             <?php endforeach; ?>
-                        </ul><!-- /.pa-news-list -->
+                        </ul>
 
-                    </div><!-- /.pa-date-group -->
+                    </div>
 
                 <?php endforeach;
             else : ?>
-                <p style="padding:48px 0;text-align:center;font-family:var(--font-mono);font-size:12px;color:#888;">
-                    Новостей не найдено
-                </p>
+                <div class="pa-news-empty">
+                    <p class="pa-news-empty__text"><?php esc_html_e( 'Новостей не найдено', 'palime-archive' ); ?></p>
+                </div>
             <?php endif; ?>
 
         </div><!-- /#pa-news-results -->
@@ -296,11 +302,10 @@ $section_labels = [
         if (!container) return;
 
         if (!posts.length) {
-            container.innerHTML = '<p style="padding:48px 0;text-align:center;font-family:var(--font-mono);font-size:12px;color:#888;">Новостей не найдено</p>';
+            container.innerHTML = '<div class="pa-news-empty"><p class="pa-news-empty__text">Новостей не найдено</p></div>';
             return;
         }
 
-        // Группируем по дате
         var byDate = {};
         posts.forEach(function (p) {
             var dk = p.date_key || (p.date_raw || p.date || '').substring(0, 10);
@@ -308,7 +313,8 @@ $section_labels = [
             byDate[dk].push(p);
         });
 
-        var firstGroup = true;
+        var firstGroup   = true;
+        var globalIndex  = 0;
         var html = '';
 
         Object.keys(byDate).sort().reverse().forEach(function (dk) {
@@ -316,7 +322,7 @@ $section_labels = [
             var sortHtml = '';
             if (firstGroup) {
                 sortHtml = '<div class="pa-date-group__sort" role="group">'
-                    + '<button class="pa-date-group__sort-btn' + (currentSort==='fresh'   ?' is-active':'') + '" data-sort="fresh">Свежие</button>'
+                    + '<button class="pa-date-group__sort-btn' + (currentSort==='fresh' ? ' is-active' : '') + '" data-sort="fresh">Свежие</button>'
                     + '</div>';
                 firstGroup = false;
             }
@@ -324,6 +330,7 @@ $section_labels = [
             html += '<div class="pa-date-group">'
                 + '<div class="pa-date-group__header">'
                 +   '<span class="pa-date-group__label">' + formatDateLabel(dk) + '</span>'
+                +   '<span class="pa-date-group__count">' + items.length + '</span>'
                 +   sortHtml
                 + '</div>'
                 + '<ul class="pa-news-list" role="list">';
@@ -336,21 +343,23 @@ $section_labels = [
                 var urgentBadge = p.is_urgent
                     ? '<span class="pa-news-item__urgent">Срочно</span>'
                     : '';
-                var source  = p.source  ? p.source  + ' <span aria-hidden="true">·</span> ' : '';
-                var editor  = p.editor  ? p.editor  + ' <span aria-hidden="true">·</span> ' : '';
-                var verified = p.verified ? 'Подтверждено' : 'Не подтверждено';
-                var time    = p.time || '';
+                var sourceHtml = p.source ? '<span>' + p.source + '</span>' : '';
+                var editorHtml = p.editor ? '<span>' + p.editor + '</span>' : '';
+                var verifiedHtml = p.verified ? '<span class="pa-news-item__verified">\u2713</span>' : '';
+                var time = p.time || '';
+                var leadClass = globalIndex === 0 ? ' pa-news-item--lead' : '';
+                globalIndex++;
 
                 html += '<li role="listitem">'
-                    + '<a class="pa-news-item" href="' + p.url + '">'
+                    + '<a class="pa-news-item' + leadClass + '" href="' + p.url + '">'
                     +   '<div class="pa-news-item__left">'
                     +     '<div class="pa-news-item__badges">' + secBadge + urgentBadge + '</div>'
                     +     '<h2 class="pa-news-item__title">' + p.title + '</h2>'
-                    +     '<p class="pa-news-item__source">' + source + editor + verified + '</p>'
+                    +     '<p class="pa-news-item__source">' + sourceHtml + editorHtml + verifiedHtml + '</p>'
                     +   '</div>'
                     +   '<div class="pa-news-item__right">'
                     +     '<time class="pa-news-item__time">' + time + '</time>'
-                    +     '<span class="pa-news-item__arrow" aria-hidden="true">→</span>'
+                    +     '<span class="pa-news-item__arrow" aria-hidden="true">\u2192</span>'
                     +   '</div>'
                     + '</a>'
                     + '</li>';

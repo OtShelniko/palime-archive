@@ -19,7 +19,7 @@ get_header();
 
 $section_slug = 'lit';
 $hero_url     = '';
-foreach ( [ '/assets/img/hero-' . $section_slug . '.jpg', '/assets/img/hero-literature.jpg', '/assets/img/section-' . $section_slug . '.jpg' ] as $hero_rel ) {
+foreach ( [ '/assets/img/hero-' . $section_slug . '.jpg', '/assets/img/section-' . $section_slug . '.jpg' ] as $hero_rel ) {
 	$hero_abs = get_template_directory() . $hero_rel;
 	if ( is_readable( $hero_abs ) ) {
 		$hero_url = get_template_directory_uri() . $hero_rel;
@@ -34,6 +34,8 @@ get_template_part(
 		'section_slug'           => $section_slug,
 		'section_name'           => 'Литература',
 		'section_slogan'         => 'Книги не утешают. Они вскрывают.',
+		'section_intro'          => 'Тексты, разборы, досье и рейтинги по литературе. Каждый материал входит в архив как часть структуры: по авторам, формам, темам и связям.',
+		'section_code'           => 'LIT',
 		'status_line'            => 'БИБЛИОТЕКА: ОТКРЫТА | КАТАЛОГИЗАЦИЯ: ВКЛ | МАРГИНАЛИИ: АКТИВНЫ',
 		'bg_color'               => '#4A3428',
 		'accent_color'           => '#C8A882',
