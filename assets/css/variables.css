@@ -12,7 +12,7 @@
     /* === АКЦЕНТЫ РАЗДЕЛОВ === */
     --accent-main:   #D91515;
     --accent-cinema: #4DB7FF;
-    --accent-lit:    #4A3428;
+    --accent-lit:    #C8A882;  /* тёплый табачный; НЕ тёмно-коричневый bg */
     --accent-music:  #FF4FA3;
     --accent-art:    #C6A25A;
 
@@ -63,3 +63,16 @@ body[data-section='cinema'] { --accent: var(--accent-cinema); }
 body[data-section='lit']    { --accent: var(--accent-lit); }
 body[data-section='music']  { --accent: var(--accent-music); }
 body[data-section='art']    { --accent: var(--accent-art); }
+
+/* === HERO-УРОВЕНЬ — ТОКЕНЫ ПОВЕРХНОСТЕЙ ===
+   Статичные значения; цветовой акцент (--sp-accent, --sp-btn-fg)
+   приходит через inline style на .sp-hero из section-page конфига.
+   Здесь только нейтральные поверхности и типографика, чтобы не
+   дублировать их в каждом правиле компонента.
+*/
+:root {
+    --sp-hero-border:    rgba(255, 255, 255, 0.11);
+    --sp-hero-text:      #f7f8fb;
+    --sp-hero-text-soft: rgba(255, 255, 255, 0.64);
+    --sp-hero-text-mute: rgba(255, 255, 255, 0.36);
+}
