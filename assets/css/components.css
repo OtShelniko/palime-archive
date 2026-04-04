@@ -201,10 +201,15 @@
    SECTION HERO — sp-hero
    --------------------------------------------------------- */
 .sp-hero {
-    background: var(--sp-bg);
+    background:
+        radial-gradient(120% 80% at 10% 8%, rgba(255,255,255,0.06), transparent 55%),
+        linear-gradient(132deg, rgba(255,255,255,0.03), rgba(255,255,255,0)),
+        #0B0D12;
     color: #fff;
     position: relative;
     overflow: hidden;
+    min-height: calc(100svh - 48px);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
 }
 
 .sp-hero::before {
@@ -212,10 +217,21 @@
     position: absolute;
     inset: 0;
     background:
-        linear-gradient(180deg, rgba(255,255,255,0.06) 0, rgba(255,255,255,0.06) 1px, transparent 1px, transparent 100%),
-        linear-gradient(90deg, rgba(255,255,255,0.04) 0, rgba(255,255,255,0.04) 1px, transparent 1px, transparent 100%);
-    background-size: 100% 80px, 80px 100%;
-    opacity: 0.12;
+        linear-gradient(180deg, rgba(255,255,255,0.045) 0, rgba(255,255,255,0.045) 1px, transparent 1px, transparent 100%),
+        linear-gradient(90deg, rgba(255,255,255,0.035) 0, rgba(255,255,255,0.035) 1px, transparent 1px, transparent 100%),
+        linear-gradient(145deg, color-mix(in srgb, var(--sp-accent) 14%, transparent), transparent 55%);
+    background-size: 100% 92px, 92px 100%, 100% 100%;
+    opacity: 0.3;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.sp-hero::after {
+    content: '';
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 30%;
+    background: linear-gradient(180deg, transparent, rgba(0,0,0,0.45));
     pointer-events: none;
     z-index: 0;
 }
@@ -225,19 +241,21 @@
     margin: 0 auto;
     padding: 0 var(--gutter);
     display: grid;
-    grid-template-columns: 55fr 45fr;
-    gap: 0;
-    min-height: min(72vh, 900px);
+    grid-template-columns: minmax(0, 58fr) minmax(0, 42fr);
+    gap: 26px;
+    min-height: calc(100svh - 48px);
     position: relative;
     z-index: 1;
+    align-items: stretch;
 }
 
 /* LEFT */
 .sp-hero__left {
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    padding: 64px 48px 64px 0;
+    justify-content: space-between;
+    padding: clamp(48px, 7vh, 82px) 42px clamp(34px, 5vh, 56px) 0;
+    border-right: 1px solid rgba(255,255,255,0.12);
 }
 
 .sp-hero__meta-line {
@@ -248,8 +266,8 @@
     font-size: 10px;
     letter-spacing: 0.15em;
     text-transform: uppercase;
-    color: rgba(255,255,255,0.35);
-    margin-bottom: 16px;
+    color: rgba(255,255,255,0.52);
+    margin-bottom: 22px;
 }
 
 .sp-hero__dot {
@@ -262,71 +280,80 @@
 
 .sp-hero__title {
     font-family: var(--font-display);
-    font-size: clamp(3rem, 7.5vw, 6rem);
-    letter-spacing: 0.04em;
-    line-height: 0.95;
+    font-size: clamp(3.1rem, 7.8vw, 6.35rem);
+    letter-spacing: 0.03em;
+    line-height: 0.9;
     color: var(--sp-accent);
-    margin-bottom: 16px;
+    margin-bottom: 18px;
     text-wrap: balance;
+    text-shadow: 0 0 28px rgba(0,0,0,0.42);
 }
 
 .sp-hero__slogan {
     font-family: var(--font-serif);
     font-size: clamp(1rem, 2vw, 1.25rem);
     line-height: 1.55;
-    color: rgba(255,255,255,0.65);
+    color: rgba(255,255,255,0.84);
     max-width: 32rem;
-    margin-bottom: 12px;
+    margin-bottom: 14px;
 }
 
 .sp-hero__intro {
     font-family: var(--font-serif);
-    font-size: 0.92rem;
-    line-height: 1.65;
-    color: rgba(255,255,255,0.4);
+    font-size: 0.97rem;
+    line-height: 1.72;
+    color: rgba(255,255,255,0.58);
     max-width: 30rem;
-    margin-bottom: 28px;
+    margin-bottom: 34px;
 }
 
 /* CTA hierarchy */
 .sp-hero__actions {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 14px;
     flex-wrap: wrap;
-    margin-bottom: 32px;
+    margin-bottom: 34px;
 }
 
 .sp-hero__btn {
     display: inline-block;
-    padding: 10px 22px;
+    padding: 11px 24px;
     font-family: var(--font-mono);
     font-size: 10px;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.11em;
     text-transform: uppercase;
     text-decoration: none;
     transition: all 0.2s ease;
+    transform: translateY(0);
+    box-shadow: none;
 }
 
 .sp-hero__btn--primary {
     background: var(--sp-accent);
     color: var(--sp-btn-fg);
     border: 1px solid var(--sp-accent);
+    box-shadow: 0 9px 28px color-mix(in srgb, var(--sp-accent) 35%, transparent);
 }
 
 .sp-hero__btn--primary:hover {
-    background: transparent;
-    color: var(--sp-accent);
+    transform: translateY(-1px);
+    background: color-mix(in srgb, var(--sp-accent) 84%, #fff 16%);
+    border-color: color-mix(in srgb, var(--sp-accent) 84%, #fff 16%);
+    color: #090909;
+    box-shadow: 0 14px 28px color-mix(in srgb, var(--sp-accent) 44%, transparent);
 }
 
 .sp-hero__btn--secondary {
-    background: transparent;
-    color: #fff;
-    border: 1px solid rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.04);
+    color: rgba(255,255,255,0.92);
+    border: 1px solid rgba(255,255,255,0.3);
 }
 
 .sp-hero__btn--secondary:hover {
-    border-color: rgba(255,255,255,0.5);
+    border-color: rgba(255,255,255,0.62);
+    color: #fff;
+    transform: translateY(-1px);
 }
 
 .sp-hero__link {
@@ -334,21 +361,26 @@
     font-size: 10px;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: rgba(255,255,255,0.35);
+    color: rgba(255,255,255,0.78);
     text-decoration: none;
-    transition: color 0.15s ease;
+    transition: color 0.15s ease, opacity 0.15s ease;
+    border-bottom: 1px solid rgba(255,255,255,0.28);
+    padding-bottom: 2px;
 }
 
 .sp-hero__link:hover {
     color: var(--sp-accent);
+    border-bottom-color: var(--sp-accent);
 }
 
 /* Micro-nav */
 .sp-hero__nav {
     display: flex;
-    gap: 0;
-    border-top: 1px solid rgba(255,255,255,0.08);
+    gap: 12px;
+    border-top: 1px solid rgba(255,255,255,0.14);
+    padding-top: 10px;
     margin-top: auto;
+    flex-wrap: wrap;
 }
 
 .sp-hero__nav-item {
@@ -356,9 +388,9 @@
     font-size: 9px;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: rgba(255,255,255,0.3);
+    color: rgba(255,255,255,0.48);
     text-decoration: none;
-    padding: 12px 16px 12px 0;
+    padding: 10px 12px 10px 0;
     transition: color 0.15s ease;
     position: relative;
 }
@@ -373,7 +405,7 @@
     top: 0;
     left: 0;
     right: 0;
-    height: 2px;
+    height: 1px;
     background: var(--sp-accent);
     opacity: 0;
     transition: opacity 0.15s ease;
@@ -388,21 +420,26 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: 48px 0 48px 48px;
-    border-left: 1px solid rgba(255,255,255,0.06);
+    padding: clamp(38px, 5.8vh, 70px) 0 clamp(34px, 5vh, 54px) 0;
 }
 
 .sp-hero__artifact {
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(255,255,255,0.06);
+    background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
+    border: 1px solid rgba(255,255,255,0.16);
+    border-radius: 2px;
+    overflow: hidden;
+    box-shadow:
+        0 14px 45px rgba(0,0,0,0.48),
+        inset 0 1px 0 rgba(255,255,255,0.08);
 }
 
 .sp-hero__artifact-head {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 16px;
-    border-bottom: 1px solid rgba(255,255,255,0.06);
+    padding: 11px 18px;
+    border-bottom: 1px solid rgba(255,255,255,0.12);
+    background: rgba(0,0,0,0.2);
 }
 
 .sp-hero__artifact-code {
@@ -410,7 +447,7 @@
     font-size: 9px;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: rgba(255,255,255,0.3);
+    color: rgba(255,255,255,0.64);
 }
 
 .sp-hero__artifact-status {
@@ -421,14 +458,24 @@
     color: var(--sp-accent);
     padding: 2px 8px;
     border: 1px solid var(--sp-accent);
-    opacity: 0.6;
+    opacity: 1;
+    background: color-mix(in srgb, var(--sp-accent) 16%, transparent);
 }
 
 /* Image in artifact */
 .sp-hero__artifact-media {
-    aspect-ratio: 16 / 10;
+    aspect-ratio: 16 / 9;
     overflow: hidden;
     position: relative;
+}
+
+.sp-hero__artifact-media::after {
+    content: '';
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 44%;
+    background: linear-gradient(180deg, transparent, rgba(0,0,0,0.55));
+    pointer-events: none;
 }
 
 .sp-hero__artifact-img {
@@ -436,12 +483,12 @@
     height: 100%;
     object-fit: cover;
     display: block;
-    filter: contrast(1.03) saturate(0.9);
+    filter: contrast(1.07) saturate(0.86);
     transition: filter 0.3s ease;
 }
 
 .sp-hero:hover .sp-hero__artifact-img {
-    filter: contrast(1.05) saturate(1);
+    filter: contrast(1.1) saturate(0.96);
 }
 
 .sp-hero__artifact-placeholder {
@@ -466,13 +513,16 @@
 .sp-hero__artifact-meta {
     display: flex;
     flex-direction: column;
+    background: rgba(7,9,12,0.78);
 }
 
 .sp-hero__artifact-row {
     display: flex;
     justify-content: space-between;
-    padding: 8px 16px;
-    border-top: 1px solid rgba(255,255,255,0.04);
+    align-items: baseline;
+    gap: 12px;
+    padding: 10px 18px;
+    border-top: 1px solid rgba(255,255,255,0.1);
 }
 
 .sp-hero__artifact-label {
@@ -480,14 +530,15 @@
     font-size: 9px;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: rgba(255,255,255,0.25);
+    color: rgba(255,255,255,0.5);
 }
 
 .sp-hero__artifact-val {
     font-family: var(--font-mono);
     font-size: 9px;
     letter-spacing: 0.06em;
-    color: rgba(255,255,255,0.5);
+    color: rgba(255,255,255,0.9);
+    text-align: right;
 }
 
 .sp-hero__artifact-val--accent {
@@ -499,11 +550,11 @@
     font-family: var(--font-mono);
     font-size: 9px;
     letter-spacing: 0.06em;
-    color: rgba(255,255,255,0.2);
-    margin-top: 16px;
-    padding-left: 12px;
+    color: rgba(255,255,255,0.46);
+    margin-top: 18px;
+    padding-left: 14px;
     border-left: 2px solid var(--sp-accent);
-    opacity: 0.5;
+    opacity: 0.92;
 }
 
 .section-page__heading {
@@ -2150,16 +2201,19 @@
 
     .sp-hero__grid {
         grid-template-columns: 1fr;
+        min-height: auto;
+        gap: 0;
     }
 
     .sp-hero__right {
         border-left: none;
-        border-top: 1px solid rgba(255,255,255,0.06);
-        padding: 32px 0 0;
+        border-top: 1px solid rgba(255,255,255,0.1);
+        padding: 24px 0 30px;
     }
 
     .sp-hero__left {
-        padding: 48px 0;
+        border-right: none;
+        padding: 44px 0 26px;
     }
 
     .section-page__monthly-card {
@@ -2246,6 +2300,7 @@
     .sp-hero__nav {
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
+        flex-wrap: nowrap;
     }
 
     .sp-hero__artifact-media {
