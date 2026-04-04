@@ -497,58 +497,72 @@ if ( $news_query->have_posts() ) {
 			<div>
 				<p class="sp-news__label">SIGNALS</p>
 				<h2 class="sp-news__title"><?php echo esc_html( $section_name ); ?> · Новости</h2>
+				<p class="sp-news__sub">Оперативная хроника раздела</p>
 			</div>
 			<a href="<?php echo esc_url( $news_url ); ?>" class="sp-news__all">Все новости →</a>
 		</div>
 
-		<div class="sp-news__grid">
+		<?php if ( ! empty( $news_items ) ) :
+			$nf = $news_items[0];
+		?>
 
-			<?php if ( ! empty( $news_items ) ) :
-				$nf = $news_items[0];
-			?>
-				<a href="<?php echo esc_url( $nf['url'] ); ?>" class="sp-news__featured">
-					<div class="sp-news__meta">
-						<span class="sp-news__meta-accent"><?php echo esc_html( $nf['ago'] ); ?> назад</span>
-						<span><?php echo esc_html( $nf['date'] ); ?></span>
-					</div>
-					<h3 class="sp-news__featured-title"><?php echo esc_html( $nf['title'] ); ?></h3>
-					<?php if ( $nf['excerpt'] ) : ?>
-						<p class="sp-news__featured-excerpt"><?php echo esc_html( $nf['excerpt'] ); ?></p>
-					<?php endif; ?>
-					<span class="sp-news__cta">Читать →</span>
-				</a>
-			<?php else : ?>
-				<div class="sp-news__featured sp-news__placeholder">
-					<p class="sp-news__placeholder-num">01</p>
-					<h3 class="sp-news__featured-title">Новости раздела появятся здесь</h3>
-					<p class="sp-news__placeholder-note">Новые записи добавляются по мере движения архива.</p>
+		<div class="sp-news__panel">
+
+			<!-- Featured signal — first / most recent news -->
+			<a href="<?php echo esc_url( $nf['url'] ); ?>" class="sp-news__featured">
+				<div class="sp-news__featured-top">
+					<span class="sp-news__featured-ago"><?php echo esc_html( $nf['ago'] ); ?> назад</span>
+					<span class="sp-news__featured-date"><?php echo esc_html( $nf['date'] ); ?></span>
 				</div>
-			<?php endif; ?>
+				<h3 class="sp-news__featured-title"><?php echo esc_html( $nf['title'] ); ?></h3>
+				<?php if ( $nf['excerpt'] ) : ?>
+					<p class="sp-news__featured-excerpt"><?php echo esc_html( $nf['excerpt'] ); ?></p>
+				<?php endif; ?>
+				<span class="sp-news__featured-cta">Читать →</span>
+			</a>
 
-			<div class="sp-news__side">
+			<!-- Signal rail — compact rows #2 and #3 -->
+			<div class="sp-news__rail">
+
 				<?php for ( $ni = 1; $ni <= 2; $ni++ ) :
 					$has_news = isset( $news_items[ $ni ] );
-					$nn = $has_news ? $news_items[ $ni ] : null;
+					$nn       = $has_news ? $news_items[ $ni ] : null;
 				?>
 					<?php if ( $has_news ) : ?>
-						<a href="<?php echo esc_url( $nn['url'] ); ?>" class="sp-news__compact">
-							<div class="sp-news__meta">
-								<span><?php echo esc_html( $nn['ago'] ); ?> назад</span>
-							</div>
-							<h4 class="sp-news__compact-title"><?php echo esc_html( $nn['title'] ); ?></h4>
-							<span class="sp-news__compact-arrow">→</span>
+						<a href="<?php echo esc_url( $nn['url'] ); ?>" class="sp-news__row">
+							<span class="sp-news__row-time"><?php echo esc_html( $nn['ago'] ); ?> назад</span>
+							<span class="sp-news__row-title"><?php echo esc_html( $nn['title'] ); ?></span>
+							<span class="sp-news__row-arrow" aria-hidden="true">→</span>
 						</a>
 					<?php else : ?>
-						<div class="sp-news__compact sp-news__compact--empty">
-							<p class="sp-news__placeholder-num"><?php echo esc_html( sprintf( '%02d', $ni + 1 ) ); ?></p>
-							<h4 class="sp-news__compact-title">Следующий сигнал раздела</h4>
-							<p class="sp-news__placeholder-note">Появится здесь.</p>
+						<div class="sp-news__row sp-news__row--empty">
+							<span class="sp-news__row-time">——</span>
+							<span class="sp-news__row-title">Сигнал ожидается</span>
 						</div>
 					<?php endif; ?>
 				<?php endfor; ?>
+
+				<div class="sp-news__rail-foot">
+					<a href="<?php echo esc_url( $news_url ); ?>" class="sp-news__rail-link">
+						Все сигналы →
+					</a>
+				</div>
+
 			</div>
 
 		</div>
+
+		<?php else : ?>
+
+		<!-- Full empty state — no news yet -->
+		<div class="sp-news__empty">
+			<span class="sp-news__empty-mark" aria-hidden="true">——</span>
+			<p class="sp-news__empty-line">Сигналы раздела появятся здесь</p>
+			<p class="sp-news__empty-hint">Редакция собирает новые события</p>
+			<a href="<?php echo esc_url( $news_url ); ?>" class="sp-news__empty-link">Общие новости →</a>
+		</div>
+
+		<?php endif; ?>
 
 	</div>
 </section>
