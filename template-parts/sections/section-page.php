@@ -162,28 +162,40 @@ if ( $latest_q->have_posts() ) {
 <!-- 1. HERO — SECTION ENTRY -->
 <section
 	class="sp-hero<?php echo $section_slug ? ' sp-hero--' . esc_attr( $section_slug ) : ''; ?>"
-	style="--sp-bg:<?php echo esc_attr( $bg_color ); ?>;--sp-accent:<?php echo esc_attr( $accent_color ); ?>;--sp-btn-fg:<?php echo esc_attr( $hero_btn_fg ); ?>"
+	style="--sp-accent:<?php echo esc_attr( $accent_color ); ?>;--sp-btn-fg:<?php echo esc_attr( $hero_btn_fg ); ?>"
 	aria-labelledby="sp-title-<?php echo esc_attr( $section_slug ?: 'default' ); ?>">
+
+	<!-- Vertical accent edge strip -->
+	<div class="sp-hero__edge" aria-hidden="true"></div>
 
 	<div class="sp-hero__grid">
 
-		<!-- LEFT: content -->
+		<!-- LEFT: content column -->
 		<div class="sp-hero__left">
-			<div class="sp-hero__meta-line">
-				<span class="sp-hero__dot"></span>
-				<span>SECTION <?php echo esc_html( $section_code ); ?> · PALIME ARCHIVE</span>
+
+			<!-- Service pretitle / scanner label -->
+			<div class="sp-hero__pretitle">
+				<span class="sp-hero__pretitle-mark" aria-hidden="true">◈</span>
+				<span><?php
+					/* translators: 1: section code e.g. CIN */
+					printf( 'PALIME ARCHIVE · %s · SECTION INDEX', esc_html( $section_code ) );
+				?></span>
 			</div>
 
-			<h1 id="sp-title-<?php echo esc_attr( $section_slug ?: 'default' ); ?>" class="sp-hero__title">
-				<?php echo esc_html( strtoupper( $section_name ) ); ?>
-			</h1>
+			<!-- Main editorial block -->
+			<div class="sp-hero__main">
+				<h1 id="sp-title-<?php echo esc_attr( $section_slug ?: 'default' ); ?>" class="sp-hero__title">
+					<?php echo esc_html( strtoupper( $section_name ) ); ?>
+				</h1>
 
-			<p class="sp-hero__slogan"><?php echo esc_html( $section_slogan ); ?></p>
+				<p class="sp-hero__manifesto"><?php echo esc_html( $section_slogan ); ?></p>
 
-			<?php if ( $section_intro ) : ?>
-				<p class="sp-hero__intro"><?php echo esc_html( $section_intro ); ?></p>
-			<?php endif; ?>
+				<?php if ( $section_intro ) : ?>
+					<p class="sp-hero__body"><?php echo esc_html( $section_intro ); ?></p>
+				<?php endif; ?>
+			</div>
 
+			<!-- CTA row: primary / secondary / tertiary -->
 			<div class="sp-hero__actions">
 				<a href="<?php echo esc_url( $archive_url ); ?>" class="sp-hero__btn sp-hero__btn--primary">
 					Открыть каталог
@@ -194,50 +206,78 @@ if ( $latest_q->have_posts() ) {
 				<a href="<?php echo esc_url( $news_url ); ?>" class="sp-hero__link">Новости раздела →</a>
 			</div>
 
+			<!-- Section nav rail -->
 			<nav class="sp-hero__nav" aria-label="Навигация по разделу">
-				<a href="#fresh" class="sp-hero__nav-item">Материалы</a>
-				<a href="#ratings" class="sp-hero__nav-item">Рейтинги</a>
-				<a href="<?php echo esc_url( $news_url ); ?>" class="sp-hero__nav-item">Новости</a>
-				<a href="#about" class="sp-hero__nav-item">О разделе</a>
+				<a href="#fresh"   class="sp-hero__nav-item" data-idx="01">
+					<span class="sp-hero__nav-label">Материалы</span>
+				</a>
+				<a href="#ratings" class="sp-hero__nav-item" data-idx="02">
+					<span class="sp-hero__nav-label">Рейтинги</span>
+				</a>
+				<a href="<?php echo esc_url( $news_url ); ?>" class="sp-hero__nav-item" data-idx="03">
+					<span class="sp-hero__nav-label">Новости</span>
+				</a>
+				<a href="#about"   class="sp-hero__nav-item" data-idx="04">
+					<span class="sp-hero__nav-label">О разделе</span>
+				</a>
 			</nav>
+
 		</div>
 
-		<!-- RIGHT: artifact panel -->
+		<!-- RIGHT: exhibit panel -->
 		<div class="sp-hero__right">
-			<div class="sp-hero__artifact">
-				<div class="sp-hero__artifact-head">
-					<span class="sp-hero__artifact-code"><?php echo esc_html( $section_code ); ?>-EXHIBIT</span>
-					<span class="sp-hero__artifact-status">ACTIVE</span>
+			<div class="sp-hero__exhibit">
+
+				<!-- Panel service strip -->
+				<div class="sp-hero__exhibit-strip">
+					<span class="sp-hero__exhibit-id"><?php
+						printf( '%s–EXHIBIT–%s', esc_html( $section_code ), esc_html( gmdate( 'Y' ) ) );
+					?></span>
+					<span class="sp-hero__exhibit-badge">
+						<span class="sp-hero__exhibit-dot" aria-hidden="true"></span>
+						ACTIVE
+					</span>
 				</div>
 
-				<div class="sp-hero__artifact-media">
+				<!-- Panel media area -->
+				<div class="sp-hero__exhibit-media">
 					<?php if ( $hero_thumb_url ) : ?>
-						<img src="<?php echo esc_url( $hero_thumb_url ); ?>" alt="<?php echo esc_attr( $section_name ); ?>" class="sp-hero__artifact-img" loading="eager">
+						<img
+							src="<?php echo esc_url( $hero_thumb_url ); ?>"
+							alt="<?php echo esc_attr( $section_name ); ?>"
+							class="sp-hero__exhibit-img"
+							loading="eager">
 					<?php else : ?>
-						<div class="sp-hero__artifact-placeholder">
-							<span class="sp-hero__artifact-placeholder-name"><?php echo esc_html( strtoupper( $section_name ) ); ?></span>
+						<div class="sp-hero__exhibit-void">
+							<span class="sp-hero__exhibit-void-label"><?php echo esc_html( strtoupper( $section_name ) ); ?></span>
 						</div>
 					<?php endif; ?>
+					<!-- Scan-line texture -->
+					<div class="sp-hero__exhibit-scan"  aria-hidden="true"></div>
+					<!-- Corner frame brackets -->
+					<div class="sp-hero__exhibit-frame" aria-hidden="true"></div>
 				</div>
 
-				<div class="sp-hero__artifact-meta">
-					<div class="sp-hero__artifact-row">
-						<span class="sp-hero__artifact-label">SECTION</span>
-						<span class="sp-hero__artifact-val"><?php echo esc_html( strtoupper( $section_name ) ); ?></span>
+				<!-- Panel index data -->
+				<div class="sp-hero__exhibit-index">
+					<div class="sp-hero__exhibit-row">
+						<span class="sp-hero__exhibit-key">SECTION</span>
+						<span class="sp-hero__exhibit-val"><?php echo esc_html( strtoupper( $section_name ) ); ?></span>
 					</div>
-					<div class="sp-hero__artifact-row">
-						<span class="sp-hero__artifact-label">ENTRIES</span>
-						<span class="sp-hero__artifact-val"><?php echo esc_html( number_format_i18n( $section_article_count ) ); ?></span>
+					<div class="sp-hero__exhibit-row">
+						<span class="sp-hero__exhibit-key">ENTRIES</span>
+						<span class="sp-hero__exhibit-val sp-hero__exhibit-val--accent"><?php echo esc_html( number_format_i18n( $section_article_count ) ); ?></span>
 					</div>
-					<div class="sp-hero__artifact-row">
-						<span class="sp-hero__artifact-label">LAST UPDATE</span>
-						<span class="sp-hero__artifact-val"><?php echo esc_html( $section_latest_date ); ?></span>
+					<div class="sp-hero__exhibit-row">
+						<span class="sp-hero__exhibit-key">LAST UPDATE</span>
+						<span class="sp-hero__exhibit-val"><?php echo esc_html( $section_latest_date ); ?></span>
 					</div>
-					<div class="sp-hero__artifact-row">
-						<span class="sp-hero__artifact-label">INDEX</span>
-						<span class="sp-hero__artifact-val sp-hero__artifact-val--accent">LIVE</span>
+					<div class="sp-hero__exhibit-row">
+						<span class="sp-hero__exhibit-key">INDEX STATUS</span>
+						<span class="sp-hero__exhibit-val sp-hero__exhibit-val--accent">LIVE ◦</span>
 					</div>
 				</div>
+
 			</div>
 
 			<?php if ( $status_line ) : ?>
