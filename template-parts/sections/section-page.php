@@ -178,28 +178,43 @@ if ( $latest_q->have_posts() ) {
 				<?php echo esc_html( strtoupper( $section_name ) ); ?>
 			</h1>
 
-			<p class="sp-hero__slogan"><?php echo esc_html( $section_slogan ); ?></p>
+			<div class="sp-hero__copy">
+				<p class="sp-hero__slogan"><?php echo esc_html( $section_slogan ); ?></p>
 
-			<?php if ( $section_intro ) : ?>
-				<p class="sp-hero__intro"><?php echo esc_html( $section_intro ); ?></p>
-			<?php endif; ?>
+				<?php if ( $section_intro ) : ?>
+					<p class="sp-hero__intro"><?php echo esc_html( $section_intro ); ?></p>
+				<?php endif; ?>
 
-			<div class="sp-hero__actions">
-				<a href="<?php echo esc_url( $archive_url ); ?>" class="sp-hero__btn sp-hero__btn--primary">
-					Открыть каталог
-				</a>
-				<a href="<?php echo esc_url( $rankings_url ); ?>" class="sp-hero__btn sp-hero__btn--secondary">
-					Рейтинги
-				</a>
-				<a href="<?php echo esc_url( $news_url ); ?>" class="sp-hero__link">Новости раздела →</a>
+				<ul class="sp-hero__descriptor" aria-label="Форматы раздела">
+					<li>Эссе</li>
+					<li>Досье</li>
+					<li>Авторы</li>
+					<li>Тексты</li>
+					<li>Архивные связи</li>
+				</ul>
 			</div>
 
-			<nav class="sp-hero__nav" aria-label="Навигация по разделу">
-				<a href="#fresh" class="sp-hero__nav-item">Материалы</a>
-				<a href="#ratings" class="sp-hero__nav-item">Рейтинги</a>
-				<a href="<?php echo esc_url( $news_url ); ?>" class="sp-hero__nav-item">Новости</a>
-				<a href="#about" class="sp-hero__nav-item">О разделе</a>
-			</nav>
+			<div class="sp-hero__lower">
+				<div class="sp-hero__actions">
+					<a href="<?php echo esc_url( $archive_url ); ?>" class="sp-hero__btn sp-hero__btn--primary">
+						Открыть каталог
+					</a>
+					<a href="<?php echo esc_url( $rankings_url ); ?>" class="sp-hero__btn sp-hero__btn--secondary">
+						Рейтинги
+					</a>
+					<a href="<?php echo esc_url( $news_url ); ?>" class="sp-hero__link">Новости раздела →</a>
+				</div>
+
+				<div class="sp-hero__rail">
+					<p class="sp-hero__rail-label">Section rail</p>
+					<nav class="sp-hero__nav" aria-label="Навигация по разделу">
+						<a href="#fresh" class="sp-hero__nav-item">Материалы</a>
+						<a href="#ratings" class="sp-hero__nav-item">Рейтинги</a>
+						<a href="<?php echo esc_url( $news_url ); ?>" class="sp-hero__nav-item">Новости</a>
+						<a href="#about" class="sp-hero__nav-item">О разделе</a>
+					</nav>
+				</div>
+			</div>
 		</div>
 
 		<!-- RIGHT: artifact panel -->
