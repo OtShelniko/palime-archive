@@ -598,8 +598,17 @@ if ( ! $quote_query->have_posts() ) {
 }
 ?>
 
-<section class="sp-quote" style="--sp-quote-bg:<?php echo esc_attr( $bg_color ); ?>">
+<section class="sp-quote">
 	<div class="sp-quote__inner">
+
+		<!-- Service header: label left, section/date right -->
+		<div class="sp-quote__header">
+			<span class="sp-quote__label">QUOTE · ARCHIVE</span>
+			<span class="sp-quote__index"><?php
+				printf( '%s · %s', esc_html( strtoupper( $section_code ) ), esc_html( gmdate( 'd.m.Y' ) ) );
+			?></span>
+		</div>
+
 		<?php if ( $quote_query->have_posts() ) : ?>
 			<?php
 			$quote_query->the_post();
@@ -619,37 +628,40 @@ if ( ! $quote_query->have_posts() ) {
 			}
 			?>
 
-			<p class="sp-quote__label">QUOTE OF THE DAY</p>
-
-			<div class="sp-quote__frame">
-				<span class="sp-quote__mark" aria-hidden="true">&laquo;</span>
-
+			<!-- Quote body: mark + text -->
+			<div class="sp-quote__body">
+				<span class="sp-quote__mark" aria-hidden="true">&ldquo;</span>
 				<blockquote class="sp-quote__text">
 					<?php echo esc_html( $q_text ); ?>
 				</blockquote>
-
-				<?php if ( $q_author || $q_work ) : ?>
-					<div class="sp-quote__meta">
-						<?php if ( $q_author ) : ?>
-							<span class="sp-quote__author"><?php echo esc_html( $q_author ); ?></span>
-						<?php endif; ?>
-						<?php if ( $q_work ) : ?>
-							<span class="sp-quote__work">&laquo;<?php echo esc_html( $q_work ); ?>&raquo;</span>
-						<?php endif; ?>
-					</div>
-				<?php endif; ?>
 			</div>
+
+			<?php if ( $q_author || $q_work ) : ?>
+				<!-- Attribution: thin accent divider + author + source -->
+				<div class="sp-quote__attribution">
+					<?php if ( $q_author ) : ?>
+						<span class="sp-quote__author"><?php echo esc_html( $q_author ); ?></span>
+					<?php endif; ?>
+					<?php if ( $q_work ) : ?>
+						<span class="sp-quote__work"><?php echo esc_html( $q_work ); ?></span>
+					<?php endif; ?>
+				</div>
+			<?php endif; ?>
 
 			<?php if ( $q_link_url ) : ?>
 				<a href="<?php echo esc_url( $q_link_url ); ?>" class="sp-quote__btn">Открыть дело →</a>
 			<?php endif; ?>
 
 		<?php else : ?>
-			<p class="sp-quote__label">QUOTE OF THE DAY</p>
-			<div class="sp-quote__frame sp-quote__frame--empty">
-				<p class="sp-quote__stub">Цитата дня появится здесь</p>
+
+			<!-- Empty state — no quote available -->
+			<div class="sp-quote__empty">
+				<p class="sp-quote__empty-line">Архив готовит следующую цитату</p>
+				<a href="<?php echo esc_url( $archive_url ); ?>" class="sp-quote__empty-link">Перейти в архив →</a>
 			</div>
+
 		<?php endif; ?>
+
 	</div>
 </section>
 
